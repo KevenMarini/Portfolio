@@ -647,7 +647,8 @@
             border-radius: 20px;
             background: linear-gradient(135deg, rgba(0, 210, 255, 0.03), transparent);
             opacity: 0;
-            transition: opacity 0.2s
+            transition: opacity 0.2s;
+            pointer-events: none
         }
 
         .proj-card:hover {
@@ -733,7 +734,9 @@
             text-decoration: none;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            transition: gap 0.2s
+            transition: gap 0.2s;
+            position: relative;
+            z-index: 1
         }
 
         .proj-link:hover {
