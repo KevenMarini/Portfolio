@@ -1,0 +1,91 @@
+/* Keep existing background and variables, then add: */
+
+.nav-container {
+    max-width: 1100px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.logo {
+    font-weight: 600;
+    font-size: 1.5rem;
+    color: #00c6ff !important;
+}
+
+.contact-info p {
+    margin: 10px 0;
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.social-links {
+    margin-top: 15px;
+    display: flex;
+    gap: 20px;
+}
+
+.social-links a {
+    font-size: 1.5rem;
+    color: white;
+    transition: 0.3s;
+}
+
+.social-links a:hover {
+    color: #00c6ff;
+    transform: scale(1.2);
+}
+
+.badge {
+    display: inline-block;
+    padding: 5px 12px;
+    background: rgba(0, 198, 255, 0.2);
+    border: 1px solid #00c6ff;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+.projects-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.project-link {
+    font-size: 0.85rem;
+    text-decoration: none;
+    font-weight: 600;
+    margin-top: 15px;
+}
+
+.skill-category h3 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    color: #00c6ff;
+}
+
+.skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+#experience ul {
+    margin-top: 10px;
+    padding-left: 20px;
+    color: #bbb;
+}
+
+#experience li {
+    margin-bottom: 8px;
+}
+
+@media (max-width: 768px) {
+    .skills-grid {
+        grid-template-columns: 1fr;
+    }
+}
