@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keven Marini - Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="intro-mode">
+
+  <!-- Loading Screen -->
+  <div id="loading-screen" class="loading-screen">
+    <h1 class="name">Keven Marini</h1>
+    
+    <div class="loading-bar-container">
+      <div class="loading-bar"></div>
+    </div>
+
+    <h2 class="subtitle">Portfolio</h2>
+  </div>
+
+  <!-- Main Content (Hidden Initially) -->
+  <div id="main-content" class="main-content" style="display: none;">
+    <h2 class="skills-heading">My Skills</h2>
+    <div class="skill-display-container">
+      <h3 id="skill-display" class="skill-display"></h3>
+    </div>
+    <button id="enter-btn" class="enter-btn">Enter</button>
+  </div>
+
+  <!-- Portfolio Content -->
+  <div id="portfolio-content" style="display: none;">
+                
+    <nav>
+        <div class="nav-logo">KM</div>
+        <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#experience">Experience</a>
+            <a href="#projects">Projects</a>
+            <a href="#skills">Skills</a>
+            <a href="#education">Education</a>
+        </div>
+    </nav>
+
+    <main>
+
+        <!-- HERO -->
+        <section class="hero" id="home">
+            <div class="hero-inner">
+                <div class="hero-text">
+                    <div class="hero-badge"><span></span>Open to Internships &amp; Opportunities</div>
+                    <h1>Keven<br><span>Marini</span></h1>
+                    <p class="hero-sub">ECE-Btech | Vellore Institute of Technology</p>
+                    <div class="hero-contact">
+                        <a href="mailto:kevenmarini07@gmail.com"><span class="ic">✉</span> kevenmarini07@gmail.com</a>
+                        <a href="tel:+917810016443"><span class="ic">📞</span> +91 7810016443</a>
+                        <span><span class="ic">📍</span> Chennai, Tamil Nadu</span>
+                        <a href="https://www.linkedin.com/in/kevenmarini/" target="_blank"><span
+                                class="ic">🔗</span> linkedin.com/in/kevenmarini</a>
+                    </div>
+                    <div class="hero-cta">
+                        <a href="#projects" class="btn-primary">View Projects</a>
+                        <a href="https://www.linkedin.com/in/kevenmarini/" target="_blank"
+                            class="btn-ghost">LinkedIn ↗</a>
+                    </div>
+                </div>
+                <div class="avatar-wrap">
+                    <div class="avatar-ring">
+                        <div class="avatar-inner">
+                            <img id="avatarImg" src="image3.png" alt="Keven Marini"
+                                onload="this.classList.add('loaded');document.getElementById('avatarInitials').style.display='none'"
+                                onerror="this.src='image3.jpg'; this.onerror=function(){this.style.display='none'};">
+                            <span class="avatar-initials" id="avatarInitials">KM</span>
+                        </div>
+                    </div>
+                    <div class="avatar-badge">CGPA 8.20 · VIT</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT -->
+        <section id="about">
+            <p class="section-label">About</p>
+            <h2 class="section-title">Who I am <span>&amp; what I do</span></h2>
+            <div class="about-grid">
+                <div class="about-card" style="grid-column:1/-1">
+                    <h3>Career Objective</h3>
+                    <p>Motivated first-year B.Tech undergraduate at Vellore Institute of Technology, seeking
+                        opportunities to gain practical experience, develop technical skills, and apply academic
+                        knowledge in real-world learning environments. Passionate about AI, embedded systems, and
+                        building impactful solutions that matter.</p>
+                </div>
+                <div class="about-card">
+                    <h3>Languages Spoken</h3>
+                    <div class="lang-pills">
+                        <span class="pill">English</span>
+                        <span class="pill">Hindi</span>
+                        <span class="pill">Tamil</span>
+                        <span class="pill">Telugu</span>
+                    </div>
+                </div>
+                <div class="about-card">
+                    <h3>At a Glance</h3>
+                    <div class="stat-row">
+                        <div class="stat">
+                            <div class="stat-num">8+</div>
+                            <div class="stat-label">Projects</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-num">2</div>
+                            <div class="stat-label">Clubs</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-num">8.2</div>
+                            <div class="stat-label">CGPA</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-num">1st</div>
+                            <div class="stat-label">Year</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXPERIENCE -->
+        <section id="experience">
+            <p class="section-label">Experience</p>
+            <h2 class="section-title">Where I've <span>contributed</span></h2>
+            <div class="timeline">
+                <div class="tl-item">
+                    <div class="tl-date">Feb 2026 – Now</div>
+                    <div class="tl-body">
+                        <div class="tl-dot"></div>
+                        <div class="tl-card">
+                            <div class="tl-role">Events &amp; Public Relations</div>
+                            <div class="tl-org">Mozilla Firefox Club VIT · Vellore</div>
+                            <div class="tl-desc">
+                                <ul>
+                                    <li>Devised social media promotion strategies that grew podcast subscriber count
+                                        consistently over time</li>
+                                    <li>Coordinated and promoted club events to increase member engagement and outreach
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-date">Jan 2026 – Now</div>
+                    <div class="tl-body">
+                        <div class="tl-dot"></div>
+                        <div class="tl-card">
+                            <div class="tl-role">Core Team Member – Public Relations</div>
+                            <div class="tl-org">VIT Animation Club · Vellore</div>
+                            <div class="tl-desc">
+                                <ul>
+                                    <li>Supported creation of promotional materials for club activities and events</li>
+                                    <li>Managed social media accounts, increasing online engagement and visibility</li>
+                                    <li>Developed strong cooperative relationships with coworkers and managers</li>
+                                    <li>Implemented effective communication strategies fostering a supportive work
+                                        environment</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECTS -->
+        <section id="projects">
+            <p class="section-label">Projects</p>
+            <h2 class="section-title">Things I've <span>built</span></h2>
+            <div class="projects-grid">
+
+                <div class="proj-card">
+                    <div class="proj-tags">
+                        <span class="proj-tag tag-ai">AI / ML</span>
+                        <span class="proj-tag tag-cv">OCR</span>
+                    </div>
+                    <div class="proj-title">AI-Based Smart Health Analysis System &amp; OCR Medical Report Analyzer
+                    </div>
+                    <div class="proj-meta">Mar 2026 – Apr 2026</div>
+                    <div class="proj-desc">Integrated machine learning and OCR to predict diseases from user symptoms
+                        via natural language input. Extracts structured data from medical reports for deeper, more
+                        accurate health analysis.</div>
+                    <a class="proj-link" href="https://github.com/KevenMarini/Ai-based-smart-health-app"
+                        target="_blank">View on GitHub ↗</a>
+                </div>
+
+                <div class="proj-card">
+                    <div class="proj-tags">
+                        <span class="proj-tag tag-wip">In Development</span>
+                        <span class="proj-tag tag-web">Flask</span>
+                    </div>
+                    <div class="proj-title">Disaster Triage System</div>
+                    <div class="proj-meta">Sep 2025 – Present</div>
+                    <div class="proj-desc">Flask-based backend that prioritizes patients during emergencies based on
+                        severity levels. Includes active patent filing and research paper publication work.</div>
+                    <a class="proj-link" href="https://github.com/VPK570/DisasterTriageNet" target="_blank">View on
+                        GitHub ↗</a>
+                </div>
+
+                <div class="proj-card">
+                    <div class="proj-tags">
+                        <span class="proj-tag tag-ai">AI</span>
+                        <span class="proj-tag tag-embed">Embedded · ESP32</span>
+                    </div>
+                    <div class="proj-title">Smart Grid Protection System</div>
+                    <div class="proj-meta">Feb 2026</div>
+                    <div class="proj-desc">AI + ESP32 embedded system detecting abnormal energy usage patterns,
+                        predicting overload risks, and automatically reducing load using anomaly detection algorithms.
+                    </div>
+                </div>
+
+                <div class="proj-card">
+                    <div class="proj-tags">
+                        <span class="proj-tag tag-cv">Computer Vision</span>
+                        <span class="proj-tag tag-ai">AI</span>
+                    </div>
+                    <div class="proj-title">AI Sign Language Detection &amp; Communication System</div>
+                    <div class="proj-meta">Jan 2026 – Apr 2026</div>
+                    <div class="proj-desc">Computer vision system recognizing sign language gestures, converting them to
+                        text/speech. Supports two-way text/voice-to-sign conversion for individuals with speech or
+                        visual impairments.</div>
+                    <a class="proj-link"
+                        href="https://github.com/KevenMarini/AI-Based-Sign-Language-Detection-Communication-System"
+                        target="_blank">View on GitHub ↗</a>
+                </div>
+
+                <div class="proj-card">
+                    <div class="proj-tags">
+                        <span class="proj-tag tag-embed">Arduino · Servo</span>
+                    </div>
+                    <div class="proj-title">Ultrasonic Radar System</div>
+                    <div class="proj-desc">Radar-based object detection using an ultrasonic sensor and servo motor to
+                        scan 180° and visualize real-time distance and angle data using Processing IDE.</div>
+                </div>
+
+                <div class="proj-card">
+                    <div class="proj-tags">
+                        <span class="proj-tag tag-embed">Verilog</span>
+                        <span class="proj-tag tag-wip">In Progress</span>
+                    </div>
+                    <div class="proj-title">Crypto-Gate</div>
+                    <div class="proj-meta">Dec 2025 – Apr 2026</div>
+                    <div class="proj-desc">Hardware-based encryption system using Verilog and digital logic concepts,
+                        focused on secure data processing and cryptographic circuit design at the hardware level.</div>
+                </div>
+
+                <div class="proj-card">
+                    <div class="proj-tags">
+                        <span class="proj-tag tag-embed">Arduino</span>
+                    </div>
+                    <div class="proj-title">Smart Ultrasonic Security System</div>
+                    <div class="proj-desc">Arduino security system using ultrasonic sensing to detect intrusions and
+                        trigger alerts based on distance thresholds using Time-of-Flight (ToF) principles.</div>
+                </div>
+
+                <div class="proj-card">
+                    <div class="proj-tags">
+                        <span class="proj-tag tag-web">Python · Tkinter</span>
+                    </div>
+                    <div class="proj-title">Airport Management System</div>
+                    <div class="proj-meta">Aug 2024 – Feb 2025</div>
+                    <div class="proj-desc">Python Tkinter desktop application for managing flight bookings,
+                        cancellations, and airport services. Built as a Class 12 Computer Science capstone project.
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SKILLS -->
+        <section id="skills">
+            <p class="section-label">Skills</p>
+            <h2 class="section-title">My <span>toolkit</span></h2>
+            <div class="skills-section">
+                <div>
+                    <div class="skill-group">
+                        <h3>Technical Skills</h3>
+                        <div class="skill-chips">
+                            <span class="chip">Python(Fundamental level)</span>
+                            <span class="chip">HTML(Introduction to Html)</span>
+                            <span class="chip">CSS(Introduction to CSS)</span>
+                            <span class="chip">SQL(Fundamentals)</span>
+                            <span class="chip">Java (Basics)</span>
+                            <span class="chip">Verilog(Basics)</span>
+                            <span class="chip">Machine Learning(Basics)</span>
+                            <span class="chip">Computer Vision(Basics)</span>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="skill-group">
+                        <h3>Certifications</h3>
+                        <div class="cert-card">
+                            <div class="cert-icon">📊</div>
+                            <div class="cert-info">
+                                <div class="cert-name">Data Analytics / Data Science</div>
+                                <div class="cert-org">Pursuing</div>
+                            </div>
+                            <span class="cert-status">In Progress</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="skill-group">
+                        <h3>Soft Skills</h3>
+                        <div class="skill-chips">
+                            <span class="chip soft">Communication</span>
+                            <span class="chip soft">Teamwork</span>
+                            <span class="chip soft">Leadership</span>
+                            <span class="chip soft">Time Management</span>
+                            <span class="chip soft">Strategic Thinking</span>
+                            <span class="chip soft">Negotiation</span>
+                            <span class="chip soft">Mentoring</span>
+                            <span class="chip soft">Customer Focus</span>
+                            <span class="chip soft">Collaboration</span>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="skill-group">
+                        <h3>Languages</h3>
+                        <div class="skill-chips">
+                            <span class="chip lang">English </span>
+                            <span class="chip lang">Hindi </span>
+                            <span class="chip lang">Tamil </span>
+                            <span class="chip lang">Telugu </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EDUCATION -->
+        <section id="education">
+            <p class="section-label">Education</p>
+            <h2 class="section-title">Academic <span>background</span></h2>
+            <div class="edu-grid">
+                <div class="edu-card">
+                    <div class="edu-degree">B.Tech – Electronics &amp; Communication Engineering</div>
+                    <div class="edu-inst">Vellore Institute of Technology</div>
+                    <div class="edu-year">2025 – 2029 (Current)</div>
+                    <div class="edu-score">8.20</div>
+                    <div class="edu-score-label">CGPA / 10</div>
+                </div>
+                <div class="edu-card">
+                    <div class="edu-degree">Senior Secondary (XII) – CBSE Science</div>
+                    <div class="edu-inst">SBOA School &amp; Junior College</div>
+                    <div class="edu-year">Completed March 2025</div>
+                    <div class="edu-score">80%</div>
+                    <div class="edu-score-label">Percentage</div>
+                </div>
+                <div class="edu-card">
+                    <div class="edu-degree">Secondary (X) – CBSE</div>
+                    <div class="edu-inst">SBOA School &amp; Junior College</div>
+                    <div class="edu-year">Completed March 2023</div>
+                    <div class="edu-score">88.4%</div>
+                    <div class="edu-score-label">Percentage</div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--accent)">Keven Marini</div>
+        <div class="footer-links">
+            <a href="mailto:kevenmarini07@gmail.com">Email</a>
+            <a href="https://www.linkedin.com/in/kevenmarini/" target="_blank">LinkedIn</a>
+            <a href="https://github.com/KevenMarini" target="_blank">GitHub</a>
+            <a href="https://itzonlyart.vercel.app/" target="_blank">Art Portfolio</a>
+        </div>
+        <div style="font-size:12px;color:var(--muted)">Chennai, Tamil Nadu · India</div>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
