@@ -1046,3 +1046,70 @@ footer {
       justify-content: center
   }
 }
+
+/* Slider Styles */
+.projects-slider-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.projects-grid.slider-mode {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  gap: 20px;
+  padding-bottom: 20px;
+  scrollbar-width: none;
+  width: 100%;
+}
+
+.projects-grid.slider-mode::-webkit-scrollbar {
+  display: none;
+}
+
+.projects-grid.slider-mode .proj-card {
+  min-width: calc(50% - 10px);
+  flex-shrink: 0;
+  scroll-snap-align: start;
+}
+
+.slider-btn {
+  background: #0f0f11;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: absolute;
+  z-index: 10;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+.slider-btn:hover {
+  background: #fff;
+  color: #0f0f11;
+}
+
+.left-btn {
+  left: -20px;
+}
+
+.right-btn {
+  right: -20px;
+}
+
+@media(max-width:768px) {
+  .projects-grid.slider-mode .proj-card {
+    min-width: 100%;
+  }
+  .slider-btn {
+    display: none;
+  }
+}

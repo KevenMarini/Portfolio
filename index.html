@@ -172,7 +172,9 @@
         <section id="projects">
             <p class="section-label">Projects</p>
             <h2 class="section-title">Things I've <span>built</span></h2>
-            <div class="projects-grid">
+            <div class="projects-slider-wrapper">
+                <button class="slider-btn left-btn" onclick="document.getElementById('projects-grid').scrollBy({left: -350, behavior: 'smooth'})">❮</button>
+                <div class="projects-grid slider-mode" id="projects-grid">
 
                 <div class="proj-card">
                     <div class="proj-tags">
@@ -269,6 +271,8 @@
                     </div>
                 </div>
 
+                </div>
+                <button class="slider-btn right-btn" onclick="document.getElementById('projects-grid').scrollBy({left: 350, behavior: 'smooth'})">❯</button>
             </div>
         </section>
 
