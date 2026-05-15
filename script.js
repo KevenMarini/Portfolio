@@ -30,6 +30,7 @@ async function fetchData() {
             skills = data.skills.map(s => s.name);
             renderSkills(data.skills);
         }
+        if (data.certifications && data.certifications.length) renderCertifications(data.certifications);
         if (data.education.length) renderEducation(data.education);
     } catch (e) {
         console.log("Using local fallback data");
@@ -37,11 +38,9 @@ async function fetchData() {
 }
 
 function renderProfile(p) {
-    // Update Loading Name
     const loadingName = document.querySelector('.loading-screen .name');
     if (loadingName) loadingName.textContent = p.name;
 
-    // Update Hero
     const heroH1 = document.querySelector('.hero-text h1');
     if (heroH1) {
         const names = p.name.split(' ');
@@ -60,18 +59,28 @@ function renderProfile(p) {
         contacts[0].href = `mailto:${p.email}`;
         contacts[1].textContent = p.phone;
         contacts[2].href = p.linkedin;
-        
-        // Footer links
-        const footerLinks = document.querySelectorAll('.footer-links a');
-        if (footerLinks.length >= 2) {
-            footerLinks[0].href = `mailto:${p.email}`;
-            footerLinks[1].href = p.linkedin;
-        }
     }
 
-    // Update About
+    // About Section Stats (Image 1)
     const aboutText = document.querySelector('.about-main p');
     if (aboutText) aboutText.textContent = p.about_text;
+
+    const stats = document.querySelectorAll('.stat-num');
+    if (stats.length >= 2) {
+        stats[0].textContent = p.project_count;
+        stats[1].textContent = p.club_count;
+    }
+
+    const locationText = document.querySelector('.about-grid .card:nth-child(2) p');
+    if (locationText) locationText.textContent = p.location;
+
+    const languagesContainer = document.querySelector('.lang-pills');
+    if (languagesContainer && p.languages) {
+        languagesContainer.innerHTML = p.languages.split(',').map(l => `<span class="pill">${l.trim()}</span>`).join('');
+    }
+
+    const yearNum = document.querySelector('.about-grid .card:nth-child(3) .stat-num');
+    if (yearNum) yearNum.textContent = p.current_year;
 }
 
 function renderProjects(projects) {
@@ -91,7 +100,7 @@ function renderProjects(projects) {
 function renderExperience(exp) {
     const timeline = document.querySelector('.timeline');
     timeline.innerHTML = exp.map(e => `
-        <div class="tl-item reveal">
+        <div class="tl-item reveal active">
             <div class="tl-date">${e.date}</div>
             <div class="tl-body">
                 <div class="tl-dot"></div>
@@ -117,10 +126,23 @@ function renderSkills(skillsData) {
     }
 }
 
+function renderCertifications(certs) {
+    const certContainer = document.querySelector('.bento-grid .card:nth-child(3)');
+    if (certContainer) {
+        certContainer.innerHTML = '<h3>Certifications</h3>' + certs.map(c => `
+            <div class="edu-score-box" style="margin-bottom: 10px;">
+                <span class="edu-score" style="font-size: 1.2rem;">${c.name}</span>
+                <span class="edu-score-label">${c.status}</span>
+                ${c.link ? `<a href="${c.link}" target="_blank" style="color:var(--accent-cyan); font-size: 0.8rem; margin-left: 10px;">Link ↗</a>` : ''}
+            </div>
+        `).join('');
+    }
+}
+
 function renderEducation(edu) {
     const grid = document.querySelector('.edu-grid');
     grid.innerHTML = edu.map(e => `
-        <div class="card edu-card reveal">
+        <div class="card edu-card reveal active">
             <span class="edu-inst">${e.institution}</span>
             <h3 class="edu-degree">${e.degree}</h3>
             <span class="edu-year">${e.year}</span>
@@ -158,10 +180,9 @@ function startSkillsCycling() {
   }
 }
 
-// Enter button logic with Page Transition
+// Enter button logic
 document.getElementById('enter-btn').addEventListener('click', () => {
   clearInterval(skillsInterval);
-  
   const transitionOverlay = document.getElementById('page-transition');
   transitionOverlay.classList.add('active');
   
@@ -175,7 +196,7 @@ document.getElementById('enter-btn').addEventListener('click', () => {
         transitionOverlay.classList.add('out');
         initScrollReveal();
         initScrollProgress();
-        fetchData(); // Fetch real-time data from DB
+        fetchData();
         
         setTimeout(() => {
             transitionOverlay.classList.remove('out');
@@ -184,7 +205,6 @@ document.getElementById('enter-btn').addEventListener('click', () => {
   }, 800);
 });
 
-// Scroll Reveal Logic
 function initScrollReveal() {
     const revealElements = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries) => {
@@ -195,7 +215,6 @@ function initScrollReveal() {
     revealElements.forEach(el => observer.observe(el));
 }
 
-// Scroll Progress & Active Nav Link & Scroll Parallax
 function initScrollProgress() {
     const progressBar = document.getElementById('scroll-progress');
     const sections = document.querySelectorAll('section');
@@ -227,7 +246,6 @@ function initScrollProgress() {
     });
 }
 
-// Mouse Move Parallax
 document.addEventListener('mousemove', (e) => {
     const x = e.clientX / window.innerWidth;
     const y = e.clientY / window.innerHeight;

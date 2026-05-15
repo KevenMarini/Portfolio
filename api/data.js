@@ -7,13 +7,15 @@ export default async function handler(request, response) {
     const experience = await sql`SELECT * FROM experience ORDER BY id DESC;`;
     const skills = await sql`SELECT * FROM skills;`;
     const education = await sql`SELECT * FROM education ORDER BY year DESC;`;
+    const certifications = await sql`SELECT * FROM certifications ORDER BY id DESC;`;
 
     return response.status(200).json({
       profile: profile.rows[0] || null,
       projects: projects.rows,
       experience: experience.rows,
       skills: skills.rows,
-      education: education.rows
+      education: education.rows,
+      certifications: certifications.rows
     });
   } catch (error) {
     return response.status(200).json({
@@ -21,7 +23,8 @@ export default async function handler(request, response) {
       projects: [],
       experience: [],
       skills: [],
-      education: []
+      education: [],
+      certifications: []
     });
   }
 }
