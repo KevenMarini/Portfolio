@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Keven Marini</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-container { padding: 120px 5% 60px; max-width: 1000px; margin: 0 auto; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: var(--text-secondary); font-size: 0.9rem; }
+        input, textarea, select {
+            width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-light);
+            border-radius: 8px; color: white; font-family: inherit;
+        }
+        .admin-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 16px; padding: 30px; margin-bottom: 30px; }
+        .data-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--border-light); }
+        .delete-btn { color: var(--accent-pink); cursor: pointer; background: none; border: none; font-weight: 700; }
+        .login-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark);
+            display: flex; align-items: center; justify-content: center; z-index: 10000;
+        }
+    </style>
+</head>
+<body class="portfolio-mode">
+    <div id="login-overlay" class="login-overlay">
+        <div class="card" style="width: 400px;">
+            <h3>Admin Login</h3>
+            <div class="form-group">
+                <input type="password" id="admin-pass" placeholder="Enter Admin Password">
+            </div>
+            <button class="btn-primary" onclick="login()" style="width: 100%;">Access Dashboard</button>
+        </div>
+    </div>
+
+    <nav>
+        <div class="nav-logo">KM. Admin</div>
+        <div class="nav-links">
+            <a href="index.html">View Site</a>
+            <a href="#" onclick="logout()">Logout</a>
+        </div>
+    </nav>
+
+    <div class="admin-container reveal active">
+        <div class="admin-header">
+            <h2>Manage Portfolio</h2>
+            <div class="hero-badge" id="status"><span></span>System Ready</div>
+        </div>
+
+        <!-- Add Data Section -->
+        <div class="admin-card">
+            <h3>Add New Entry</h3>
+            <div class="form-group">
+                <label>Type</label>
+                <select id="entry-type">
+                    <option value="project">Project</option>
+                    <option value="experience">Experience</option>
+                    <option value="skill">Skill</option>
+                    <option value="education">Education</option>
+                </select>
+            </div>
+            <div id="form-fields">
+                <!-- Dynamic Fields Based on Type -->
+            </div>
+            <button class="btn-primary" onclick="saveEntry()">Save Entry</button>
+        </div>
+
+        <!-- List Section -->
+        <div class="admin-card">
+            <h3>Existing Records</h3>
+            <div id="data-list">
+                <p>Loading records...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let adminPass = localStorage.getItem('adminPass');
+        if(adminPass) document.getElementById('login-overlay').style.display = 'none';
+
+        function login() {
+            adminPass = document.getElementById('admin-pass').value;
+            localStorage.setItem('adminPass', adminPass);
+            document.getElementById('login-overlay').style.display = 'none';
+            loadData();
+        }
+
+        function logout() {
+            localStorage.removeItem('adminPass');
+            location.reload();
+        }
+
+        const fields = {
+            project: ['title', 'description', 'tags', 'link', 'date'],
+            experience: ['role', 'organization', 'description', 'date'],
+            skill: ['name', 'category'],
+            education: ['degree', 'institution', 'year', 'score', 'score_label']
+        };
+
+        document.getElementById('entry-type').onchange = renderFields;
+        function renderFields() {
+            const type = document.getElementById('entry-type').value;
+            const container = document.getElementById('form-fields');
+            container.innerHTML = fields[type].map(f => `
+                <div class="form-group">
+                    <label>${f.charAt(0).toUpperCase() + f.slice(1)}</label>
+                    <input type="text" id="field-${f}" placeholder="Enter ${f}">
+                </div>
+            `).join('');
+        }
+        renderFields();
+
+        async function saveEntry() {
+            const type = document.getElementById('entry-type').value;
+            const data = {};
+            fields[type].forEach(f => data[f] = document.getElementById(`field-${f}`).value);
+
+            const res = await fetch('/api/admin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: adminPass, type, data })
+            });
+
+            if(res.ok) {
+                alert('Saved successfully!');
+                loadData();
+            } else {
+                alert('Error saving. Check password.');
+            }
+        }
+
+        async function loadData() {
+            const res = await fetch('/api/data');
+            const data = await res.json();
+            const list = document.getElementById('data-list');
+            list.innerHTML = '';
+
+            ['projects', 'experience', 'skills', 'education'].forEach(type => {
+                if(data[type].length) {
+                    list.innerHTML += `<h4>${type.toUpperCase()}</h4>`;
+                    data[type].forEach(item => {
+                        list.innerHTML += `
+                            <div class="data-item">
+                                <span>${item.title || item.role || item.name || item.degree}</span>
+                                <button class="delete-btn" onclick="deleteItem(${item.id}, '${type.slice(0,-1)}')">Delete</button>
+                            </div>
+                        `;
+                    });
+                }
+            });
+        }
+
+        async function deleteItem(id, type) {
+            if(!confirm('Delete this item?')) return;
+            const res = await fetch(`/api/admin?id=${id}&type=${type}&password=${adminPass}`, { method: 'DELETE' });
+            if(res.ok) loadData();
+        }
+
+        if(adminPass) loadData();
+    </script>
+</body>
+</html>
