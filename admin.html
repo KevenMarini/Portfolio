@@ -365,7 +365,11 @@
             `).join('');
 
             if(id) {
-                const item = allData[type + 's'].find(x => x.id === id);
+                // Handle naming mismatch
+                let key = type + 's';
+                if (type === 'experience' || type === 'education') key = type;
+                
+                const item = allData[key].find(x => x.id === id);
                 config[type].fields.forEach(f => document.getElementById(`field-${f}`).value = item[f] || '');
             }
             
@@ -416,7 +420,11 @@
             container.innerHTML = '';
 
             Object.keys(config).forEach(type => {
-                const sectionData = allData[type + 's'];
+                // Handle naming mismatch between API (singular/plural)
+                let key = type + 's';
+                if (type === 'experience' || type === 'education') key = type;
+                
+                const sectionData = allData[key] || [];
                 container.innerHTML += `
                     <section class="admin-section">
                         <div class="section-top">
