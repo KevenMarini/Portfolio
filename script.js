@@ -22,6 +22,8 @@ async function fetchData() {
     try {
         const res = await fetch('/api/data');
         const data = await res.json();
+        
+        if (data.profile) renderProfile(data.profile);
         if (data.projects.length) renderProjects(data.projects);
         if (data.experience.length) renderExperience(data.experience);
         if (data.skills.length) {
@@ -32,6 +34,44 @@ async function fetchData() {
     } catch (e) {
         console.log("Using local fallback data");
     }
+}
+
+function renderProfile(p) {
+    // Update Loading Name
+    const loadingName = document.querySelector('.loading-screen .name');
+    if (loadingName) loadingName.textContent = p.name;
+
+    // Update Hero
+    const heroH1 = document.querySelector('.hero-text h1');
+    if (heroH1) {
+        const names = p.name.split(' ');
+        heroH1.innerHTML = `<span>${names[0]}</span> ${names.slice(1).join(' ')}`;
+    }
+    
+    const heroSub = document.querySelector('.hero-sub');
+    if (heroSub) heroSub.textContent = p.subtitle;
+
+    const heroBadge = document.querySelector('.hero-badge');
+    if (heroBadge) heroBadge.innerHTML = `<span></span>${p.hero_badge}`;
+
+    const contacts = document.querySelectorAll('.hero-contact a, .hero-contact span');
+    if (contacts.length >= 3) {
+        contacts[0].textContent = p.email;
+        contacts[0].href = `mailto:${p.email}`;
+        contacts[1].textContent = p.phone;
+        contacts[2].href = p.linkedin;
+        
+        // Footer links
+        const footerLinks = document.querySelectorAll('.footer-links a');
+        if (footerLinks.length >= 2) {
+            footerLinks[0].href = `mailto:${p.email}`;
+            footerLinks[1].href = p.linkedin;
+        }
+    }
+
+    // Update About
+    const aboutText = document.querySelector('.about-main p');
+    if (aboutText) aboutText.textContent = p.about_text;
 }
 
 function renderProjects(projects) {
@@ -98,22 +138,24 @@ function startSkillsCycling() {
   const skillDisplay = document.getElementById('skill-display');
   let currentIndex = 0;
   
-  skillDisplay.textContent = skills[currentIndex];
-  skillDisplay.style.opacity = '1';
-  
-  skillsInterval = setInterval(() => {
-    currentIndex = (currentIndex + 1) % skills.length;
+  if (skills.length > 0) {
+    skillDisplay.textContent = skills[currentIndex];
+    skillDisplay.style.opacity = '1';
     
-    skillDisplay.style.opacity = '0';
-    skillDisplay.style.transform = 'translateY(10px)';
-    
-    setTimeout(() => {
-        skillDisplay.textContent = skills[currentIndex];
-        skillDisplay.style.opacity = '1';
-        skillDisplay.style.transform = 'translateY(0)';
-    }, 400);
-    
-  }, 2000);
+    skillsInterval = setInterval(() => {
+      currentIndex = (currentIndex + 1) % skills.length;
+      
+      skillDisplay.style.opacity = '0';
+      skillDisplay.style.transform = 'translateY(10px)';
+      
+      setTimeout(() => {
+          skillDisplay.textContent = skills[currentIndex];
+          skillDisplay.style.opacity = '1';
+          skillDisplay.style.transform = 'translateY(0)';
+      }, 400);
+      
+    }, 2000);
+  }
 }
 
 // Enter button logic with Page Transition
