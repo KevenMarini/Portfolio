@@ -1099,10 +1099,11 @@ footer {
     gap: 30px;
     text-align: center;
   }
-  
-  body.menu-open {
-      overflow: hidden;
-  }
+} /* Closing the 768px media query correctly */
+
+body.menu-open {
+    overflow: hidden;
+}
 
  /* FINAL PROFESSIONAL SIDEBAR - THE ABSOLUTE FIX */
 .side-menu {
@@ -1225,5 +1226,4 @@ footer {
     .side-menu-links a {
         font-size: 1.2rem !important;
     }
-}
 }
