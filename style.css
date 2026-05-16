@@ -1230,51 +1230,56 @@ footer {
   }
 }
 
-/* UTILS */
-.reveal {
-  opacity: 0;
-  transform: translateY(40px) scale(0.98);
-  transition: opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1), transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+/* FINAL SIDE-MENU ENFORCEMENT - BRUTE FORCE FIX */
+.side-menu {
+    position: fixed !important;
+    top: 0 !important;
+    left: -450px !important; /* Forces it way off-screen */
+    width: 400px !important;
+    height: 100vh !important;
+    background: #000 !important;
+    z-index: 999999 !important; /* Above EVERYTHING */
+    padding: 60px 40px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    box-shadow: 20px 0 80px rgba(0,0,0,0.9) !important;
+    border-right: 1px solid rgba(255,255,255,0.1) !important;
+    transform: none !important; /* Prevents any accidental centering */
 }
 
-.reveal.active {
-  opacity: 1;
-  transform: translateY(0) scale(1);
+.side-menu.active {
+    left: 0 !important;
+    transform: none !important;
 }
 
-/* Staggered Reveals */
-.bento-grid .reveal:nth-child(1) { transition-delay: 0.1s; }
-.bento-grid .reveal:nth-child(2) { transition-delay: 0.2s; }
-.bento-grid .reveal:nth-child(3) { transition-delay: 0.3s; }
-.bento-grid .reveal:nth-child(4) { transition-delay: 0.4s; }
-
-.edu-grid .reveal:nth-child(1) { transition-delay: 0.1s; }
-.edu-grid .reveal:nth-child(2) { transition-delay: 0.2s; }
-.edu-grid .reveal:nth-child(3) { transition-delay: 0.3s; }
-
-.projects-grid .card:nth-child(1) { transition-delay: 0.1s; }
-.projects-grid .card:nth-child(2) { transition-delay: 0.2s; }
-.projects-grid .card:nth-child(3) { transition-delay: 0.3s; }
-.projects-grid .card:nth-child(4) { transition-delay: 0.4s; }
-
-/* Page Transition Overlay */
-.page-transition {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--bg-dark);
-    z-index: 9999;
-    transform: translateY(100%);
-    transition: transform 0.8s cubic-bezier(0.86, 0, 0.07, 1);
-    pointer-events: none;
+.side-menu-links {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important; /* Forced left-align */
+    text-align: left !important;
+    gap: 25px !important;
 }
 
-.page-transition.active {
-    transform: translateY(0);
+.side-menu-links a {
+    text-align: left !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
-.page-transition.out {
-    transform: translateY(-100%);
+/* Kill any old nav-links mobile overlays that might be lingering */
+@media (max-width: 10000px) {
+    .nav-links.active {
+        display: none !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .side-menu {
+        width: 100% !important;
+        left: -100% !important;
+    }
+    .side-menu.active {
+        left: 0 !important;
+    }
 }
