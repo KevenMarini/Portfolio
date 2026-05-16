@@ -174,10 +174,31 @@ function startSkillsCycling() {
           skillDisplay.textContent = skills[currentIndex];
           skillDisplay.style.opacity = '1';
           skillDisplay.style.transform = 'translateY(0)';
-      }, 400);
+      }, 300); // Faster fade-in
       
-    }, 2000);
+    }, 1200); // Faster cycling
   }
+}
+
+function initMobileMenu() {
+    const toggle = document.getElementById('menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    
+    if (toggle && navLinks) {
+        toggle.addEventListener('click', () => {
+            toggle.classList.toggle('active');
+            navLinks.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        });
+
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                toggle.classList.remove('active');
+                navLinks.classList.remove('active');
+                document.body.classList.remove('menu-open');
+            });
+        });
+    }
 }
 
 // Enter button logic
@@ -196,6 +217,7 @@ document.getElementById('enter-btn').addEventListener('click', () => {
         transitionOverlay.classList.add('out');
         initScrollReveal();
         initScrollProgress();
+        initMobileMenu();
         fetchData();
         
         setTimeout(() => {
