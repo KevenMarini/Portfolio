@@ -95,6 +95,7 @@ function renderProjects(projects) {
             ${p.link ? `<a href="${p.link}" target="_blank" class="proj-link">GitHub</a>` : ''}
         </div>
     `).join('');
+    initProjectDots();
 }
 
 function renderExperience(exp) {
@@ -218,6 +219,7 @@ document.getElementById('enter-btn').addEventListener('click', () => {
         initScrollReveal();
         initScrollProgress();
         initMobileMenu();
+        initProjectDots();
         fetchData();
         
         setTimeout(() => {
@@ -279,6 +281,37 @@ document.addEventListener('mousemove', (e) => {
         blob.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
     });
 });
+
+function initProjectDots() {
+    const grid = document.querySelector('.projects-grid');
+    const dotsContainer = document.getElementById('project-dots');
+    const cards = grid.querySelectorAll('.proj-card');
+    
+    if (!dotsContainer) return;
+    
+    dotsContainer.innerHTML = '';
+    cards.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = `dot ${i === 0 ? 'active' : ''}`;
+        dot.addEventListener('click', () => {
+            grid.scrollTo({
+                left: cards[i].offsetLeft - grid.offsetLeft,
+                behavior: 'smooth'
+            });
+        });
+        dotsContainer.appendChild(dot);
+    });
+
+    grid.addEventListener('scroll', () => {
+        const scrollPos = grid.scrollLeft;
+        const cardWidth = cards[0].offsetWidth + 30; // 30 is the gap
+        const index = Math.round(scrollPos / cardWidth);
+        
+        dotsContainer.querySelectorAll('.dot').forEach((dot, i) => {
+            dot.classList.toggle('active', i === index);
+        });
+    });
+}
 
 const style = document.createElement('style');
 style.textContent = `#main-content, #skill-display { transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); }`;

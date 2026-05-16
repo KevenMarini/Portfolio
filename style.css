@@ -745,16 +745,39 @@ section {
   flex-shrink: 0;
 }
 
+.project-dots {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: var(--transition-smooth);
+    cursor: pointer;
+}
+
+.dot.active {
+    background: var(--accent-cyan);
+    transform: scale(1.5);
+    box-shadow: 0 0 10px var(--accent-cyan);
+}
+
 @media (max-width: 768px) {
   .projects-grid {
-    flex-direction: column;
-    overflow-x: visible;
+    flex-direction: row; /* Restored side-scrolling */
+    overflow-x: auto;
     gap: 20px;
+    scroll-padding: 20px;
   }
 
   .proj-card {
-    min-width: 100%;
-    scroll-snap-align: none;
+    min-width: 85%; /* Shows a bit of the next card */
+    scroll-snap-align: center;
     padding: 30px 20px;
   }
 }
