@@ -183,8 +183,8 @@ function startSkillsCycling() {
 
 function initMobileMenu() {
     const toggle = document.getElementById('menu-toggle');
-    const sideMenu = document.getElementById('side-menu');
-    const sideClose = document.getElementById('side-menu-close');
+    const sideMenu = document.getElementById('pro-sidebar');
+    const sideClose = document.getElementById('pro-sidebar-close');
     
     if (toggle && sideMenu) {
         toggle.addEventListener('click', () => {
