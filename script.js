@@ -183,28 +183,21 @@ function startSkillsCycling() {
 
 function initMobileMenu() {
     const toggle = document.getElementById('menu-toggle');
-    const sideMenu = document.getElementById('side-menu');
-    const sideClose = document.getElementById('side-menu-close');
+    const navLinks = document.querySelector('.nav-links');
     
-    if (toggle && sideMenu) {
+    if (toggle && navLinks) {
         toggle.addEventListener('click', () => {
-            sideMenu.classList.add('active');
-            document.body.style.overflow = 'hidden';
+            toggle.classList.toggle('active');
+            navLinks.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
         });
 
-        if (sideClose) {
-            sideClose.addEventListener('click', () => {
-                sideMenu.classList.remove('active');
-                document.body.style.overflow = '';
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                toggle.classList.remove('active');
+                navLinks.classList.remove('active');
+                document.body.classList.remove('menu-open');
             });
-        }
-
-        // Close when clicking outside
-        document.addEventListener('click', (e) => {
-            if (sideMenu.classList.contains('active') && !sideMenu.contains(e.target) && !toggle.contains(e.target)) {
-                sideMenu.classList.remove('active');
-                document.body.style.overflow = '';
-            }
         });
     }
 }
