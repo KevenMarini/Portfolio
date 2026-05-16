@@ -337,6 +337,71 @@ nav {
   }
 }
 
+/* SIDE MENU */
+.side-menu {
+    position: fixed;
+    top: 0;
+    left: -350px;
+    width: 350px;
+    height: 100vh;
+    background: rgba(10, 11, 15, 0.95);
+    backdrop-filter: blur(20px);
+    z-index: 2000;
+    padding: 40px;
+    transition: all 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+    box-shadow: 10px 0 50px rgba(0, 0, 0, 0.5);
+}
+
+.side-menu.active {
+    left: 0;
+}
+
+.side-menu-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 60px;
+}
+
+.side-menu-close {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: var(--transition-smooth);
+}
+
+.side-menu-close:hover {
+    color: white;
+    transform: rotate(90deg);
+}
+
+.side-menu-links {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.side-menu-links a {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: white;
+    opacity: 0.7;
+    transition: var(--transition-smooth);
+}
+
+.side-menu-links a:hover {
+    opacity: 1;
+    color: var(--accent-cyan);
+    padding-left: 10px;
+}
+
+@media (max-width: 768px) {
+    .side-menu {
+        width: 100%;
+        left: -100%;
+    }
+}
+
 /* HERO SECTION */
 .hero {
   min-height: 100vh;
