@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact | Keven Marini</title>
+  <link rel="stylesheet" href="style.css?v=5.0">
+  <style>
+    body {
+        padding-top: 100px;
+    }
+    .contact-container {
+        min-height: 80vh;
+        padding: 60px 5%;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    .contact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr;
+        gap: 40px;
+        margin-top: 40px;
+    }
+    .info-side {
+        padding: 40px;
+    }
+    .info-box {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+        margin-top: 40px;
+    }
+    .info-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+    }
+    .info-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(0, 242, 254, 0.1);
+        border: 1px solid rgba(0, 242, 254, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: var(--accent-cyan);
+        flex-shrink: 0;
+    }
+    .info-content span {
+        display: block;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--text-muted);
+        margin-bottom: 5px;
+    }
+    .info-content a, .info-content p {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        text-decoration: none;
+        transition: var(--transition-smooth);
+    }
+    .info-content a:hover {
+        color: var(--accent-cyan);
+    }
+    .form-side {
+        padding: 40px;
+    }
+    .contact-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .contact-form input, .contact-form textarea {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border-light);
+        border-radius: 16px;
+        padding: 18px;
+        color: white;
+        font-family: inherit;
+        font-size: 1rem;
+        transition: var(--transition-smooth);
+    }
+    .contact-form input:focus, .contact-form textarea:focus {
+        border-color: var(--accent-cyan);
+        background: rgba(255, 255, 255, 0.08);
+        outline: none;
+        box-shadow: 0 0 20px rgba(0, 242, 254, 0.1);
+    }
+    @media (max-width: 992px) {
+        .contact-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body class="portfolio-mode">
+
+  <div class="prism-bg">
+    <div class="prism-blob blob-1"></div>
+    <div class="prism-blob blob-2"></div>
+    <div class="prism-blob blob-3"></div>
+  </div>
+
+    <nav>
+        <div class="nav-left">
+            <div class="nav-logo">KM.</div>
+            <div class="menu-toggle" id="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <a href="index.html#home" class="homepage-link">Homepage</a>
+        </div>
+        <div class="nav-right">
+            <div class="nav-links">
+                <a href="index.html#about">About</a>
+                <a href="index.html#experience">Experience</a>
+                <a href="index.html#projects">Projects</a>
+                <a href="index.html#skills">Toolkit</a>
+                <a href="index.html#education">Education</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="contact-container">
+        <span class="section-label">Communication</span>
+        <h2 class="section-title">Get in <span>Touch.</span></h2>
+
+        <div class="contact-grid">
+            <div class="card info-side reveal active">
+                <h3>Contact Details</h3>
+                <p>I'm always open to discussing new projects, creative ideas or opportunities to be part of your visions.</p>
+                
+                <div class="info-box">
+                    <div class="info-item">
+                        <div class="info-icon">✉</div>
+                        <div class="info-content">
+                            <span>Email Me</span>
+                            <a href="mailto:kevenmarini07@gmail.com">kevenmarini07@gmail.com</a>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">📞</div>
+                        <div class="info-content">
+                            <span>Call Me</span>
+                            <p>+91 7810016443</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">🔗</div>
+                        <div class="info-content">
+                            <span>LinkedIn</span>
+                            <a href="https://www.linkedin.com/in/kevenmarini/" target="_blank">linkedin.com/in/kevenmarini</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card form-side reveal active">
+                <h3>Send a Message</h3>
+                <form action="https://formspree.io/f/xblddqwd" method="POST" class="contact-form">
+                    <div class="form-group">
+                        <input type="text" name="name" placeholder="Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" name="_replyto" placeholder="Email Address" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="subject" placeholder="Subject">
+                    </div>
+                    <div class="form-group">
+                        <textarea name="message" placeholder="Your Message" rows="6" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary" style="width: 100%; padding: 20px;">Send Message ↗</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="nav-logo" style="font-size: 2rem;">KEVEN MARINI.</div>
+        <div class="footer-links">
+            <a href="mailto:kevenmarini07@gmail.com">Email</a>
+            <a href="https://www.linkedin.com/in/kevenmarini/" target="_blank">LinkedIn</a>
+            <a href="https://github.com/KevenMarini" target="_blank">GitHub</a>
+        </div>
+    </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

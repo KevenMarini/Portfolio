@@ -237,6 +237,12 @@ nav {
     flex-shrink: 0;
 }
 
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
 .homepage-link {
     color: var(--text-secondary);
     text-decoration: none;
@@ -326,6 +332,10 @@ nav {
 @media (max-width: 768px) {
   .nav-links {
     display: none;
+  }
+  
+  .nav-right {
+    gap: 0;
   }
   
   .nav-left {
