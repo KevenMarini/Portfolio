@@ -1131,32 +1131,57 @@ body.menu-open {
     to { transform: translateX(0); }
 }
 
-.v3-header {
-    position: absolute !important;
-    top: 30px !important;
+/* V3 MOCKUP SIDEBAR - UNIFIED STACK FIX */
+.v3-sidebar {
+    position: fixed !important;
+    top: 0 !important;
     left: 0 !important;
-    width: 100% !important;
-    padding: 0 40px !important;
+    width: 380px !important;
+    height: 100vh !important;
+    background: #000 !important;
+    z-index: 100000000 !important;
+    display: none !important; 
+    flex-direction: column !important;
+    padding: 40px !important;
+    box-shadow: 40px 0 100px rgba(0,0,0,0.95) !important;
+    border-right: 1px solid rgba(255,255,255,0.1) !important;
+    overflow-y: auto !important; /* The whole sidebar scrolls together */
+    scrollbar-width: none !important;
+}
+
+.v3-sidebar::-webkit-scrollbar { display: none !important; }
+
+.v3-sidebar.active {
+    display: flex !important;
+    animation: v3Slide 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+@keyframes v3Slide {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+}
+
+.v3-header {
     display: flex !important;
     align-items: center !important;
-    justify-content: center !important; /* Center the name */
-    z-index: 200 !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    margin-bottom: 20px !important;
+    flex-shrink: 0 !important;
 }
 
 .v3-name {
-    font-size: 1.8rem !important;
+    flex-grow: 1 !important;
+    text-align: center !important;
+    font-size: 1.6rem !important;
     font-weight: 900 !important;
     color: #ffffff !important;
     text-transform: uppercase !important;
-    letter-spacing: 3px !important;
-    text-align: center !important;
+    letter-spacing: 2px !important;
+    margin-left: 40px !important;
 }
 
 .v3-close {
-    position: absolute !important;
-    right: 40px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
     font-size: 3rem !important;
     font-weight: 900 !important;
     cursor: pointer !important;
@@ -1168,7 +1193,7 @@ body.menu-open {
     height: 6px !important;
     width: 100% !important;
     background: #fff !important;
-    margin: 80px 0 20px 0 !important; /* Large margin to clear the absolute header */
+    margin: 10px 0 !important;
     flex-shrink: 0 !important;
 }
 
@@ -1176,17 +1201,13 @@ body.menu-open {
     display: flex !important;
     flex-direction: column !important;
     gap: 20px !important;
-    margin: 20px 0 !important;
-    flex-grow: 1 !important;
+    margin: 30px 0 !important;
     text-align: center !important;
-    overflow-y: auto !important; /* Allows scrolling if too many links */
-    scrollbar-width: none !important; /* Hides scrollbar for clean look */
+    flex-shrink: 0 !important;
 }
 
-.v3-links::-webkit-scrollbar { display: none !important; }
-
 .v3-links a {
-    font-size: 1.3rem !important;
+    font-size: 1.4rem !important;
     font-weight: 800 !important;
     color: #fff !important;
     text-decoration: none !important;
@@ -1203,14 +1224,14 @@ body.menu-open {
 }
 
 .v3-footer {
-    margin-top: auto !important; /* Pushes footer to bottom */
-    padding-top: 10px !important;
+    margin-top: 20px !important;
+    padding-bottom: 20px !important;
     flex-shrink: 0 !important;
 }
 
 .v3-text {
     font-size: 1rem !important;
-    line-height: 1.5 !important;
+    line-height: 1.6 !important;
     color: rgba(255,255,255,0.7) !important;
     text-align: center !important;
 }
