@@ -341,15 +341,16 @@ nav {
 .side-menu {
     position: fixed;
     top: 0;
-    left: -350px;
-    width: 350px;
+    left: -100%;
+    width: 450px;
     height: 100vh;
-    background: rgba(10, 11, 15, 0.95);
-    backdrop-filter: blur(20px);
+    background: #000;
     z-index: 2000;
-    padding: 40px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
     transition: all 0.5s cubic-bezier(0.77, 0, 0.175, 1);
-    box-shadow: 10px 0 50px rgba(0, 0, 0, 0.5);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .side-menu.active {
@@ -358,47 +359,108 @@ nav {
 
 .side-menu-header {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 60px;
+    padding-bottom: 20px;
+}
+
+.side-menu-brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.side-logo-icon {
+    font-size: 1.5rem;
+}
+
+.side-brand-name {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: white;
 }
 
 .side-menu-close {
-    font-size: 1.5rem;
+    font-size: 2rem;
     cursor: pointer;
-    color: var(--text-muted);
+    color: white;
     transition: var(--transition-smooth);
 }
 
-.side-menu-close:hover {
-    color: white;
-    transform: rotate(90deg);
+.side-menu-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.menu-label {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 2px;
+    margin-bottom: 40px;
 }
 
 .side-menu-links {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 35px;
 }
 
 .side-menu-links a {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 1.8rem;
+    font-weight: 800;
     text-decoration: none;
     color: white;
-    opacity: 0.7;
     transition: var(--transition-smooth);
+    letter-spacing: 1px;
 }
 
 .side-menu-links a:hover {
-    opacity: 1;
     color: var(--accent-cyan);
-    padding-left: 10px;
+    transform: translateX(10px);
+}
+
+.side-menu-divider {
+    margin: 60px 0 40px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.side-quote-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 30px;
+    margin-bottom: 40px;
+}
+
+.side-quote-card p {
+    font-size: 1.1rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+}
+
+.side-menu-footer {
+    margin-top: auto;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.3);
+    text-align: center;
+    letter-spacing: 1px;
+    padding-bottom: 20px;
 }
 
 @media (max-width: 768px) {
     .side-menu {
         width: 100%;
-        left: -100%;
+        padding: 20px;
+    }
+    
+    .side-menu-links a {
+        font-size: 1.5rem;
     }
 }
 
