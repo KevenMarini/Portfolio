@@ -253,11 +253,10 @@ nav {
 }
 
 .menu-toggle {
-    display: flex; /* Visible on desktop as per drawing */
+    display: flex;
     flex-direction: column;
     gap: 6px;
     cursor: pointer;
-    z-index: 1001;
 }
 
 .menu-toggle span {
@@ -295,20 +294,21 @@ nav {
 }
 
 .nav-links a {
-  color: var(--text-secondary);
   text-decoration: none;
+  color: var(--text-muted);
   font-size: 0.9rem;
   font-weight: 500;
   transition: var(--transition-smooth);
   position: relative;
 }
 
-.nav-links a:hover {
+.nav-links a:hover,
+.nav-links a.active {
   color: white;
 }
 
 .nav-links a::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -5px;
   left: 0;
@@ -318,12 +318,23 @@ nav {
   transition: var(--transition-smooth);
 }
 
-.nav-links a.active {
-    color: white;
+.nav-links a:hover::after,
+.nav-links a.active::after {
+  width: 100%;
 }
 
-.nav-links a.active::after {
-    width: 100%;
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+  
+  .nav-left {
+    gap: 12px;
+  }
+  
+  .homepage-link {
+    font-size: 0.8rem;
+  }
 }
 
 /* HERO SECTION */
