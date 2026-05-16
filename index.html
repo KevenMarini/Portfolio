@@ -5,76 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Keven Marini | Portfolio</title>
   <link rel="stylesheet" href="style.css?v=3.0">
-  <style>
-    /* FORCED INLINE STYLES TO BYPASS CACHE */
-    .pro-sidebar {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        width: 380px !important;
-        height: 100vh !important;
-        background: #000 !important;
-        z-index: 99999999 !important;
-        display: none !important;
-        flex-direction: column !important;
-        padding: 60px 40px !important;
-        box-shadow: 20px 0 100px rgba(0,0,0,0.95) !important;
-        border-right: 1px solid rgba(255,255,255,0.1) !important;
-        transform: translateX(-100%);
-        transition: transform 0.4s ease;
-    }
-    .pro-sidebar.active {
-        display: flex !important;
-        transform: translateX(0) !important;
-    }
-    .pro-sidebar-header {
-        display: flex !important;
-        align-items: center !important;
-        gap: 30px !important;
-        margin-bottom: 20px !important;
-    }
-    .pro-full-name {
-        font-size: 1.4rem !important;
-        font-weight: 800 !important;
-        color: #ff0000 !important; /* RED TEST */
-    }
-    .pro-sidebar-close {
-        font-size: 2.2rem !important;
-        cursor: pointer !important;
-        color: #ff0000 !important; /* RED TEST */
-    }
-    .pro-divider {
-        height: 2px !important;
-        width: 100% !important;
-        background: #ff0000 !important; /* RED TEST */
-        margin: 15px 0 !important;
-    }
-    .pro-sidebar-links {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 25px !important;
-        margin: 40px 0 !important;
-    }
-    .pro-sidebar-links a {
-        font-size: 1.2rem !important;
-        font-weight: 700 !important;
-        color: #fff !important;
-        text-decoration: none !important;
-        text-transform: uppercase !important;
-        opacity: 0.6 !important;
-    }
-    .pro-sidebar-footer {
-        margin-top: 20px !important;
-    }
-    .pro-footer-text {
-        font-size: 0.95rem !important;
-        line-height: 1.7 !important;
-        color: #ff0000 !important; /* RED TEST */
-    }
-    @media (max-width: 768px) {
-        .pro-sidebar { width: 100% !important; }
-    }
-  </style>
 </head>
 <body class="intro-mode">
 
@@ -129,19 +59,18 @@
         <div class="scroll-progress" id="scroll-progress"></div>
     </nav>
 
-    <!-- SIDEBAR DRAWER -->
-    <!-- PRO SIDEBAR - NEW ID TO FORCE REFRESH -->
-    <div class="pro-sidebar" id="pro-sidebar">
-        <div class="pro-sidebar-header">
-            <span class="pro-full-name">KEVEN MARINI</span>
-            <span class="pro-sidebar-close" id="pro-sidebar-close">✕</span>
+    <!-- V3 SIDEBAR - MATCHING MOCKUP IMAGE -->
+    <div class="v3-sidebar" id="v3-sidebar">
+        <div class="v3-header">
+            <span class="v3-name">KEVEN MARINI</span>
+            <span class="v3-close" id="v3-close-btn">✕</span>
         </div>
         
-        <div class="pro-divider"></div>
+        <div class="v3-line"></div>
 
-        <nav class="pro-sidebar-links">
+        <nav class="v3-links">
             <a href="index.html">HOME</a>
-            <a href="about.html">ABOUT US</a>
+            <a href="about.html">ABOUT ME</a>
             <a href="academics.html">ACADEMICS</a>
             <a href="projects.html">PROJECTS</a>
             <a href="skills.html">SKILLS</a>
@@ -149,10 +78,10 @@
             <a href="contact.html">CONTACT</a>
         </nav>
 
-        <div class="pro-divider"></div>
+        <div class="v3-line"></div>
 
-        <div class="pro-sidebar-footer">
-            <p class="pro-footer-text">Building the future of AI & Embedded Systems through innovation and dedicated research.</p>
+        <div class="v3-footer">
+            <p class="v3-text">Building the future of AI & Embedded Systems through innovation and dedicated research.</p>
         </div>
     </div>
 
