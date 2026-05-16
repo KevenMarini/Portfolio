@@ -183,20 +183,35 @@ function startSkillsCycling() {
 
 function initMobileMenu() {
     const toggle = document.getElementById('menu-toggle');
-    const navLinks = document.querySelector('.nav-links');
+    const sideMenu = document.getElementById('side-menu');
+    const sideClose = document.getElementById('side-menu-close');
     
-    if (toggle && navLinks) {
+    if (toggle && sideMenu) {
         toggle.addEventListener('click', () => {
+            sideMenu.classList.toggle('active');
             toggle.classList.toggle('active');
-            navLinks.classList.toggle('active');
-            document.body.classList.toggle('menu-open');
+            
+            if (sideMenu.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
         });
 
-        navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
+        if (sideClose) {
+            sideClose.addEventListener('click', () => {
+                sideMenu.classList.remove('active');
                 toggle.classList.remove('active');
-                navLinks.classList.remove('active');
-                document.body.classList.remove('menu-open');
+                document.body.style.overflow = '';
+            });
+        }
+
+        // Close when clicking a link
+        sideMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                sideMenu.classList.remove('active');
+                toggle.classList.remove('active');
+                document.body.style.overflow = '';
             });
         });
     }
