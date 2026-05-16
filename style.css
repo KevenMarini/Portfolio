@@ -234,15 +234,17 @@ nav {
     display: flex;
     align-items: center;
     gap: 20px;
+    flex-shrink: 0;
 }
 
 .homepage-link {
     color: var(--text-secondary);
     text-decoration: none;
     font-weight: 500;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     transition: var(--transition-smooth);
     letter-spacing: 0.5px;
+    white-space: nowrap;
 }
 
 .homepage-link:hover {
@@ -921,10 +923,19 @@ footer {
 }
 
 @media (max-width: 768px) {
-  .nav-left {
-    gap: 15px;
+  nav {
+    padding: 15px 5%;
   }
-  
+
+  .nav-left {
+    gap: 12px;
+    width: auto;
+  }
+
+  .homepage-link {
+    font-size: 0.8rem;
+  }
+
   .nav-links {
     position: fixed;
     top: 0;
@@ -951,14 +962,19 @@ footer {
 
   .bento-grid {
     grid-template-columns: 1fr !important;
+    gap: 15px;
+    width: 100%;
   }
   
   .card {
-      padding: 30px 20px;
+      padding: 25px 20px;
+      width: 100%;
+      min-width: 0 !important;
   }
 
   .hero {
     padding-top: 100px;
+    padding-bottom: 40px;
   }
 
   .hero h1 {
