@@ -742,11 +742,19 @@ section {
 .proj-card {
   min-width: 450px;
   scroll-snap-align: center;
+  flex-shrink: 0;
 }
 
 @media (max-width: 768px) {
+  .projects-grid {
+    flex-direction: column;
+    overflow-x: visible;
+    gap: 20px;
+  }
+
   .proj-card {
-    min-width: 280px;
+    min-width: 100%;
+    scroll-snap-align: none;
     padding: 30px 20px;
   }
 }
@@ -962,19 +970,26 @@ footer {
 
   .bento-grid {
     grid-template-columns: 1fr !important;
-    gap: 15px;
+    gap: 20px;
     width: 100%;
   }
   
   .card {
-      padding: 25px 20px;
+      grid-column: span 1 !important;
+      padding: 30px 20px;
       width: 100%;
       min-width: 0 !important;
   }
 
   .hero {
-    padding-top: 100px;
-    padding-bottom: 40px;
+    padding-top: 120px;
+    padding-bottom: 60px;
+    min-height: auto;
+  }
+
+  .hero h1 {
+    font-size: 2.8rem;
+    line-height: 1.1;
   }
 
   .hero h1 {
