@@ -1105,7 +1105,7 @@ body.menu-open {
     overflow: hidden;
 }
 
-/* PRO SIDEBAR - FORCED REFRESH LAYOUT */
+/* TEST VISIBILITY SIDEBAR */
 .pro-sidebar {
     position: fixed !important;
     top: 0 !important;
@@ -1114,7 +1114,7 @@ body.menu-open {
     height: 100vh !important;
     background: #000 !important;
     z-index: 10000000 !important;
-    display: none !important; /* HIDDEN BY DEFAULT */
+    display: none !important; 
     flex-direction: column !important;
     padding: 60px 40px !important;
     box-shadow: 20px 0 100px rgba(0,0,0,0.95) !important;
@@ -1123,7 +1123,7 @@ body.menu-open {
 
 .pro-sidebar.active {
     display: flex !important;
-    animation: proSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    animation: proSlide 0.4s ease-out forwards !important;
 }
 
 @keyframes proSlide {
@@ -1141,21 +1141,20 @@ body.menu-open {
 .pro-full-name {
     font-size: 1.4rem !important;
     font-weight: 800 !important;
-    color: #fff !important;
+    color: #ff0000 !important; /* BRIGHT RED TEST */
     letter-spacing: 1px !important;
 }
 
 .pro-sidebar-close {
     font-size: 2.2rem !important;
     cursor: pointer !important;
-    color: #fff !important;
-    line-height: 1 !important;
+    color: #ff0000 !important; /* BRIGHT RED TEST */
 }
 
 .pro-divider {
-    height: 2px !important;
+    height: 3px !important; /* Thick Line */
     width: 100% !important;
-    background: rgba(255,255,255,0.2) !important;
+    background: #ff0000 !important; /* BRIGHT RED TEST */
     margin: 15px 0 !important;
 }
 
@@ -1177,7 +1176,7 @@ body.menu-open {
 
 .pro-sidebar-links a:hover {
     opacity: 1 !important;
-    color: var(--accent-cyan) !important;
+    color: #ff0000 !important;
 }
 
 .pro-sidebar-footer {
@@ -1185,14 +1184,13 @@ body.menu-open {
 }
 
 .pro-footer-text {
-    font-size: 0.95rem !important;
+    font-size: 1rem !important;
     line-height: 1.7 !important;
-    color: rgba(255,255,255,0.5) !important;
+    color: #ff0000 !important; /* BRIGHT RED TEST */
 }
 
 @media (max-width: 768px) {
     .pro-sidebar {
         width: 100% !important;
-        padding: 60px 30px !important;
     }
 }
