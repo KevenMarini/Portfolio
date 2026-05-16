@@ -1136,35 +1136,30 @@ footer {
     gap: 25px !important;
 }
 
-/* CONSOLIDATED SIDEBAR - PLENUM DESIGN */
+/* THE NUCLEAR SIDEBAR FIX - ABSOLUTE HIDING */
 .side-menu {
     position: fixed !important;
     top: 0 !important;
-    left: -100% !important; /* Start completely off-screen */
+    left: 0 !important;
     width: 400px !important;
     height: 100vh !important;
     background: #000 !important;
-    z-index: 99999 !important;
+    z-index: 999999 !important;
     padding: 60px 40px !important;
-    display: flex !important;
+    display: none !important; /* PHYSICALLY REMOVED FROM VIEW BY DEFAULT */
     flex-direction: column !important;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
     box-shadow: 20px 0 80px rgba(0,0,0,0.9) !important;
     border-right: 1px solid rgba(255,255,255,0.1) !important;
-    transform: none !important;
 }
 
-/* When active, we use transform to bring it in for smoother performance */
 .side-menu.active {
-    transform: translateX(100%) !important;
-    left: -100% !important; /* Keep left at -100 to maintain the relative transform */
+    display: flex !important; /* ONLY REVEALED ON CLICK */
+    animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
 }
 
-/* Fallback for browsers that struggle with transform */
-@supports not (transform: translateX(100%)) {
-    .side-menu.active {
-        left: 0 !important;
-    }
+@keyframes slideIn {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
 }
 
 .side-menu-header {
@@ -1172,7 +1167,6 @@ footer {
     justify-content: space-between !important;
     align-items: center !important;
     margin-bottom: 60px !important;
-    width: 100% !important;
 }
 
 .side-brand {
@@ -1191,7 +1185,6 @@ footer {
     display: flex !important;
     flex-direction: column !important;
     gap: 30px !important;
-    text-align: left !important;
 }
 
 .side-menu-links a {
@@ -1199,7 +1192,6 @@ footer {
     font-weight: 800 !important;
     color: white !important;
     text-decoration: none !important;
-    text-align: left !important;
     transition: 0.3s !important;
 }
 
