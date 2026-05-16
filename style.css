@@ -1136,77 +1136,80 @@ footer {
     gap: 25px !important;
 }
 
-/* SIDEBAR DRAWER - TOGGLE ONLY */
+/* CONSOLIDATED SIDEBAR - PLENUM DESIGN */
 .side-menu {
-    position: fixed;
-    top: 0;
-    left: -420px; /* Locked off-screen */
-    width: 400px;
-    height: 100vh;
-    background: #000;
-    z-index: 10000;
-    padding: 60px 40px;
-    display: flex;
-    flex-direction: column;
-    transition: left 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 20px 0 80px rgba(0,0,0,0.9);
-    border-right: 1px solid rgba(255,255,255,0.1);
+    position: fixed !important;
+    top: 0 !important;
+    left: -100% !important; /* Start completely off-screen */
+    width: 400px !important;
+    height: 100vh !important;
+    background: #000 !important;
+    z-index: 99999 !important;
+    padding: 60px 40px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    box-shadow: 20px 0 80px rgba(0,0,0,0.9) !important;
+    border-right: 1px solid rgba(255,255,255,0.1) !important;
+    transform: none !important;
 }
 
+/* When active, we use transform to bring it in for smoother performance */
 .side-menu.active {
-    left: 0; /* Slides in */
+    transform: translateX(100%) !important;
+    left: -100% !important; /* Keep left at -100 to maintain the relative transform */
+}
+
+/* Fallback for browsers that struggle with transform */
+@supports not (transform: translateX(100%)) {
+    .side-menu.active {
+        left: 0 !important;
+    }
 }
 
 .side-menu-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 60px;
-    width: 100%;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 60px !important;
+    width: 100% !important;
 }
 
 .side-brand {
-    font-size: 1.4rem;
-    font-weight: 800;
-    color: white;
-    letter-spacing: 1px;
+    font-size: 1.4rem !important;
+    font-weight: 800 !important;
+    color: white !important;
 }
 
 .side-menu-close {
-    font-size: 1.8rem;
-    cursor: pointer;
-    color: white;
-    opacity: 0.6;
-    transition: 0.3s;
-}
-
-.side-menu-close:hover {
-    opacity: 1;
+    font-size: 2rem !important;
+    cursor: pointer !important;
+    color: white !important;
 }
 
 .side-menu-links {
-    display: flex;
-    flex-direction: column;
-    gap: 35px;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 30px !important;
+    text-align: left !important;
 }
 
 .side-menu-links a {
-    font-size: 1.8rem;
-    font-weight: 800;
-    text-decoration: none;
-    color: white;
-    transition: 0.3s;
-    text-align: left;
+    font-size: 1.6rem !important;
+    font-weight: 800 !important;
+    color: white !important;
+    text-decoration: none !important;
+    text-align: left !important;
+    transition: 0.3s !important;
 }
 
 .side-menu-links a:hover {
-    color: var(--accent-cyan);
-    transform: translateX(10px);
+    color: var(--accent-cyan) !important;
+    transform: translateX(10px) !important;
 }
 
 @media (max-width: 768px) {
     .side-menu {
-        width: 100%;
-        left: -100%;
+        width: 100% !important;
     }
 }
