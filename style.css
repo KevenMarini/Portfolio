@@ -1103,40 +1103,8 @@ footer {
   body.menu-open {
       overflow: hidden;
   }
-}
 
-/* FINAL SIDE-MENU ENFORCEMENT - BRUTE FORCE FIX */
-.side-menu {
-    position: fixed !important;
-    top: 0 !important;
-    left: -450px !important; /* Forces it way off-screen */
-    width: 400px !important;
-    height: 100vh !important;
-    background: #000 !important;
-    z-index: 999999 !important; /* Above EVERYTHING */
-    padding: 60px 40px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
-    box-shadow: 20px 0 80px rgba(0,0,0,0.9) !important;
-    border-right: 1px solid rgba(255,255,255,0.1) !important;
-    transform: none !important; /* Prevents any accidental centering */
-}
-
-.side-menu.active {
-    left: 0 !important;
-    transform: none !important;
-}
-
-.side-menu-links {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important; /* Forced left-align */
-    text-align: left !important;
-    gap: 25px !important;
-}
-
-/* THE NUCLEAR SIDEBAR FIX - ABSOLUTE HIDING */
+ /* FINAL PROFESSIONAL SIDEBAR - THE ABSOLUTE FIX */
 .side-menu {
     position: fixed !important;
     top: 0 !important;
@@ -1144,47 +1112,45 @@ footer {
     width: 450px !important;
     height: 100vh !important;
     background: #000 !important;
-    z-index: 999999 !important;
-    padding: 60px 50px !important;
-    display: none !important; /* PHYSICALLY REMOVED FROM VIEW BY DEFAULT */
+    z-index: 1000000 !important;
+    display: none !important; /* HIDDEN BY DEFAULT */
     flex-direction: column !important;
     box-shadow: 20px 0 100px rgba(0,0,0,0.95) !important;
     border-right: 1px solid rgba(255,255,255,0.1) !important;
 }
 
 .side-menu.active {
-    display: flex !important; /* ONLY REVEALED ON CLICK */
-    animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    display: flex !important;
+    animation: slideInSidebar 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
 }
 
-@keyframes slideIn {
+@keyframes slideInSidebar {
     from { transform: translateX(-100%); }
     to { transform: translateX(0); }
 }
 
 .side-menu-header {
+    padding: 60px 50px 40px !important;
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    margin-bottom: 80px !important;
     width: 100% !important;
 }
 
 .side-brand {
-    font-size: 1.2rem !important;
+    font-size: 1.1rem !important;
     font-weight: 900 !important;
     color: white !important;
-    letter-spacing: 2px !important;
-    opacity: 0.9 !important;
+    letter-spacing: 3px !important;
+    text-transform: uppercase !important;
 }
 
 .side-menu-close {
     font-size: 2.2rem !important;
     cursor: pointer !important;
     color: white !important;
-    opacity: 0.4 !important;
+    opacity: 0.3 !important;
     transition: 0.3s !important;
-    line-height: 1 !important;
 }
 
 .side-menu-close:hover {
@@ -1192,51 +1158,59 @@ footer {
     transform: rotate(90deg) !important;
 }
 
+.side-menu-body {
+    flex: 1 !important;
+    padding: 0 50px 60px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    overflow-y: auto !important;
+}
+
 .side-menu-links {
     display: flex !important;
     flex-direction: column !important;
-    gap: 25px !important;
-    margin-bottom: 50px !important;
+    gap: 20px !important;
+    margin-top: 20px !important;
 }
 
 .side-menu-links a {
-    font-size: 1.8rem !important;
+    font-size: 1.4rem !important;
     font-weight: 800 !important;
     color: white !important;
     text-decoration: none !important;
-    transition: 0.3s cubic-bezier(0.23, 1, 0.32, 1) !important;
-    opacity: 0.6 !important;
+    opacity: 0.5 !important;
+    transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .side-menu-links a:hover {
-    color: white !important;
     opacity: 1 !important;
-    transform: translateX(15px) !important;
+    transform: translateX(10px) !important;
 }
 
 .side-menu-footer-box {
-    margin-top: auto !important;
+    margin-top: 60px !important;
 }
 
 .side-quote-card {
     background: #0a0a0a !important;
     border: 1px solid rgba(255,255,255,0.1) !important;
     border-radius: 20px !important;
-    padding: 30px !important;
-    margin-bottom: 30px !important;
+    padding: 25px !important;
+    margin-bottom: 25px !important;
 }
 
 .side-quote-card p {
-    font-size: 0.9rem !important;
-    line-height: 1.7 !important;
+    font-size: 0.85rem !important;
+    line-height: 1.6 !important;
     color: rgba(255,255,255,0.4) !important;
     font-style: italic !important;
     margin: 0 !important;
 }
 
 .side-copyright {
-    font-size: 0.7rem !important;
-    color: rgba(255,255,255,0.2) !important;
+    font-size: 0.65rem !important;
+    color: rgba(255,255,255,0.15) !important;
     letter-spacing: 1px !important;
     text-align: center !important;
 }
@@ -1244,9 +1218,12 @@ footer {
 @media (max-width: 768px) {
     .side-menu {
         width: 100% !important;
-        padding: 50px 30px !important;
+    }
+    .side-menu-header, .side-menu-body {
+        padding: 40px 30px !important;
     }
     .side-menu-links a {
-        font-size: 1.5rem !important;
+        font-size: 1.2rem !important;
     }
+}
 }
