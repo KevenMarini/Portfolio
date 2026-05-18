@@ -475,7 +475,7 @@
             container.innerHTML = '';
 
             if (currentTab === 'profile') {
-                if (!allData.profile) return;
+                if (!allData.profile) allData.profile = {};
                 
                 // Helper to split first and last name for styling
                 const nameParts = (allData.profile.name || 'Your Name').split(' ');
