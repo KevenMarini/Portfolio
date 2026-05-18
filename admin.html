@@ -476,23 +476,62 @@
 
             if (currentTab === 'profile') {
                 if (!allData.profile) return;
+                
+                // Helper to split first and last name for styling
+                const nameParts = (allData.profile.name || 'Your Name').split(' ');
+                const firstName = nameParts[0];
+                const lastName = nameParts.slice(1).join(' ');
+
                 container.innerHTML = `
-                    <div class="items-grid">
-                        <div class="data-card">
-                            <h4>Basic Info</h4>
-                            <p><strong>Name:</strong> ${allData.profile.name}</p>
-                            <p><strong>Location:</strong> ${allData.profile.location}</p>
-                            <p><strong>Year:</strong> ${allData.profile.current_year}</p>
+                    <div style="transform: scale(0.9); transform-origin: top left; width: 110%; margin-bottom: -50px; background: var(--admin-bg); padding: 40px; border-radius: 30px; border: 2px dashed rgba(255,255,255,0.1); cursor: pointer; transition: 0.3s; position: relative;" 
+                         onclick="openProfileModal()" 
+                         onmouseover="this.style.borderColor='var(--accent-cyan)'; this.style.boxShadow='0 10px 40px rgba(0,255,255,0.1)'" 
+                         onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'; this.style.boxShadow='none'">
+                        
+                        <div style="position: absolute; top: -15px; left: 30px; background: var(--accent-cyan); color: #000; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; pointer-events: none;">
+                            LIVE PREVIEW - CLICK TO EDIT
                         </div>
-                        <div class="data-card">
-                            <h4>Contact</h4>
-                            <p><strong>Email:</strong> ${allData.profile.email}</p>
-                            <p><strong>Phone:</strong> ${allData.profile.phone}</p>
-                            <p><strong>GitHub:</strong> ${allData.profile.github}</p>
-                        </div>
-                        <div class="data-card full-width" style="grid-column: 1 / -1;">
-                            <h4>About & Objective</h4>
-                            <p>${allData.profile.about_text}</p>
+
+                        <section class="hero" style="padding: 0; min-height: auto;">
+                            <div class="hero-inner">
+                                <div class="hero-text reveal active" style="opacity: 1; transform: none;">
+                                    <div class="hero-badge" style="pointer-events: none;"><span></span>${allData.profile.hero_badge || 'Open for Internships'}</div>
+                                    <h1 style="pointer-events: none;"><span>${firstName}</span> ${lastName}</h1>
+                                    <p class="hero-sub" style="pointer-events: none;">${allData.profile.subtitle || 'Subtitle goes here'}</p>
+
+                                    <div class="hero-contact" style="pointer-events: none;">
+                                        <a href="#">${allData.profile.email || 'Email'}</a>
+                                        <span>${allData.profile.phone || 'Phone'}</span>
+                                        <a href="#">LinkedIn</a>
+                                    </div>
+
+                                    <div class="hero-cta" style="pointer-events: none;">
+                                        <a href="#" class="btn-primary">View Projects</a>
+                                        <a href="#" class="btn-ghost">GitHub ↗</a>
+                                    </div>
+                                </div>
+
+                                <div class="avatar-wrap reveal active" style="opacity: 1; transform: none; pointer-events: none;">
+                                    <div class="avatar-ring">
+                                        <div class="avatar-inner">
+                                            <img src="image3.png" alt="Profile Image" onerror="this.src='https://ui-avatars.com/api/?name=${firstName}+${lastName}&background=0D0D0D&color=fff'">
+                                        </div>
+                                    </div>
+                                    <div class="avatar-badge">8.20 CGPA</div>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <!-- Extra fields not visible in hero -->
+                        <div style="margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); display: grid; grid-template-columns: 1fr 1fr; gap: 20px; pointer-events: none;">
+                            <div>
+                                <h4 style="color: #fff; margin-bottom: 10px;">Location</h4>
+                                <p style="color: var(--text-secondary);">${allData.profile.location || 'Not set'}</p>
+                            </div>
+                            <div>
+                                <h4 style="color: #fff; margin-bottom: 10px;">About / Objective</h4>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem;">${(allData.profile.about_text || '').substring(0, 150)}...</p>
+                            </div>
                         </div>
                     </div>
                 `;
