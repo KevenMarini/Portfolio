@@ -1,19 +1,19 @@
-// Wait for 3 seconds, then hide the loading screen and show the main content
 setTimeout(() => {
   const loadingScreen = document.getElementById('loading-screen');
   const mainContent = document.getElementById('main-content');
-  
-  loadingScreen.style.opacity = '0';
-  setTimeout(() => {
-    loadingScreen.style.display = 'none';
-    mainContent.style.display = 'flex';
-    mainContent.style.opacity = '0';
-    setTimeout(() => {
-        mainContent.style.transition = 'opacity 1s ease';
-        mainContent.style.opacity = '1';
-    }, 50);
-    startSkillsCycling();
-  }, 500);
+  if (loadingScreen && mainContent) {
+      loadingScreen.style.opacity = '0';
+      setTimeout(() => {
+        loadingScreen.style.display = 'none';
+        mainContent.style.display = 'flex';
+        mainContent.style.opacity = '0';
+        setTimeout(() => {
+            mainContent.style.transition = 'opacity 1s ease';
+            mainContent.style.opacity = '1';
+        }, 50);
+        startSkillsCycling();
+      }, 500);
+  }
 }, 3000);
 
 let skills = ["PCB Design", "Altium Designer", "Verilog", "Python", "Embedded Systems", "Machine Learning"];
@@ -181,68 +181,58 @@ function startSkillsCycling() {
   }
 }
 
+let mobileMenuInitialized = false;
 function initMobileMenu() {
-    const toggle = document.getElementById('menu-toggle');
-    const sideMenu = document.getElementById('premium-sidebar');
-    const sideClose = document.getElementById('ps-close-btn');
+    if (mobileMenuInitialized) return;
+    mobileMenuInitialized = true;
     
-    if (toggle && sideMenu) {
-        toggle.addEventListener('click', () => {
+    document.addEventListener('click', (e) => {
+        const toggle = e.target.closest('#menu-toggle');
+        const sideMenu = document.getElementById('premium-sidebar');
+        const sideClose = e.target.closest('#ps-close-btn');
+        const sideLink = e.target.closest('#premium-sidebar a');
+        
+        if (toggle && sideMenu) {
             sideMenu.classList.toggle('active');
-            toggle.classList.toggle('active');
+            const toggleBtn = document.getElementById('menu-toggle');
+            if(toggleBtn) toggleBtn.classList.toggle('active');
             
             if (sideMenu.classList.contains('active')) {
                 document.body.style.overflow = 'hidden';
             } else {
                 document.body.style.overflow = '';
             }
-        });
-
-        if (sideClose) {
-            sideClose.addEventListener('click', () => {
-                sideMenu.classList.remove('active');
-                toggle.classList.remove('active');
-                document.body.style.overflow = '';
-            });
+            return;
         }
-
-        // Close when clicking a link
-        sideMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                sideMenu.classList.remove('active');
-                toggle.classList.remove('active');
-                document.body.style.overflow = '';
-            });
-        });
-    }
+        
+        if ((sideClose || sideLink) && sideMenu) {
+            sideMenu.classList.remove('active');
+            const toggleBtn = document.getElementById('menu-toggle');
+            if(toggleBtn) toggleBtn.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
 }
 
-// Enter button logic
-document.getElementById('enter-btn').addEventListener('click', () => {
-  clearInterval(skillsInterval);
-  const transitionOverlay = document.getElementById('page-transition');
-  transitionOverlay.classList.add('active');
-  
-  setTimeout(() => {
-    document.getElementById('main-content').style.display = 'none';
-    document.body.className = 'portfolio-mode';
-    document.getElementById('portfolio-content').style.display = 'block';
-    
-    setTimeout(() => {
-        transitionOverlay.classList.remove('active');
-        transitionOverlay.classList.add('out');
-        initScrollReveal();
-        initScrollProgress();
-        initMobileMenu();
-        initProjectDots();
-        fetchData();
-        
-        setTimeout(() => {
-            transitionOverlay.classList.remove('out');
-        }, 800);
-    }, 200);
-  }, 800);
-});
+const enterBtn = document.getElementById('enter-btn');
+if (enterBtn) {
+    enterBtn.addEventListener('click', () => {
+      clearInterval(skillsInterval);
+      const transitionOverlay = document.getElementById('page-transition');
+      if(transitionOverlay) transitionOverlay.classList.add('active');
+      
+      setTimeout(() => {
+        window.location.href = 'home.html';
+      }, 800);
+    });
+} else {
+    // Directly initialize on subpages without intro
+    initScrollReveal();
+    initScrollProgress();
+    initMobileMenu();
+    initProjectDots();
+    fetchData();
+}
 
 function initScrollReveal() {
     const revealElements = document.querySelectorAll('.reveal');
@@ -299,6 +289,7 @@ document.addEventListener('mousemove', (e) => {
 
 function initProjectDots() {
     const grid = document.querySelector('.projects-grid');
+    if (!grid) return;
     const dotsContainer = document.getElementById('project-dots');
     const cards = grid.querySelectorAll('.proj-card');
     

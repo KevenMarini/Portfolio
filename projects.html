@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects | Keven Marini</title>
+    <link rel="stylesheet" href="style.css?v=5.0">
+    <style>
+        body {
+            padding-top: 100px;
+        }
+        .page-container {
+            min-height: 80vh;
+            padding: 0 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body class="portfolio-mode">
+
+    <div class="prism-bg">
+        <div class="prism-blob blob-1"></div>
+        <div class="prism-blob blob-2"></div>
+        <div class="prism-blob blob-3"></div>
+    </div>
+
+    <nav>
+        <div class="nav-left">
+            <div class="nav-logo">KM.</div>
+            <div class="menu-toggle" id="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <a href="home.html" class="homepage-link">Homepage</a>
+        </div>
+        <div class="nav-right">
+            <!-- Top bar links intentionally removed per user request for separate pages -->
+            <div class="nav-links">
+            </div>
+        </div>
+    </nav>
+
+    <main class="page-container">
+        <section id="projects">
+                <span class="section-label">Showcase</span>
+                <h2 class="section-title">Selected <span>Work.</span></h2>
+
+                <div class="projects-slider-wrapper reveal active">
+                    <div class="projects-grid">
+
+                        <div class="card proj-card">
+                            <div class="proj-tags">
+                                <span class="proj-tag tag-ai">AI / ML</span>
+                                <span class="proj-tag tag-cv">OCR</span>
+                            </div>
+                            <h3>Smart Health Analysis</h3>
+                            <p>ML-powered disease prediction system with OCR capabilities for medical report analysis.
+                            </p>
+                            <a href="https://github.com/KevenMarini/Ai-based-smart-health-app" target="_blank"
+                                class="proj-link">GitHub</a>
+                        </div>
+
+                        <div class="card proj-card">
+                            <div class="proj-tags">
+                                <span class="proj-tag tag-wip">Active</span>
+                                <span class="proj-tag tag-web">Flask</span>
+                            </div>
+                            <h3>Disaster Triage Net</h3>
+                            <p>Critical patient prioritization system for emergencies. Patent filing in progress.</p>
+                            <a href="https://github.com/VPK570/DisasterTriageNet" target="_blank"
+                                class="proj-link">GitHub</a>
+                        </div>
+
+                        <div class="card proj-card">
+                            <div class="proj-tags">
+                                <span class="proj-tag tag-ai">AI</span>
+                                <span class="proj-tag tag-embed">ESP32</span>
+                            </div>
+                            <h3>Smart Grid Protection</h3>
+                            <p>Anomaly detection in energy usage using ESP32 and AI algorithms for overload risk
+                                prediction.</p>
+                        </div>
+
+                        <div class="card proj-card">
+                            <div class="proj-tags">
+                                <span class="proj-tag tag-cv">Vision</span>
+                                <span class="proj-tag tag-ai">AI</span>
+                            </div>
+                            <h3>Sign Language Detection</h3>
+                            <p>Real-time gesture recognition and communication system for the visually impaired.</p>
+                            <a href="https://github.com/KevenMarini/AI-Based-Sign-Language-Detection-Communication-System"
+                                target="_blank" class="proj-link">GitHub</a>
+                        </div>
+
+                        <div class="card proj-card">
+                            <div class="proj-tags">
+                                <span class="proj-tag tag-embed">Verilog</span>
+                            </div>
+                            <h3>Crypto-Gate</h3>
+                            <p>Hardware-level encryption circuit design using digital logic and Verilog.</p>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="project-dots" id="project-dots"></div>
+            </section>
+    </main>
+
+    <footer>
+        <div class="nav-logo" style="font-size: 2rem;">KEVEN MARINI.</div>
+        <div class="footer-links">
+            <a href="mailto:kevenmarini07@gmail.com">Email</a>
+            <a href="https://www.linkedin.com/in/kevenmarini/" target="_blank">LinkedIn</a>
+            <a href="https://github.com/KevenMarini" target="_blank">GitHub</a>
+        </div>
+    </footer>
+
+    <!-- PREMIUM SIDEBAR -->
+    <div id="premium-sidebar">
+        <div class="ps-header">
+            <div class="ps-name">KEVEN MARINI</div>
+            <div class="ps-close" id="ps-close-btn">&times;</div>
+        </div>
+        <div class="ps-line"></div>
+        <div class="ps-links">
+            <a href="home.html">Home</a>
+            <a href="about.html">About Me</a>
+            <a href="education.html">Academics</a>
+            <a href="projects.html">Projects</a>
+            <a href="skills.html">Skills</a>
+            <a href="competitions.html">Competitions</a>
+            <a href="contact.html">Contact</a>
+        </div>
+        <div class="ps-scroll-hint">
+            <span>Scroll</span>
+            <i></i>
+        </div>
+        <div class="ps-line"></div>
+        <div class="ps-footer">
+            <p class="ps-text">Crafting digital experiences<br>with Passion & Innovation.</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
