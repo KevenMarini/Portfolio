@@ -463,7 +463,9 @@
             // Update Header
             document.getElementById('current-tab-title').textContent = config[tabId].title;
             const actionContainer = document.getElementById('header-actions');
-            if (tabId === 'home' || tabId === 'profile') {
+            if (tabId === 'home') {
+                actionContainer.innerHTML = ''; // No button needed, inline editing enabled
+            } else if (tabId === 'profile') {
                 actionContainer.innerHTML = `<button class="btn-add-global" onclick="openProfileModal()">Update Profile</button>`;
             } else {
                 actionContainer.innerHTML = `<button class="btn-add-global" onclick="openEntryModal('${tabId}')">+ New Entry</button>`;
@@ -483,42 +485,88 @@
                     const firstName = nameParts[0];
                     const lastName = nameParts.slice(1).join(' ');
 
+                    const langs = profileData.languages ? profileData.languages.split(',') : ['English', 'Hindi'];
+
+                    // A little inline CSS for the editable elements
+                    const editStyle = `cursor: pointer; transition: 0.2s; border-radius: 8px;`;
+                    const hoverScript = `onmouseover="this.style.boxShadow='0 0 15px var(--accent-cyan)'; this.style.transform='scale(1.02)'" onmouseout="this.style.boxShadow='none'; this.style.transform='scale(1)'"`;
+
                     container.innerHTML = `
-                        <div style="transform: scale(0.9); transform-origin: top left; width: 110%; margin-bottom: -50px; background: var(--admin-bg); padding: 40px; border-radius: 30px; border: 2px dashed rgba(255,255,255,0.1); cursor: pointer; transition: 0.3s; position: relative;" 
-                             onclick="openProfileModal()" 
-                             onmouseover="this.style.borderColor='var(--accent-cyan)'; this.style.boxShadow='0 10px 40px rgba(0,255,255,0.1)'" 
-                             onmouseout="this.style.borderColor='rgba(255,255,255,0.1)'; this.style.boxShadow='none'">
+                        <div style="transform: scale(0.9); transform-origin: top left; width: 110%; margin-bottom: -150px; background: var(--admin-bg); padding: 40px; border-radius: 30px; border: 2px dashed rgba(255,255,255,0.1); position: relative;">
                             
-                            <div style="position: absolute; top: -15px; left: 30px; background: var(--accent-cyan); color: #000; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; pointer-events: none;">
-                                LIVE PREVIEW - CLICK ANYWHERE TO EDIT
+                            <div style="position: absolute; top: -15px; left: 30px; background: var(--accent-cyan); color: #000; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; pointer-events: none; z-index: 10;">
+                                LIVE EDITOR - CLICK ANY TEXT OR IMAGE TO EDIT
                             </div>
 
+                            <!-- HERO -->
                             <section class="hero" style="padding: 0; min-height: auto;">
                                 <div class="hero-inner">
                                     <div class="hero-text reveal active" style="opacity: 1; transform: none;">
-                                        <div class="hero-badge" style="pointer-events: none;"><span></span>${profileData.hero_badge || 'Open for Internships'}</div>
-                                        <h1 style="pointer-events: none;"><span>${firstName}</span> ${lastName}</h1>
-                                        <p class="hero-sub" style="pointer-events: none;">${profileData.subtitle || 'Subtitle goes here'}</p>
+                                        <div class="hero-badge" style="${editStyle}" ${hoverScript} onclick="promptProfileField('hero_badge', 'Enter badge text:')"><span></span>${profileData.hero_badge || 'Open for Internships'}</div>
+                                        
+                                        <h1 style="${editStyle}" ${hoverScript} onclick="promptProfileField('name', 'Enter your full name:')"><span>${firstName}</span> ${lastName}</h1>
+                                        
+                                        <p class="hero-sub" style="${editStyle}" ${hoverScript} onclick="promptProfileField('subtitle', 'Enter subtitle:')">${profileData.subtitle || 'Subtitle goes here'}</p>
 
-                                        <div class="hero-contact" style="pointer-events: none;">
+                                        <div class="hero-contact" style="pointer-events: none; opacity: 0.5;">
                                             <a href="#">${profileData.email || 'Email'}</a>
                                             <span>${profileData.phone || 'Phone'}</span>
                                             <a href="#">LinkedIn</a>
                                         </div>
 
-                                        <div class="hero-cta" style="pointer-events: none;">
+                                        <div class="hero-cta" style="pointer-events: none; opacity: 0.5;">
                                             <a href="#" class="btn-primary">View Projects</a>
                                             <a href="#" class="btn-ghost">GitHub ↗</a>
                                         </div>
                                     </div>
 
-                                    <div class="avatar-wrap reveal active" style="opacity: 1; transform: none; pointer-events: none;">
-                                        <div class="avatar-ring">
+                                    <div class="avatar-wrap reveal active" style="opacity: 1; transform: none;">
+                                        <div class="avatar-ring" style="${editStyle}" ${hoverScript} onclick="promptProfileField('image_url', 'Enter Image URL (leave blank for generated avatar):')">
                                             <div class="avatar-inner">
-                                                <img src="image3.png" alt="Profile Image" onerror="this.src='https://ui-avatars.com/api/?name=${firstName}+${lastName}&background=0D0D0D&color=fff'">
+                                                <img src="${profileData.image_url || 'image3.png'}" alt="Profile Image" onerror="this.src='https://ui-avatars.com/api/?name=${firstName}+${lastName}&background=0D0D0D&color=fff'">
                                             </div>
                                         </div>
-                                        <div class="avatar-badge">8.20 CGPA</div>
+                                        <div class="avatar-badge" style="${editStyle}" ${hoverScript} onclick="promptProfileField('cgpa', 'Enter CGPA:')">8.20 CGPA</div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- ABOUT -->
+                            <section id="about" style="padding: 80px 0 0 0;">
+                                <span class="section-label">Introduction</span>
+                                <h2 class="section-title">Passion meets <span>Innovation.</span></h2>
+
+                                <div class="bento-grid about-grid" style="grid-template-columns: 2fr 1fr 1fr;">
+                                    <div class="card about-main reveal active" style="opacity: 1; transform: none;">
+                                        <h3>Career Objective</h3>
+                                        <p style="${editStyle} padding: 10px; margin-left: -10px;" ${hoverScript} onclick="promptProfileField('about_text', 'Enter career objective:')">${profileData.about_text || 'I am a first-year B.Tech student...'}</p>
+
+                                        <div class="stat-row" style="margin-top: 30px;">
+                                            <div class="stat" style="${editStyle} padding: 10px;" ${hoverScript} onclick="promptProfileField('project_count', 'Enter Projects stat (e.g., 8+):')">
+                                                <div class="stat-num">${profileData.project_count || '8+'}</div>
+                                                <div class="stat-label">Projects</div>
+                                            </div>
+                                            <div class="stat" style="${editStyle} padding: 10px;" ${hoverScript} onclick="promptProfileField('club_count', 'Enter Clubs stat (e.g., 2):')">
+                                                <div class="stat-num">${profileData.club_count || '2'}</div>
+                                                <div class="stat-label">Clubs</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card reveal active" style="opacity: 1; transform: none;">
+                                        <h3>Location</h3>
+                                        <p style="${editStyle} padding: 10px; margin-left: -10px;" ${hoverScript} onclick="promptProfileField('location', 'Enter location:')">${profileData.location || 'Chennai, Tamil Nadu'}</p>
+                                        <br>
+                                        <h3>Languages</h3>
+                                        <div class="lang-pills" style="${editStyle} padding: 10px; margin-left: -10px;" ${hoverScript} onclick="promptProfileField('languages', 'Enter languages separated by commas:')">
+                                            ${langs.map(l => `<span class="pill">${l.trim()}</span>`).join('')}
+                                        </div>
+                                    </div>
+
+                                    <div class="card reveal active" style="opacity: 1; transform: none; ${editStyle}" ${hoverScript} onclick="promptProfileField('current_year', 'Enter current year/position:')">
+                                        <h3>Year</h3>
+                                        <div class="stat-num">${profileData.current_year || '1st'}</div>
+                                        <p>Vellore Institute of Technology</p>
                                     </div>
                                 </div>
                             </section>
@@ -632,10 +680,39 @@
 
         async function saveProfile() {
             const data = {};
-            ['name', 'subtitle', 'hero_badge', 'email', 'phone', 'linkedin', 'github', 'about_text', 'location', 'languages', 'project_count', 'club_count', 'current_year'].forEach(f => {
+            ['name', 'subtitle', 'hero_badge', 'email', 'phone', 'linkedin', 'github', 'about_text', 'location', 'languages', 'project_count', 'club_count', 'current_year', 'cgpa', 'image_url'].forEach(f => {
                 data[f] = document.getElementById(`prof-${f}`).value;
             });
             await apiPost('profile', data);
+        }
+
+        async function promptProfileField(field, promptMsg) {
+            if (!adminPass) return;
+            const currentVal = allData.profile[field] || '';
+            const newVal = prompt(promptMsg, currentVal);
+            
+            if (newVal !== null && newVal !== currentVal) {
+                // Instantly update local state
+                allData.profile[field] = newVal;
+                // Re-render immediately for snappy UX
+                renderWorkspace();
+                
+                // Save to database in background
+                try {
+                    const res = await fetch('/api/admin', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            password: adminPass,
+                            type: 'profile',
+                            data: allData.profile
+                        })
+                    });
+                    if(!res.ok) throw new Error('Network response was not ok');
+                } catch(err) {
+                    alert('Failed to save changes: ' + err.message);
+                }
+            }
         }
 
         async function saveEntry() {

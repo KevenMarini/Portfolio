@@ -51,7 +51,13 @@ function renderProfile(p) {
     if (heroSub) heroSub.textContent = p.subtitle;
 
     const heroBadge = document.querySelector('.hero-badge');
-    if (heroBadge) heroBadge.innerHTML = `<span></span>${p.hero_badge}`;
+    if (heroBadge && p.hero_badge) heroBadge.innerHTML = `<span></span>${p.hero_badge}`;
+
+    // Hydrate Image
+    const heroImg = document.getElementById('hero-image');
+    if (heroImg && p.image_url) {
+        heroImg.src = p.image_url;
+    }
 
     const contacts = document.querySelectorAll('.hero-contact a, .hero-contact span');
     if (contacts.length >= 3) {
