@@ -269,9 +269,68 @@
         .login-card { background: rgba(255,255,255,0.03); border: 1px solid var(--admin-border); padding: 50px; border-radius: 32px; width: 450px; text-align: center; }
         
         /* SCROLLBAR */
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+        /* MOBILE RESPONSIVENESS */
+        @media (max-width: 900px) {
+            .dashboard-wrapper {
+                flex-direction: column;
+            }
+            .dashboard-sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--admin-border);
+            }
+            .sidebar-nav {
+                display: flex;
+                flex-direction: row;
+                overflow-x: auto;
+                padding: 10px 0;
+            }
+            .nav-item {
+                padding: 10px 20px;
+                white-space: nowrap;
+                border-left: none;
+                border-bottom: 3px solid transparent;
+            }
+            .nav-item.active {
+                border-left-color: transparent;
+                border-bottom-color: var(--accent-cyan);
+            }
+            .sidebar-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 20px;
+            }
+            .sidebar-footer {
+                display: none;
+            }
+            .main-header {
+                padding: 20px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .main-workspace {
+                padding: 20px;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .full-width {
+                grid-column: 1;
+            }
+            .login-card {
+                width: 90%;
+                padding: 30px;
+            }
+            .data-card {
+                min-height: auto;
+            }
+        }
     </style>
 </head>
 <body class="portfolio-mode">
