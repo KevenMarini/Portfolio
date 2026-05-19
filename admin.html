@@ -393,6 +393,7 @@
             <div id="modal-fields" class="form-grid"></div>
             <div class="card-actions" style="margin-top: 40px;">
                 <button class="btn-primary" onclick="saveEntry()" style="padding: 14px 40px;">Save Changes</button>
+                <button class="btn-action btn-delete" id="modal-delete-btn" onclick="deleteCurrentEntry()">Delete Record</button>
                 <button class="btn-action" onclick="closeModal()">Dismiss</button>
             </div>
         </div>
@@ -755,7 +756,14 @@
                 config[type].fields.forEach(f => document.getElementById(`field-${f}`).value = item[f] || '');
             }
             
+            document.getElementById('modal-delete-btn').style.display = id ? 'block' : 'none';
             document.getElementById('modal-container').style.display = 'flex';
+        }
+
+        function deleteCurrentEntry() {
+            if(!currentId || !currentType) return;
+            deleteItem(currentId, currentType);
+            closeModal();
         }
 
         async function saveProfile() {
