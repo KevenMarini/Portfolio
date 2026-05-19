@@ -432,8 +432,25 @@
 
         if(adminPass) document.getElementById('login-screen').style.display = 'none';
 
-        function login() {
-            adminPass = document.getElementById('pass-field').value;
+        async function login() {
+            const passInput = document.getElementById('pass-field').value;
+            if(!passInput) return alert('Please enter a password');
+            
+            // Verify password against backend
+            try {
+                const res = await fetch('/api/admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: passInput, type: 'verify' })
+                });
+                if(!res.ok) {
+                    return alert('Access Denied: Incorrect Password');
+                }
+            } catch(e) {
+                return alert('Connection error. Please try again.');
+            }
+
+            adminPass = passInput;
             localStorage.setItem('adminPass', adminPass);
             document.getElementById('login-screen').style.display = 'none';
             loadData();
@@ -710,7 +727,10 @@
                             data: allData.profile
                         })
                     });
-                    if(!res.ok) throw new Error('Network response was not ok');
+                    if(!res.ok) {
+                        const errData = await res.json().catch(() => ({}));
+                        throw new Error(errData.error || 'Server returned ' + res.status);
+                    }
                 } catch(err) {
                     alert('Failed to save changes: ' + err.message);
                 }
