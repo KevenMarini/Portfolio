@@ -613,6 +613,16 @@
                                             ).join('')}
                                         </div>
                                     </div>
+                                    
+                                    <div class="card reveal active" style="opacity: 1; transform: none; grid-column: span 4;">
+                                        <h3>Certifications <span style="font-size:0.8rem; color:var(--accent-cyan); float:right; cursor:pointer;" onclick="openEntryModal('certification')">+ Add</span></h3>
+                                        ${(allData.certifications || []).map(c => `
+                                            <div class="edu-score-box" style="margin-bottom: 10px; ${editStyle}" ${hoverScript} onclick="openEntryModal('certification', ${c.id})">
+                                                <span class="edu-score" style="font-size: 1.2rem;">${c.name}</span>
+                                                <span class="edu-score-label">${c.status}</span>
+                                            </div>
+                                        `).join('')}
+                                    </div>
                                 </div>
                             </section>
 

@@ -132,8 +132,8 @@ function renderSkills(skillsData) {
     const softContainer = document.querySelector('.bento-grid .card:nth-child(2) .skill-chips');
     
     if (coreContainer && softContainer) {
-        coreContainer.innerHTML = skillsData.filter(s => s.category === 'core').map(s => `<span class="chip">${s.name}</span>`).join('');
-        softContainer.innerHTML = skillsData.filter(s => s.category === 'soft').map(s => `<span class="chip soft">${s.name}</span>`).join('');
+        coreContainer.innerHTML = skillsData.filter(s => s.category.toLowerCase().includes('core')).map(s => `<span class="chip">${s.name}</span>`).join('');
+        softContainer.innerHTML = skillsData.filter(s => s.category.toLowerCase().includes('soft')).map(s => `<span class="chip soft">${s.name}</span>`).join('');
     }
 }
 
