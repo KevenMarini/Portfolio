@@ -2,9 +2,11 @@ import { sql } from '@vercel/postgres';
 
 export default async function handler(request, response) {
   const { method } = request;
-  const { password, type, data } = request.body;
+  const reqPassword = (request.body && request.body.password) || (request.query && request.query.password);
+  const type = request.body && request.body.type;
+  const data = request.body && request.body.data;
 
-  if (password !== process.env.ADMIN_PASSWORD) {
+  if (reqPassword !== process.env.ADMIN_PASSWORD) {
     return response.status(401).json({ error: 'Unauthorized' });
   }
 
