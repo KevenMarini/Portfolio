@@ -365,6 +365,7 @@
             </ul>
             <div class="sidebar-footer">
                 <a href="home.html" class="btn-action" style="display: block; text-align: center; margin-bottom: 15px; text-decoration: none;">Live Site ↗</a>
+                <button class="btn-action btn-edit" style="width: 100%; margin-bottom: 15px; background: rgba(0, 242, 254, 0.1); color: var(--accent-cyan); border-color: var(--accent-cyan);" onclick="seedDatabase()">Seed Default Data</button>
                 <button class="btn-action btn-delete" style="width: 100%" onclick="logout()">Terminate Session</button>
             </div>
         </aside>
@@ -688,6 +689,7 @@
 
         async function promptProfileField(field, promptMsg) {
             if (!adminPass) return;
+            if (!allData.profile) allData.profile = {};
             const currentVal = allData.profile[field] || '';
             const newVal = prompt(promptMsg, currentVal);
             
@@ -746,6 +748,57 @@
                 if(res.ok) loadData();
             } catch (err) {
                 alert('API Error');
+            }
+        }
+
+        async function seedDatabase() {
+            if(!confirm('This will populate the database with default portfolio data. Proceed?')) return;
+            
+            const profile = { name: "KEVEN MARINI", subtitle: "ECE Undergraduate at VIT | Building the future of AI & Embedded Systems.", hero_badge: "Open for Internships 2026", email: "kevenmarini07@gmail.com", phone: "+91 7810016443", linkedin: "https://www.linkedin.com/in/kevenmarini/", github: "https://github.com/KevenMarini", about_text: "I'm a first-year B.Tech student at Vellore Institute of Technology, focused on bridging the gap between hardware and intelligence. My passion lies in AI, embedded systems, and creating technology that solves real-world problems.", location: "Chennai, Tamil Nadu", languages: "English, Hindi, Tamil, Telugu", project_count: "8+", club_count: "2", current_year: "1st", image_url: "image3.png" };
+            
+            const experiences = [
+                { role: "Events & Public Relations", organization: "Mozilla Firefox Club VIT", date: "Feb 2026 – Now", description: "Developing social media strategies for community growth.\nCoordinating large-scale tech events and outreach." },
+                { role: "Core Team Member – PR", organization: "VIT Animation Club", date: "Jan 2026 – Now", description: "Managing digital presence and engagement metrics.\nFostering collaborative relationships within the core team." }
+            ];
+
+            const projects = [
+                { title: "Smart Health Analysis", description: "ML-powered disease prediction system with OCR capabilities for medical report analysis.", tags: "AI / ML, OCR", link: "https://github.com/KevenMarini/Ai-based-smart-health-app", date: "" },
+                { title: "Disaster Triage Net", description: "Critical patient prioritization system for emergencies. Patent filing in progress.", tags: "Active, Flask", link: "https://github.com/VPK570/DisasterTriageNet", date: "" },
+                { title: "Smart Grid Protection", description: "Anomaly detection in energy usage using ESP32 and AI algorithms for overload risk prediction.", tags: "AI, ESP32", link: "", date: "" },
+                { title: "Sign Language Detection", description: "Real-time gesture recognition and communication system for the visually impaired.", tags: "Vision, AI", link: "https://github.com/KevenMarini/AI-Based-Sign-Language-Detection-Communication-System", date: "" },
+                { title: "Crypto-Gate", description: "Hardware-level encryption circuit design using digital logic and Verilog.", tags: "Verilog", link: "", date: "" }
+            ];
+
+            const skills = [
+                { name: "Python", category: "Core Technologies" }, { name: "Verilog", category: "Core Technologies" }, { name: "Machine Learning", category: "Core Technologies" }, { name: "Computer Vision", category: "Core Technologies" }, { name: "SQL", category: "Core Technologies" }, { name: "Java", category: "Core Technologies" }, { name: "HTML/CSS", category: "Core Technologies" },
+                { name: "Leadership", category: "Soft Skills" }, { name: "Strategic Thinking", category: "Soft Skills" }, { name: "Collaboration", category: "Soft Skills" }, { name: "Public Relations", category: "Soft Skills" }
+            ];
+
+            const education = [
+                { degree: "B.Tech – ECE", institution: "Vellore Institute of Technology", year: "2025 – 2029 (Current)", score: "8.20", score_label: "CGPA" },
+                { degree: "XII – CBSE Science", institution: "SBOA School & Junior College", year: "Completed 2025", score: "80%", score_label: "Percentage" },
+                { degree: "X – CBSE", institution: "SBOA School & Junior College", year: "Completed 2023", score: "88.4%", score_label: "Percentage" }
+            ];
+
+            const certifications = [
+                { name: "Data Science", status: "Pursuing", link: "" }
+            ];
+
+            try {
+                // Post Profile
+                await fetch('/api/admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: adminPass, type: 'profile', data: profile }) });
+                
+                // Post others
+                for (let e of experiences) await fetch('/api/admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: adminPass, type: 'experience', data: e }) });
+                for (let p of projects) await fetch('/api/admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: adminPass, type: 'project', data: p }) });
+                for (let s of skills) await fetch('/api/admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: adminPass, type: 'skill', data: s }) });
+                for (let ed of education) await fetch('/api/admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: adminPass, type: 'education', data: ed }) });
+                for (let c of certifications) await fetch('/api/admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: adminPass, type: 'certification', data: c }) });
+                
+                alert('Database seeded successfully!');
+                loadData();
+            } catch(e) {
+                alert('Error seeding database: ' + e.message);
             }
         }
 
