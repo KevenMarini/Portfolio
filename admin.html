@@ -589,6 +589,57 @@
                                     </div>
                                 </div>
                             </section>
+
+                            <!-- SKILLS -->
+                            <section id="skills" style="padding: 80px 0 0 0;">
+                                <span class="section-label">Toolkit</span>
+                                <h2 class="section-title">Technical <span>Stack.</span></h2>
+
+                                <div class="bento-grid">
+                                    <div class="card reveal active" style="opacity: 1; transform: none; grid-column: span 2;">
+                                        <h3>Core Technologies <span style="font-size:0.8rem; color:var(--accent-cyan); float:right; cursor:pointer;" onclick="openEntryModal('skill')">+ Add</span></h3>
+                                        <div class="skill-chips">
+                                            ${(allData.skills || []).filter(s => s.category.toLowerCase().includes('core')).map(s => 
+                                                `<span class="chip" style="${editStyle}" ${hoverScript} onclick="openEntryModal('skill', ${s.id})">${s.name}</span>`
+                                            ).join('')}
+                                        </div>
+                                    </div>
+
+                                    <div class="card reveal active" style="opacity: 1; transform: none; grid-column: span 2;">
+                                        <h3>Soft Skills <span style="font-size:0.8rem; color:var(--accent-cyan); float:right; cursor:pointer;" onclick="openEntryModal('skill')">+ Add</span></h3>
+                                        <div class="skill-chips">
+                                            ${(allData.skills || []).filter(s => s.category.toLowerCase().includes('soft')).map(s => 
+                                                `<span class="chip soft" style="${editStyle}" ${hoverScript} onclick="openEntryModal('skill', ${s.id})">${s.name}</span>`
+                                            ).join('')}
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- EDUCATION -->
+                            <section id="education" style="padding: 80px 0 0 0;">
+                                <span class="section-label">Academic</span>
+                                <h2 class="section-title">Education <span>Record.</span></h2>
+
+                                <div class="edu-grid">
+                                    ${(allData.education || []).map(e => `
+                                        <div class="card edu-card reveal active" style="opacity: 1; transform: none; ${editStyle}" ${hoverScript} onclick="openEntryModal('education', ${e.id})">
+                                            <span class="edu-inst">${e.institution}</span>
+                                            <h3 class="edu-degree">${e.degree}</h3>
+                                            <span class="edu-year">${e.year}</span>
+                                            <div class="edu-score-box">
+                                                <span class="edu-score">${e.score}</span>
+                                                <span class="edu-score-label">${e.score_label}</span>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                    
+                                    <!-- Add New Record Button -->
+                                    <div class="card edu-card reveal active" style="opacity: 1; transform: none; ${editStyle}; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.02); border: 2px dashed rgba(255,255,255,0.1); min-height: 200px;" ${hoverScript} onclick="openEntryModal('education')">
+                                        <h3 style="color: var(--accent-cyan); margin: 0;">+ Add New Record</h3>
+                                    </div>
+                                </div>
+                            </section>
                         </div>
                     `;
                 } else if (currentTab === 'profile') {
