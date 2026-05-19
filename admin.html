@@ -334,6 +334,7 @@
     </style>
 </head>
 <body class="portfolio-mode">
+    <input type="file" id="image-upload" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
 
     <!-- LOGIN SCREEN -->
     <div id="login-screen" class="login-wrap">
@@ -539,12 +540,12 @@
                                     </div>
 
                                     <div class="avatar-wrap reveal active" style="opacity: 1; transform: none;">
-                                        <div class="avatar-ring" style="${editStyle}" ${hoverScript} onclick="promptProfileField('image_url', 'Enter Image URL (leave blank for generated avatar):')">
+                                        <div class="avatar-ring" style="${editStyle}" ${hoverScript} onclick="triggerImageUpload()">
                                             <div class="avatar-inner">
                                                 <img src="${profileData.image_url || 'image3.png'}" alt="Profile Image" onerror="this.src='https://ui-avatars.com/api/?name=${firstName}+${lastName}&background=0D0D0D&color=fff'">
                                             </div>
                                         </div>
-                                        <div class="avatar-badge" style="${editStyle}" ${hoverScript} onclick="promptProfileField('cgpa', 'Enter CGPA:')">8.20 CGPA</div>
+                                        <div class="avatar-badge" style="${editStyle}" ${hoverScript} onclick="promptProfileField('cgpa', 'Enter CGPA:')">${profileData.cgpa || '8.20'} CGPA</div>
                                     </div>
                                 </div>
                             </section>
@@ -735,6 +736,45 @@
                     alert('Failed to save changes: ' + err.message);
                 }
             }
+        }
+
+        function triggerImageUpload() {
+            if (!adminPass) return;
+            document.getElementById('image-upload').click();
+        }
+
+        function handleImageUpload(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            
+            // Show loading state on avatar
+            const avatarImg = document.querySelector('.avatar-inner img');
+            if(avatarImg) avatarImg.style.opacity = '0.5';
+
+            const reader = new FileReader();
+            reader.onload = async (event) => {
+                const base64Str = event.target.result;
+                
+                if (!allData.profile) allData.profile = {};
+                allData.profile.image_url = base64Str;
+                renderWorkspace();
+                
+                try {
+                    const res = await fetch('/api/admin', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            password: adminPass,
+                            type: 'profile',
+                            data: allData.profile
+                        })
+                    });
+                    if(!res.ok) throw new Error('Upload failed');
+                } catch(err) {
+                    alert('Failed to upload image: ' + err.message);
+                }
+            };
+            reader.readAsDataURL(file);
         }
 
         async function saveEntry() {

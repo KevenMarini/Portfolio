@@ -53,10 +53,14 @@ function renderProfile(p) {
     const heroBadge = document.querySelector('.hero-badge');
     if (heroBadge && p.hero_badge) heroBadge.innerHTML = `<span></span>${p.hero_badge}`;
 
-    // Hydrate Image
+    // Hydrate Image and CGPA
     const heroImg = document.getElementById('hero-image');
     if (heroImg && p.image_url) {
         heroImg.src = p.image_url;
+    }
+    const cgpaBadge = document.querySelector('.avatar-badge');
+    if (cgpaBadge && p.cgpa) {
+        cgpaBadge.textContent = `${p.cgpa} CGPA`;
     }
 
     const contacts = document.querySelectorAll('.hero-contact a, .hero-contact span');
