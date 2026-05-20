@@ -18,6 +18,7 @@ export default async function handler(request, response) {
     await sql`CREATE TABLE IF NOT EXISTS projects (id SERIAL PRIMARY KEY, title TEXT, description TEXT, tags TEXT, link TEXT, date TEXT);`;
     try { await sql`ALTER TABLE projects ADD COLUMN image_urls TEXT;`; } catch(e) {}
     try { await sql`ALTER TABLE projects ADD COLUMN show_on_home BOOLEAN DEFAULT FALSE;`; } catch(e) {}
+    try { await sql`ALTER TABLE projects ADD COLUMN sort_order INT DEFAULT 0;`; } catch(e) {}
     await sql`CREATE TABLE IF NOT EXISTS experience (id SERIAL PRIMARY KEY, role TEXT, organization TEXT, description TEXT, date TEXT);`;
     await sql`CREATE TABLE IF NOT EXISTS skills (id SERIAL PRIMARY KEY, name TEXT, category TEXT);`;
     await sql`CREATE TABLE IF NOT EXISTS education (id SERIAL PRIMARY KEY, degree TEXT, institution TEXT, year TEXT, score TEXT, score_label TEXT);`;
@@ -42,7 +43,17 @@ export default async function handler(request, response) {
         if (id) {
           await sql`UPDATE projects SET title=${title}, description=${description}, tags=${tags}, link=${link}, date=${date}, image_urls=${image_urls}, show_on_home=${show_on_home} WHERE id=${id};`;
         } else {
-          await sql`INSERT INTO projects (title, description, tags, link, date, image_urls, show_on_home) VALUES (${title}, ${description}, ${tags}, ${link}, ${date}, ${image_urls}, ${show_on_home});`;
+          // Find max sort_order to place new project at the end
+          const maxOrderRes = await sql`SELECT MAX(sort_order) as max_order FROM projects;`;
+          const nextOrder = (maxOrderRes.rows[0]?.max_order || 0) + 1;
+          await sql`INSERT INTO projects (title, description, tags, link, date, image_urls, show_on_home, sort_order) VALUES (${title}, ${description}, ${tags}, ${link}, ${date}, ${image_urls}, ${show_on_home}, ${nextOrder});`;
+        }
+      } else if (type === 'reorder-projects') {
+        const { ids } = data || {};
+        if (Array.isArray(ids)) {
+          for (let i = 0; i < ids.length; i++) {
+            await sql`UPDATE projects SET sort_order = ${i} WHERE id = ${ids[i]};`;
+          }
         }
       } else if (type === 'experience') {
         const { id, role='', organization='', description='', date='' } = data || {};

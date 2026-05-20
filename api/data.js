@@ -3,7 +3,7 @@ import { sql } from '@vercel/postgres';
 export default async function handler(request, response) {
   try {
     const profile = await sql`SELECT * FROM profile LIMIT 1;`;
-    const projects = await sql`SELECT * FROM projects ORDER BY id DESC;`;
+    const projects = await sql`SELECT * FROM projects ORDER BY sort_order ASC, id DESC;`;
     const experience = await sql`SELECT * FROM experience ORDER BY id DESC;`;
     const skills = await sql`SELECT * FROM skills;`;
     const education = await sql`SELECT * FROM education ORDER BY year DESC;`;

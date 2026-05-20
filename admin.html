@@ -709,9 +709,17 @@
                                     ` : ''}
                                     ${item.description ? `<p style="font-size: 0.85rem; opacity: 0.7; margin-top: 10px;">${item.description.substring(0, 100)}...</p>` : ''}
                                 </div>
-                                <div class="card-actions">
-                                    <button class="btn-action btn-edit" onclick="openEntryModal('${currentTab}', ${item.id})">Edit</button>
-                                    <button class="btn-action btn-delete" onclick="deleteItem(${item.id}, '${currentTab}')">Delete</button>
+                                <div class="card-actions" style="display: flex; gap: 8px; align-items: center; justify-content: space-between;">
+                                    ${currentTab === 'project' ? `
+                                        <div style="display: flex; gap: 4px;">
+                                            <button class="btn-action btn-edit" onclick="moveProject(${item.id}, 'up')" style="padding: 8px 12px; min-width: auto;" title="Move Up">▲</button>
+                                            <button class="btn-action btn-edit" onclick="moveProject(${item.id}, 'down')" style="padding: 8px 12px; min-width: auto;" title="Move Down">▼</button>
+                                        </div>
+                                    ` : ''}
+                                    <div style="display: flex; gap: 6px;">
+                                        <button class="btn-action btn-edit" onclick="openEntryModal('${currentTab}', ${item.id})">Edit</button>
+                                        <button class="btn-action btn-delete" onclick="deleteItem(${item.id}, '${currentTab}')">Delete</button>
+                                    </div>
                                 </div>
                             </div>
                         `).join('')}
@@ -1123,6 +1131,46 @@
                 if(res.ok) loadData();
             } catch (err) {
                 alert('API Error');
+            }
+        }
+
+        async function moveProject(id, direction) {
+            const projects = allData.projects || [];
+            const idx = projects.findIndex(p => p.id === id);
+            if (idx === -1) return;
+            
+            const newIdx = direction === 'up' ? idx - 1 : idx + 1;
+            if (newIdx < 0 || newIdx >= projects.length) return; // Boundary guard
+            
+            // Swap projects in local state array
+            const temp = projects[idx];
+            projects[idx] = projects[newIdx];
+            projects[newIdx] = temp;
+            
+            // Re-render immediately for visual snaps
+            renderWorkspace();
+            
+            // Send new order array of IDs to API
+            const ids = projects.map(p => p.id);
+            try {
+                const res = await fetch('/api/admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        password: adminPass,
+                        type: 'reorder-projects',
+                        data: { ids }
+                    })
+                });
+                if (!res.ok) {
+                    const errData = await res.json().catch(() => ({}));
+                    alert('Failed to save project order: ' + (errData.error || 'Server error'));
+                    // Reload data to reset visual order
+                    loadData();
+                }
+            } catch (err) {
+                alert('Error connecting to api');
+                loadData();
             }
         }
 
