@@ -714,45 +714,89 @@ function renderAchievements(achievements) {
     const participatedItems = achievements.filter(a => (a.category || '').toLowerCase().includes('particip') || (!(a.category || '').toLowerCase().includes('won') && !(a.category || '').toLowerCase().includes('achieve') && !(a.category || '').toLowerCase().includes('apprec')));
 
     let html = '';
+    let gridsToInit = [];
 
-    const buildCategoryHTML = (title, items) => {
+    const buildCategoryHTML = (title, items, uniqueKey) => {
         if (items.length === 0) return '';
+        const gridId = `achievements-grid-${uniqueKey}`;
+        const dotsId = `achievements-dots-${uniqueKey}`;
+        gridsToInit.push({ gridId, dotsId });
+
         return `
             <div class="achievement-section reveal active" style="margin-bottom: 60px; width: 100%;">
                 <h3 class="achievement-section-title" style="font-size: 1.5rem; font-weight: 600; color: var(--accent-cyan); border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 10px; margin-bottom: 25px; letter-spacing: 1px; text-transform: uppercase;">${title}</h3>
-                <div class="achievements-list" style="display: flex; flex-direction: column; gap: 40px; padding: 10px 0; width: 100%;">
-                    ${items.map((a) => {
-                        const imagesGrid = renderAchievementImagesGrid(a.image_urls, a.id, 'all');
-                        return `
-                            <div class="card proj-card reveal active" onclick="openAchievementDetailsById(${a.id})" style="cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; max-width: 500px; width: 100%;">
-                                <div>
-                                    ${imagesGrid}
-                                    <div class="proj-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                                        <span style="color: var(--accent-cyan); font-size: 0.75rem; text-transform: uppercase; font-family:'Space Grotesk', sans-serif;">${a.date || ''}</span>
+                <div class="projects-slider-wrapper">
+                    <div class="projects-grid home-projects-grid" id="${gridId}">
+                        ${items.map((a) => {
+                            const imagesGrid = renderAchievementImagesGrid(a.image_urls, a.id, 'all');
+                            return `
+                                <div class="card proj-card reveal active" onclick="openAchievementDetailsById(${a.id})" style="cursor: pointer; display: flex; flex-direction: column; justify-content: space-between;">
+                                    <div>
+                                        ${imagesGrid}
+                                        <div class="proj-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; margin-top: 15px;">
+                                            <span style="color: var(--accent-cyan); font-size: 0.75rem; text-transform: uppercase; font-family:'Space Grotesk', sans-serif;">${a.date || ''}</span>
+                                        </div>
+                                        <h3 style="margin-top: 5px;">${a.title}</h3>
+                                        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 8px; line-height: 1.5;">
+                                            ${a.description ? a.description.substring(0, 120) + (a.description.length > 120 ? '...' : '') : ''}
+                                        </p>
                                     </div>
-                                    <h3 style="margin-top: 5px;">${a.title}</h3>
-                                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 8px;">
-                                        ${a.description ? a.description.substring(0, 120) + (a.description.length > 120 ? '...' : '') : ''}
-                                    </p>
+                                    ${a.link ? `<a href="${a.link}" target="_blank" class="proj-link" style="align-self: flex-start; margin-top: 15px;" onclick="event.stopPropagation();">Details ↗</a>` : ''}
                                 </div>
-                                ${a.link ? `<a href="${a.link}" target="_blank" class="proj-link" style="align-self: flex-start; margin-top: 15px;" onclick="event.stopPropagation();">Details ↗</a>` : ''}
-                            </div>
-                        `;
-                    }).join('')}
+                            `;
+                        }).join('')}
+                    </div>
+                    ${items.length > 1 ? `<div class="project-dots" id="${dotsId}"></div>` : ''}
                 </div>
             </div>
         `;
     };
 
-    html += buildCategoryHTML('Won / Achieved', wonItems);
-    html += buildCategoryHTML('Appreciation Received', appreciationItems);
-    html += buildCategoryHTML('Participated', participatedItems);
+    html += buildCategoryHTML('Won / Achieved', wonItems, 'won');
+    html += buildCategoryHTML('Appreciation Received', appreciationItems, 'apprec');
+    html += buildCategoryHTML('Participated', participatedItems, 'particip');
 
     if (!html) {
         container.innerHTML = `<div style="text-align: center; color: var(--text-secondary); padding: 40px 0; width: 100%; font-size: 0.95rem;">No achievements added yet.</div>`;
     } else {
         container.innerHTML = html;
+        // Initialize dynamic dot controls for each category slider
+        gridsToInit.forEach(({ gridId, dotsId }) => {
+            initAchievementDots(gridId, dotsId);
+        });
     }
+}
+
+function initAchievementDots(gridId, dotsId) {
+    const grid = document.getElementById(gridId);
+    const dotsContainer = document.getElementById(dotsId);
+    if (!grid || !dotsContainer) return;
+
+    const cards = grid.querySelectorAll('.proj-card');
+    if (cards.length === 0) return;
+
+    dotsContainer.innerHTML = '';
+    cards.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = `dot ${i === 0 ? 'active' : ''}`;
+        dot.addEventListener('click', () => {
+            grid.scrollTo({
+                left: cards[i].offsetLeft - grid.offsetLeft,
+                behavior: 'smooth'
+            });
+        });
+        dotsContainer.appendChild(dot);
+    });
+
+    grid.addEventListener('scroll', () => {
+        const scrollPos = grid.scrollLeft;
+        const cardWidth = cards[0].offsetWidth + 30; // 30 is the gap
+        const index = Math.round(scrollPos / cardWidth);
+        
+        dotsContainer.querySelectorAll('.dot').forEach((dot, i) => {
+            dot.classList.toggle('active', i === index);
+        });
+    });
 }
 
 function renderAchievementImagesGrid(imageUrls, achievementId, source) {
