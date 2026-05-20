@@ -360,6 +360,7 @@
                 <li class="nav-item" onclick="switchTab('profile', this)">Profile Settings</li>
                 <li class="nav-item" onclick="switchTab('experience', this)">Experience</li>
                 <li class="nav-item" onclick="switchTab('project', this)">Projects</li>
+                <li class="nav-item" onclick="switchTab('achievement', this)">Achievements</li>
                 <li class="nav-item" onclick="switchTab('skill', this)">Skills</li>
                 <li class="nav-item" onclick="switchTab('certification', this)">Certifications</li>
                 <li class="nav-item" onclick="switchTab('education', this)">Education</li>
@@ -469,6 +470,7 @@
             profile: { title: 'Profile Settings' },
             experience: { title: 'Experience', fields: ['role', 'organization', 'description', 'date'] },
             project: { title: 'Selected Projects', fields: ['title', 'description', 'tags', 'link', 'date', 'image_urls', 'show_on_home'] },
+            achievement: { title: 'Achievements', fields: ['title', 'description', 'category', 'date', 'link', 'image_urls', 'show_on_home'] },
             skill: { title: 'Technical Stack', fields: ['name', 'category'] },
             certification: { title: 'Certifications', fields: ['name', 'status', 'link', 'image_url', 'show_on_home'] },
             education: { title: 'Education', fields: ['degree', 'institution', 'year', 'score', 'score_label'] }
@@ -710,10 +712,10 @@
                                     ${item.description ? `<p style="font-size: 0.85rem; opacity: 0.7; margin-top: 10px;">${item.description.substring(0, 100)}...</p>` : ''}
                                 </div>
                                 <div class="card-actions" style="display: flex; gap: 8px; align-items: center; justify-content: space-between;">
-                                    ${currentTab === 'project' ? `
+                                    ${currentTab === 'project' || currentTab === 'achievement' ? `
                                         <div style="display: flex; gap: 4px;">
-                                            <button class="btn-action btn-edit" onclick="moveProject(${item.id}, 'up')" style="padding: 8px 12px; min-width: auto;" title="Move Up">▲</button>
-                                            <button class="btn-action btn-edit" onclick="moveProject(${item.id}, 'down')" style="padding: 8px 12px; min-width: auto;" title="Move Down">▼</button>
+                                            <button class="btn-action btn-edit" onclick="move${currentTab.charAt(0).toUpperCase() + currentTab.slice(1)}(${item.id}, 'up')" style="padding: 8px 12px; min-width: auto;" title="Move Up">▲</button>
+                                            <button class="btn-action btn-edit" onclick="move${currentTab.charAt(0).toUpperCase() + currentTab.slice(1)}(${item.id}, 'down')" style="padding: 8px 12px; min-width: auto;" title="Move Down">▼</button>
                                         </div>
                                     ` : ''}
                                     <div style="display: flex; gap: 6px;">
@@ -783,16 +785,37 @@
                             </div>
                         </div>
                     `;
+                } else if (f === 'category') {
+                    if (type === 'achievement') {
+                        return `
+                            <div class="input-group">
+                                <label>Category</label>
+                                <select id="field-${f}" style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#fff;">
+                                    <option value="Won / Achieved">Won / Achieved</option>
+                                    <option value="Appreciation Received">Appreciation Received</option>
+                                    <option value="Participated">Participated</option>
+                                </select>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div class="input-group">
+                                <label>Category</label>
+                                <input type="text" id="field-${f}">
+                            </div>
+                        `;
+                    }
                 } else if (f === 'image_urls') {
+                    const isProject = type === 'project';
                     return `
                         <div class="input-group full-width" style="display:flex; flex-direction:column; gap:10px;">
-                            <label>Project Images (Up to 8 images)</label>
+                            <label>${isProject ? 'Project' : 'Achievement'} Images (Up to 8 images)</label>
                             <div style="display:flex; gap:10px; align-items:center; width:100%;">
                                 <input type="hidden" id="field-${f}">
-                                <button type="button" class="btn-action btn-edit" style="width:auto; white-space:nowrap; margin-top:0; padding:10px 15px;" onclick="triggerProjectImagesUpload()">Upload Image</button>
-                                <input type="file" id="project-images-file" accept="image/*" style="display:none;" onchange="handleProjectImageUpload(event)">
+                                <button type="button" class="btn-action btn-edit" style="width:auto; white-space:nowrap; margin-top:0; padding:10px 15px;" onclick="${isProject ? 'triggerProjectImagesUpload()' : 'triggerAchievementImagesUpload()'}">Upload Image</button>
+                                <input type="file" id="${isProject ? 'project-images-file' : 'achievement-images-file'}" accept="image/*" style="display:none;" onchange="${isProject ? 'handleProjectImageUpload(event)' : 'handleAchievementImageUpload(event)'}">
                             </div>
-                            <div id="project-images-preview-container" style="display:flex; gap:15px; flex-wrap:wrap; margin-top:10px;"></div>
+                            <div id="${isProject ? 'project-images-preview-container' : 'achievement-images-preview-container'}" style="display:flex; gap:15px; flex-wrap:wrap; margin-top:10px;"></div>
                         </div>
                     `;
                 } else if (f === 'show_on_home') {
@@ -837,8 +860,8 @@
                     }
                 }
 
-                if (type === 'project') {
-                    const previewContainer = document.getElementById('project-images-preview-container');
+                if (type === 'project' || type === 'achievement') {
+                    const previewContainer = document.getElementById(type === 'project' ? 'project-images-preview-container' : 'achievement-images-preview-container');
                     if (previewContainer) {
                         previewContainer.innerHTML = '';
                         let urls = [];
@@ -849,7 +872,11 @@
                         }
                         document.getElementById('field-image_urls').value = JSON.stringify(urls);
                         urls.forEach((url, idx) => {
-                            renderProjectImagePreview(url, idx);
+                            if (type === 'project') {
+                                renderProjectImagePreview(url, idx);
+                            } else {
+                                renderAchievementImagePreview(url, idx);
+                            }
                         });
                     }
                 }
@@ -1171,6 +1198,112 @@
             } catch (err) {
                 alert('Error connecting to api');
                 loadData();
+            }
+        }
+
+        async function moveAchievement(id, direction) {
+            const achievements = allData.achievements || [];
+            const idx = achievements.findIndex(a => a.id === id);
+            if (idx === -1) return;
+            
+            const newIdx = direction === 'up' ? idx - 1 : idx + 1;
+            if (newIdx < 0 || newIdx >= achievements.length) return; // Boundary guard
+            
+            // Swap achievements in local state array
+            const temp = achievements[idx];
+            achievements[idx] = achievements[newIdx];
+            achievements[newIdx] = temp;
+            
+            // Re-render immediately for visual snaps
+            renderWorkspace();
+            
+            // Send new order array of IDs to API
+            const ids = achievements.map(a => a.id);
+            try {
+                const res = await fetch('/api/admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        password: adminPass,
+                        type: 'reorder-achievements',
+                        data: { ids }
+                    })
+                });
+                if (!res.ok) {
+                    const errData = await res.json().catch(() => ({}));
+                    alert('Failed to save achievement order: ' + (errData.error || 'Server error'));
+                    loadData();
+                }
+            } catch (err) {
+                alert('Error connecting to api');
+                loadData();
+            }
+        }
+
+        function triggerAchievementImagesUpload() {
+            document.getElementById('achievement-images-file').click();
+        }
+
+        function handleAchievementImageUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const maxSize = 2 * 1024 * 1024; // 2MB
+            if (file.size > maxSize) {
+                alert("File size exceeds 2MB limit. Please choose a smaller image.");
+                e.target.value = '';
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const base64Str = event.target.result;
+                const field = document.getElementById('field-image_urls');
+                let urls = [];
+                try {
+                    urls = JSON.parse(field.value || '[]');
+                } catch(err) {}
+                
+                if (urls.length >= 8) {
+                    alert("You can upload a maximum of 8 images.");
+                    e.target.value = '';
+                    return;
+                }
+                
+                urls.push(base64Str);
+                field.value = JSON.stringify(urls);
+                
+                renderAchievementImagePreview(base64Str, urls.length - 1);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderAchievementImagePreview(url, idx) {
+            const container = document.getElementById('achievement-images-preview-container');
+            if (!container) return;
+            
+            const div = document.createElement('div');
+            div.className = 'achievement-preview-card';
+            div.style = 'position:relative; width:100px; height:100px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); overflow:hidden;';
+            div.innerHTML = `
+                <img src="${url}" style="width:100%; height:100%; object-fit:cover;">
+                <button type="button" onclick="removeAchievementImage(${idx})" style="position:absolute; top:2px; right:2px; background:rgba(255,0,0,0.8); border:none; color:white; border-radius:50%; width:20px; height:20px; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center;">&times;</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeAchievementImage(idx) {
+            const field = document.getElementById('field-image_urls');
+            let urls = JSON.parse(field.value || '[]');
+            urls.splice(idx, 1);
+            field.value = JSON.stringify(urls);
+            
+            const container = document.getElementById('achievement-images-preview-container');
+            if (container) {
+                container.innerHTML = '';
+                urls.forEach((url, i) => {
+                    renderAchievementImagePreview(url, i);
+                });
             }
         }
 

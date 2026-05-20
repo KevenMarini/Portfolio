@@ -16,6 +16,7 @@ export default async function handler(request, response) {
     await sql`CREATE TABLE IF NOT EXISTS certifications (id SERIAL PRIMARY KEY, name TEXT, status TEXT, link TEXT);`;
     try { await sql`ALTER TABLE certifications ADD COLUMN image_url TEXT;`; } catch(e) {}
     try { await sql`ALTER TABLE certifications ADD COLUMN show_on_home BOOLEAN DEFAULT FALSE;`; } catch(e) {}
+    await sql`CREATE TABLE IF NOT EXISTS achievements (id SERIAL PRIMARY KEY, title TEXT, description TEXT, category TEXT, date TEXT, link TEXT, image_urls TEXT, show_on_home BOOLEAN DEFAULT FALSE, sort_order INT DEFAULT 0);`;
 
     const profile = await sql`SELECT * FROM profile LIMIT 1;`;
     const projects = await sql`SELECT * FROM projects ORDER BY sort_order ASC, id DESC;`;
@@ -23,6 +24,7 @@ export default async function handler(request, response) {
     const skills = await sql`SELECT * FROM skills;`;
     const education = await sql`SELECT * FROM education ORDER BY year DESC;`;
     const certifications = await sql`SELECT * FROM certifications ORDER BY id DESC;`;
+    const achievements = await sql`SELECT * FROM achievements ORDER BY sort_order ASC, id DESC;`;
 
     return response.status(200).json({
       profile: profile.rows[0] || null,
@@ -30,7 +32,8 @@ export default async function handler(request, response) {
       experience: experience.rows,
       skills: skills.rows,
       education: education.rows,
-      certifications: certifications.rows
+      certifications: certifications.rows,
+      achievements: achievements.rows
     });
   } catch (error) {
     console.error("Database query failed:", error);
@@ -41,7 +44,8 @@ export default async function handler(request, response) {
       experience: [],
       skills: [],
       education: [],
-      certifications: []
+      certifications: [],
+      achievements: []
     });
   }
 }

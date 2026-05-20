@@ -35,6 +35,10 @@ async function fetchData() {
         }
         if (data.certifications && data.certifications.length) renderCertifications(data.certifications);
         if (data.education.length) renderEducation(data.education);
+        if (data.achievements) {
+            window.cachedAchievements = data.achievements;
+            renderAchievements(data.achievements);
+        }
     } catch (e) {
         console.log("Using local fallback data");
     }
@@ -694,3 +698,268 @@ function initProjectDots() {
 const style = document.createElement('style');
 style.textContent = `#main-content, #skill-display { transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); }`;
 document.head.appendChild(style);
+
+function renderAchievements(achievements) {
+    const wonList = document.getElementById('dynamic-won-achieved-list');
+    const appreciationList = document.getElementById('dynamic-appreciation-list');
+    const participatedList = document.getElementById('dynamic-participated-list');
+
+    if (wonList || appreciationList || participatedList) {
+        // Filter achievements by category
+        const wonItems = achievements.filter(a => (a.category || '').toLowerCase().includes('won') || (a.category || '').toLowerCase().includes('achieve'));
+        const appreciationItems = achievements.filter(a => (a.category || '').toLowerCase().includes('apprec'));
+        const participatedItems = achievements.filter(a => (a.category || '').toLowerCase().includes('particip') || (!(a.category || '').toLowerCase().includes('won') && !(a.category || '').toLowerCase().includes('achieve') && !(a.category || '').toLowerCase().includes('apprec')));
+
+        const renderList = (container, items, emptyMsg) => {
+            if (!container) return;
+            if (items.length === 0) {
+                container.innerHTML = `<div style="text-align: center; color: var(--text-secondary); padding: 30px 0; width: 100%; font-size: 0.95rem;">${emptyMsg}</div>`;
+            } else {
+                container.innerHTML = items.map((a) => {
+                    const imagesGrid = renderAchievementImagesGrid(a.image_urls, a.id, 'all');
+                    return `
+                        <div class="card proj-card reveal active" onclick="openAchievementDetailsById(${a.id})" style="cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; max-width: 500px; width: 100%;">
+                            <div>
+                                ${imagesGrid}
+                                <div class="proj-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                    <span style="color: var(--accent-cyan); font-size: 0.75rem; text-transform: uppercase; font-family:'Space Grotesk', sans-serif;">${a.date || ''}</span>
+                                </div>
+                                <h3 style="margin-top: 5px;">${a.title}</h3>
+                                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 8px;">
+                                    ${a.description ? a.description.substring(0, 120) + (a.description.length > 120 ? '...' : '') : ''}
+                                </p>
+                            </div>
+                            ${a.link ? `<a href="${a.link}" target="_blank" class="proj-link" style="align-self: flex-start; margin-top: 15px;" onclick="event.stopPropagation();">Details ↗</a>` : ''}
+                        </div>
+                    `;
+                }).join('');
+            }
+        };
+
+        renderList(wonList, wonItems, 'No entries in Won / Achieved category.');
+        renderList(appreciationList, appreciationItems, 'No entries in Appreciation Received category.');
+        renderList(participatedList, participatedItems, 'No entries in Participated category.');
+    }
+}
+
+function renderAchievementImagesGrid(imageUrls, achievementId, source) {
+    let urls = [];
+    try {
+        urls = JSON.parse(imageUrls || '[]');
+    } catch(e) {
+        if (imageUrls) urls = [imageUrls];
+    }
+    if (urls.length === 0) return '';
+    
+    if (urls.length === 1) {
+        return `
+            <div class="project-media-grid single">
+                <img src="${urls[0]}" class="project-grid-img main" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', 0)">
+            </div>
+        `;
+    }
+    
+    const mainImg = urls[0];
+    const thumbnails = urls.slice(1, 4); // Up to 3 thumbnails
+    const extraCount = urls.length - 4;
+    
+    return `
+        <div class="project-media-grid multi">
+            <div class="main-img-wrapper">
+                <img src="${mainImg}" class="project-grid-img main" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', 0)">
+            </div>
+            <div class="thumbnails-wrapper">
+                ${thumbnails.map((url, tIdx) => {
+                    const isLast = tIdx === 2 && extraCount > 0;
+                    return `
+                        <div style="flex: 1; position: relative; height: 60px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05);">
+                            <img src="${url}" class="project-grid-img thumb" style="width: 100%; height: 100%; object-fit: cover;" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', ${tIdx + 1})">
+                            ${isLast ? `
+                                <div onclick="event.stopPropagation(); openAchievementDetailsById(${achievementId})" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.95rem; cursor: pointer; user-select: none;">
+                                    +${extraCount + 1}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        </div>
+    `;
+}
+
+window.openAchievementDetailsById = function(achievementId) {
+    const achievements = window.cachedAchievements || [];
+    const achievement = achievements.find(a => a.id === achievementId);
+    if (achievement) {
+        openAchievementDetails(achievement);
+    }
+};
+
+window.openAchievementDetails = function(achievement) {
+    let urls = [];
+    try {
+        urls = JSON.parse(achievement.image_urls || '[]');
+    } catch(e) {
+        if (achievement.image_urls) urls = [achievement.image_urls];
+    }
+    
+    const modal = document.createElement('div');
+    modal.id = 'achievement-details-modal';
+    modal.style = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        padding: 20px;
+    `;
+    
+    modal.innerHTML = `
+        <div class="project-modal-content" style="
+            background: rgba(20, 20, 25, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 35px;
+            position: relative;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+        ">
+            <button onclick="closeAchievementDetails()" style="
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                background: none;
+                border: none;
+                color: rgba(255,255,255,0.6);
+                font-size: 32px;
+                cursor: pointer;
+                transition: color 0.2s;
+            " onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">&times;</button>
+            
+            <span style="color: var(--accent-cyan); font-size: 0.8rem; font-family:'Space Grotesk', sans-serif; letter-spacing: 2px; text-transform: uppercase;">${achievement.date || ''}</span>
+            <h2 style="font-size: 1.8rem; font-weight: 700; color: white; margin: 8px 0 20px 0; line-height: 1.3;">${achievement.title}</h2>
+            
+            ${urls.length > 0 ? `
+                <div class="project-modal-images" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-bottom: 25px;">
+                    ${urls.map((url, uIdx) => `
+                        <img src="${url}" style="width:100%; height:100px; object-fit:cover; border-radius:8px; cursor:pointer; border:1px solid rgba(255,255,255,0.06); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'" onclick="openAchievementLightbox(event, ${achievement.id}, 'all', ${uIdx})">
+                    `).join('')}
+                </div>
+            ` : ''}
+            
+            <div style="font-size: 1.1rem; color: rgba(255,255,255,0.75); line-height: 1.6; margin-bottom: 25px; white-space: pre-wrap;">
+                ${achievement.description || ''}
+            </div>
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;">
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <span class="tag" style="background:rgba(0, 242, 254, 0.1); color:var(--accent-cyan); padding:4px 10px; border-radius:30px; font-size:0.8rem; border:1px solid rgba(0, 242, 254, 0.2);">${achievement.category}</span>
+                </div>
+                ${achievement.link ? `<a href="${achievement.link}" target="_blank" class="btn-primary" style="padding: 10px 20px; font-size:0.9rem; text-decoration:none; display:inline-block; border-radius:8px;">Details ↗</a>` : ''}
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+};
+
+window.closeAchievementDetails = function() {
+    const m = document.getElementById('achievement-details-modal');
+    if (m) m.remove();
+};
+
+window.openAchievementLightbox = function(e, achievementId, source, imageIdx) {
+    if (e) e.stopPropagation();
+    
+    const achievements = window.cachedAchievements || [];
+    const achievement = achievements.find(a => a.id === achievementId);
+    if (!achievement) return;
+    
+    let urls = [];
+    try {
+        urls = JSON.parse(achievement.image_urls || '[]');
+    } catch(err) {
+        if (achievement.image_urls) urls = [achievement.image_urls];
+    }
+    if (urls.length === 0) return;
+    
+    let currentIndex = imageIdx;
+    
+    const lb = document.createElement('div');
+    lb.id = 'image-lightbox';
+    lb.style = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 11000;
+    `;
+    
+    const renderContent = () => {
+        lb.innerHTML = `
+            <button onclick="closeLightbox(event)" style="position: absolute; top: 20px; right: 20px; background: none; border: none; color: white; font-size: 35px; cursor: pointer; z-index:100;">&times;</button>
+            
+            ${urls.length > 1 ? `
+                <button onclick="prevImage(event)" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.08); border: none; color: white; font-size: 24px; padding: 15px 20px; border-radius: 50%; cursor: pointer; transition: all 0.2s; z-index:100;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">&#10094;</button>
+                <button onclick="nextImage(event)" style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.08); border: none; color: white; font-size: 24px; padding: 15px 20px; border-radius: 50%; cursor: pointer; transition: all 0.2s; z-index:100;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.08)'">&#10095;</button>
+            ` : ''}
+            
+            <div style="max-width: 90%; max-height: 90%; display: flex; flex-direction: column; align-items: center; gap: 15px; position:relative;">
+                <img src="${urls[currentIndex]}" style="max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.8);">
+                ${urls.length > 1 ? `
+                    <div style="color: rgba(255,255,255,0.7); font-size: 0.9rem; font-family: sans-serif; background: rgba(0,0,0,0.6); padding: 6px 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.08);">
+                        ${currentIndex + 1} / ${urls.length}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    };
+    
+    window.prevImage = function(event) {
+        if(event) event.stopPropagation();
+        currentIndex = (currentIndex - 1 + urls.length) % urls.length;
+        renderContent();
+    };
+    
+    window.nextImage = function(event) {
+        if(event) event.stopPropagation();
+        currentIndex = (currentIndex + 1) % urls.length;
+        renderContent();
+    };
+    
+    window.closeLightbox = function(event) {
+        if(event) event.stopPropagation();
+        lb.remove();
+        document.removeEventListener('keydown', handleKeyDown);
+    };
+    
+    const handleKeyDown = (event) => {
+        if (event.key === 'ArrowRight') {
+            nextImage();
+        } else if (event.key === 'ArrowLeft') {
+            prevImage();
+        } else if (event.key === 'Escape') {
+            closeLightbox();
+        }
+    };
+    
+    document.addEventListener('keydown', handleKeyDown);
+    renderContent();
+    document.body.appendChild(lb);
+};
+
