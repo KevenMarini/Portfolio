@@ -170,38 +170,9 @@ function renderProjectImagesGrid(imageUrls, projectId, source) {
     }
     if (urls.length === 0) return '';
     
-    if (urls.length === 1) {
-        return `
-            <div class="project-media-grid single">
-                <img src="${urls[0]}" class="project-grid-img main" onclick="openLightbox(event, ${projectId}, '${source}', 0)">
-            </div>
-        `;
-    }
-    
-    const mainImg = urls[0];
-    const thumbnails = urls.slice(1, 4); // Up to 3 thumbnails
-    const extraCount = urls.length - 4;
-    
     return `
-        <div class="project-media-grid multi">
-            <div class="main-img-wrapper">
-                <img src="${mainImg}" class="project-grid-img main" onclick="openLightbox(event, ${projectId}, '${source}', 0)">
-            </div>
-            <div class="thumbnails-wrapper">
-                ${thumbnails.map((url, tIdx) => {
-                    const isLast = tIdx === 2 && extraCount > 0;
-                    return `
-                        <div style="flex: 1; position: relative; height: 50px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05);">
-                            <img src="${url}" class="project-grid-img thumb" style="width: 100%; height: 100%; object-fit: cover;" onclick="openLightbox(event, ${projectId}, '${source}', ${tIdx + 1})">
-                            ${isLast ? `
-                                <div onclick="event.stopPropagation(); openProjectDetailsById(${projectId})" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.95rem; cursor: pointer; user-select: none;">
-                                    +${extraCount + 1}
-                                </div>
-                            ` : ''}
-                        </div>
-                    `;
-                }).join('')}
-            </div>
+        <div class="project-media-grid single">
+            <img src="${urls[0]}" class="project-grid-img main" onclick="openLightbox(event, ${projectId}, '${source}', 0)">
         </div>
     `;
 }
@@ -407,7 +378,7 @@ window.openLightbox = function(e, projectId, source, imageIdx) {
     style.textContent = `
         .project-media-grid {
             width: 100%;
-            height: 180px;
+            height: 220px;
             margin-bottom: 20px;
             border-radius: 12px;
             overflow: hidden;
@@ -816,38 +787,9 @@ function renderAchievementImagesGrid(imageUrls, achievementId, source) {
     }
     if (urls.length === 0) return '';
     
-    if (urls.length === 1) {
-        return `
-            <div class="project-media-grid single">
-                <img src="${urls[0]}" class="project-grid-img main" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', 0)">
-            </div>
-        `;
-    }
-    
-    const mainImg = urls[0];
-    const thumbnails = urls.slice(1, 4); // Up to 3 thumbnails
-    const extraCount = urls.length - 4;
-    
     return `
-        <div class="project-media-grid multi">
-            <div class="main-img-wrapper">
-                <img src="${mainImg}" class="project-grid-img main" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', 0)">
-            </div>
-            <div class="thumbnails-wrapper">
-                ${thumbnails.map((url, tIdx) => {
-                    const isLast = tIdx === 2 && extraCount > 0;
-                    return `
-                        <div style="flex: 1; position: relative; height: 50px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05);">
-                            <img src="${url}" class="project-grid-img thumb" style="width: 100%; height: 100%; object-fit: cover;" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', ${tIdx + 1})">
-                            ${isLast ? `
-                                <div onclick="event.stopPropagation(); openAchievementDetailsById(${achievementId})" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.95rem; cursor: pointer; user-select: none;">
-                                    +${extraCount + 1}
-                                </div>
-                            ` : ''}
-                        </div>
-                    `;
-                }).join('')}
-            </div>
+        <div class="project-media-grid single">
+            <img src="${urls[0]}" class="project-grid-img main" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', 0)">
         </div>
     `;
 }
