@@ -431,6 +431,7 @@
         let currentType = '';
         let currentId = null;
         let allData = {};
+        let isSaving = false;
 
         if(adminPass) document.getElementById('login-screen').style.display = 'none';
 
@@ -952,11 +953,35 @@
         }
 
         async function saveProfile() {
+            if (isSaving) return;
+            isSaving = true;
+
+            const saveBtn = document.querySelector('#modal-profile .btn-primary');
+            const originalText = saveBtn ? saveBtn.textContent : 'Update Identity';
+            if (saveBtn) {
+                saveBtn.disabled = true;
+                saveBtn.textContent = 'Saving...';
+                saveBtn.style.opacity = '0.7';
+                saveBtn.style.cursor = 'not-allowed';
+            }
+
             const data = {};
             ['name', 'subtitle', 'hero_badge', 'email', 'phone', 'linkedin', 'github', 'about_text', 'location', 'languages', 'project_count', 'club_count', 'current_year', 'cgpa', 'image_url'].forEach(f => {
-                data[f] = document.getElementById(`prof-${f}`).value;
+                const el = document.getElementById(`prof-${f}`);
+                if (el) data[f] = el.value;
             });
-            await apiPost('profile', data);
+
+            try {
+                await apiPost('profile', data);
+            } finally {
+                isSaving = false;
+                if (saveBtn) {
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = originalText;
+                    saveBtn.style.opacity = '';
+                    saveBtn.style.cursor = '';
+                }
+            }
         }
 
         async function promptProfileField(field, promptMsg) {
@@ -1039,6 +1064,18 @@
         }
 
         async function saveEntry() {
+            if (isSaving) return;
+            isSaving = true;
+
+            const saveBtn = document.querySelector('#modal-container .btn-primary');
+            const originalText = saveBtn ? saveBtn.textContent : 'Save Changes';
+            if (saveBtn) {
+                saveBtn.disabled = true;
+                saveBtn.textContent = 'Saving...';
+                saveBtn.style.opacity = '0.7';
+                saveBtn.style.cursor = 'not-allowed';
+            }
+
             const data = { id: currentId };
             config[currentType].fields.forEach(f => {
                 const el = document.getElementById(`field-${f}`);
@@ -1046,7 +1083,18 @@
                     data[f] = el.type === 'checkbox' ? el.checked : el.value;
                 }
             });
-            await apiPost(currentType, data);
+
+            try {
+                await apiPost(currentType, data);
+            } finally {
+                isSaving = false;
+                if (saveBtn) {
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = originalText;
+                    saveBtn.style.opacity = '';
+                    saveBtn.style.cursor = '';
+                }
+            }
         }
 
         async function apiPost(type, data) {
@@ -1060,7 +1108,8 @@
                     closeModal();
                     loadData();
                 } else {
-                    alert('Connection failed. Verify password.');
+                    const errData = await res.json().catch(() => ({}));
+                    alert('Error saving changes: ' + (errData.error || 'Connection failed. Verify password.'));
                 }
             } catch (err) {
                 alert('API Error');

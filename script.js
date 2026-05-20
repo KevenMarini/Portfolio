@@ -108,10 +108,10 @@ function renderProjects(projects) {
                 </div>
             `;
         } else {
-            homeGrid.innerHTML = homeProjects.map((p, idx) => {
-                const imagesGrid = renderProjectImagesGrid(p.image_urls, idx, 'home');
+            homeGrid.innerHTML = homeProjects.map((p) => {
+                const imagesGrid = renderProjectImagesGrid(p.image_urls, p.id, 'home');
                 return `
-                    <div class="card proj-card reveal active" onclick="openProjectDetailsByIndex(${idx}, 'home')" style="cursor: pointer; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div class="card proj-card reveal active" onclick="openProjectDetailsById(${p.id})" style="cursor: pointer; display: flex; flex-direction: column; justify-content: space-between;">
                         <div>
                             ${imagesGrid}
                             <div class="proj-tags" style="margin-top: 10px;">
@@ -134,10 +134,10 @@ function renderProjects(projects) {
         if (projects.length === 0) {
             listContainer.innerHTML = `<div style="text-align: center; color: var(--text-secondary); padding: 40px 0; width: 100%;">No projects available.</div>`;
         } else {
-            listContainer.innerHTML = projects.map((p, idx) => {
-                const imagesGrid = renderProjectImagesGrid(p.image_urls, idx, 'all');
+            listContainer.innerHTML = projects.map((p) => {
+                const imagesGrid = renderProjectImagesGrid(p.image_urls, p.id, 'all');
                 return `
-                    <div class="card proj-card reveal active" onclick="openProjectDetailsByIndex(${idx}, 'all')" style="cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; max-width: 500px; width: 100%;">
+                    <div class="card proj-card reveal active" onclick="openProjectDetailsById(${p.id})" style="cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; max-width: 500px; width: 100%;">
                         <div>
                             ${imagesGrid}
                             <div class="proj-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -157,7 +157,7 @@ function renderProjects(projects) {
     }
 }
 
-function renderProjectImagesGrid(imageUrls, idx, source) {
+function renderProjectImagesGrid(imageUrls, projectId, source) {
     let urls = [];
     try {
         urls = JSON.parse(imageUrls || '[]');
@@ -169,7 +169,7 @@ function renderProjectImagesGrid(imageUrls, idx, source) {
     if (urls.length === 1) {
         return `
             <div class="project-media-grid single">
-                <img src="${urls[0]}" class="project-grid-img main" onclick="openLightbox(event, ${idx}, '${source}', 0)">
+                <img src="${urls[0]}" class="project-grid-img main" onclick="openLightbox(event, ${projectId}, '${source}', 0)">
             </div>
         `;
     }
@@ -181,16 +181,16 @@ function renderProjectImagesGrid(imageUrls, idx, source) {
     return `
         <div class="project-media-grid multi">
             <div class="main-img-wrapper">
-                <img src="${mainImg}" class="project-grid-img main" onclick="openLightbox(event, ${idx}, '${source}', 0)">
+                <img src="${mainImg}" class="project-grid-img main" onclick="openLightbox(event, ${projectId}, '${source}', 0)">
             </div>
             <div class="thumbnails-wrapper">
                 ${thumbnails.map((url, tIdx) => {
                     const isLast = tIdx === 2 && extraCount > 0;
                     return `
                         <div style="flex: 1; position: relative; height: 60px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05);">
-                            <img src="${url}" class="project-grid-img thumb" style="width: 100%; height: 100%; object-fit: cover;" onclick="openLightbox(event, ${idx}, '${source}', ${tIdx + 1})">
+                            <img src="${url}" class="project-grid-img thumb" style="width: 100%; height: 100%; object-fit: cover;" onclick="openLightbox(event, ${projectId}, '${source}', ${tIdx + 1})">
                             ${isLast ? `
-                                <div onclick="event.stopPropagation(); openProjectDetailsByIndex(${idx}, '${source}')" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.95rem; cursor: pointer; user-select: none;">
+                                <div onclick="event.stopPropagation(); openProjectDetailsById(${projectId})" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.95rem; cursor: pointer; user-select: none;">
                                     +${extraCount + 1}
                                 </div>
                             ` : ''}
@@ -202,12 +202,9 @@ function renderProjectImagesGrid(imageUrls, idx, source) {
     `;
 }
 
-window.openProjectDetailsByIndex = function(idx, source) {
-    let projects = window.cachedProjects || [];
-    if (source === 'home') {
-        projects = (window.cachedProjects || []).filter(p => p.show_on_home === true || p.show_on_home === 'true' || p.show_on_home === 1);
-    }
-    const project = projects[idx];
+window.openProjectDetailsById = function(projectId) {
+    const projects = window.cachedProjects || [];
+    const project = projects.find(p => p.id === projectId);
     if (project) {
         openProjectDetails(project);
     }
@@ -238,8 +235,6 @@ window.openProjectDetails = function(project) {
         z-index: 10000;
         padding: 20px;
     `;
-    
-    const globalProjIdx = window.cachedProjects ? window.cachedProjects.indexOf(project) : -1;
     
     modal.innerHTML = `
         <div class="project-modal-content" style="
@@ -272,7 +267,7 @@ window.openProjectDetails = function(project) {
             ${urls.length > 0 ? `
                 <div class="project-modal-images" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-bottom: 25px;">
                     ${urls.map((url, uIdx) => `
-                        <img src="${url}" style="width:100%; height:100px; object-fit:cover; border-radius:8px; cursor:pointer; border:1px solid rgba(255,255,255,0.06); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'" onclick="openLightbox(event, ${globalProjIdx}, 'all', ${uIdx})">
+                        <img src="${url}" style="width:100%; height:100px; object-fit:cover; border-radius:8px; cursor:pointer; border:1px solid rgba(255,255,255,0.06); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'" onclick="openLightbox(event, ${project.id}, 'all', ${uIdx})">
                     `).join('')}
                 </div>
             ` : ''}
@@ -298,14 +293,11 @@ window.closeProjectDetails = function() {
     if (m) m.remove();
 };
 
-window.openLightbox = function(e, projectIdx, source, imageIdx) {
+window.openLightbox = function(e, projectId, source, imageIdx) {
     if (e) e.stopPropagation();
     
-    let projects = window.cachedProjects || [];
-    if (source === 'home') {
-        projects = (window.cachedProjects || []).filter(p => p.show_on_home === true || p.show_on_home === 'true' || p.show_on_home === 1);
-    }
-    const project = projects[projectIdx];
+    const projects = window.cachedProjects || [];
+    const project = projects.find(p => p.id === projectId);
     if (!project) return;
     
     let urls = [];
