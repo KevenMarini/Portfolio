@@ -110,6 +110,7 @@ function renderProjects(projects) {
 
 function renderExperience(exp) {
     const timeline = document.querySelector('.timeline');
+    if (!timeline) return;
     timeline.innerHTML = exp.map(e => `
         <div class="tl-item reveal active">
             <div class="tl-date">${e.date}</div>
@@ -138,7 +139,7 @@ function renderSkills(skillsData) {
 }
 
 function renderCertifications(certs) {
-    const certContainer = document.querySelector('.bento-grid .card:nth-child(3)');
+    const certContainer = document.querySelector('#skills .bento-grid .card:nth-child(3)');
     if (certContainer) {
         certContainer.innerHTML = '<h3>Certifications</h3>' + certs.map(c => `
             <div class="edu-score-box" style="margin-bottom: 10px;">
