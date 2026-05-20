@@ -700,45 +700,58 @@ style.textContent = `#main-content, #skill-display { transition: all 0.6s cubic-
 document.head.appendChild(style);
 
 function renderAchievements(achievements) {
-    const wonList = document.getElementById('dynamic-won-achieved-list');
-    const appreciationList = document.getElementById('dynamic-appreciation-list');
-    const participatedList = document.getElementById('dynamic-participated-list');
+    const container = document.getElementById('dynamic-achievements-container');
+    if (!container) return;
 
-    if (wonList || appreciationList || participatedList) {
-        // Filter achievements by category
-        const wonItems = achievements.filter(a => (a.category || '').toLowerCase().includes('won') || (a.category || '').toLowerCase().includes('achieve'));
-        const appreciationItems = achievements.filter(a => (a.category || '').toLowerCase().includes('apprec'));
-        const participatedItems = achievements.filter(a => (a.category || '').toLowerCase().includes('particip') || (!(a.category || '').toLowerCase().includes('won') && !(a.category || '').toLowerCase().includes('achieve') && !(a.category || '').toLowerCase().includes('apprec')));
+    if (!achievements || achievements.length === 0) {
+        container.innerHTML = `<div style="text-align: center; color: var(--text-secondary); padding: 40px 0; width: 100%; font-size: 0.95rem;">No achievements added yet.</div>`;
+        return;
+    }
 
-        const renderList = (container, items, emptyMsg) => {
-            if (!container) return;
-            if (items.length === 0) {
-                container.innerHTML = `<div style="text-align: center; color: var(--text-secondary); padding: 30px 0; width: 100%; font-size: 0.95rem;">${emptyMsg}</div>`;
-            } else {
-                container.innerHTML = items.map((a) => {
-                    const imagesGrid = renderAchievementImagesGrid(a.image_urls, a.id, 'all');
-                    return `
-                        <div class="card proj-card reveal active" onclick="openAchievementDetailsById(${a.id})" style="cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; max-width: 500px; width: 100%;">
-                            <div>
-                                ${imagesGrid}
-                                <div class="proj-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                                    <span style="color: var(--accent-cyan); font-size: 0.75rem; text-transform: uppercase; font-family:'Space Grotesk', sans-serif;">${a.date || ''}</span>
+    // Filter achievements by category
+    const wonItems = achievements.filter(a => (a.category || '').toLowerCase().includes('won') || (a.category || '').toLowerCase().includes('achieve'));
+    const appreciationItems = achievements.filter(a => (a.category || '').toLowerCase().includes('apprec'));
+    const participatedItems = achievements.filter(a => (a.category || '').toLowerCase().includes('particip') || (!(a.category || '').toLowerCase().includes('won') && !(a.category || '').toLowerCase().includes('achieve') && !(a.category || '').toLowerCase().includes('apprec')));
+
+    let html = '';
+
+    const buildCategoryHTML = (title, items) => {
+        if (items.length === 0) return '';
+        return `
+            <div class="achievement-section reveal active" style="margin-bottom: 60px; width: 100%;">
+                <h3 class="achievement-section-title" style="font-size: 1.5rem; font-weight: 600; color: var(--accent-cyan); border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 10px; margin-bottom: 25px; letter-spacing: 1px; text-transform: uppercase;">${title}</h3>
+                <div class="achievements-list" style="display: flex; flex-direction: column; gap: 40px; padding: 10px 0; width: 100%;">
+                    ${items.map((a) => {
+                        const imagesGrid = renderAchievementImagesGrid(a.image_urls, a.id, 'all');
+                        return `
+                            <div class="card proj-card reveal active" onclick="openAchievementDetailsById(${a.id})" style="cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; max-width: 500px; width: 100%;">
+                                <div>
+                                    ${imagesGrid}
+                                    <div class="proj-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                        <span style="color: var(--accent-cyan); font-size: 0.75rem; text-transform: uppercase; font-family:'Space Grotesk', sans-serif;">${a.date || ''}</span>
+                                    </div>
+                                    <h3 style="margin-top: 5px;">${a.title}</h3>
+                                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 8px;">
+                                        ${a.description ? a.description.substring(0, 120) + (a.description.length > 120 ? '...' : '') : ''}
+                                    </p>
                                 </div>
-                                <h3 style="margin-top: 5px;">${a.title}</h3>
-                                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 8px;">
-                                    ${a.description ? a.description.substring(0, 120) + (a.description.length > 120 ? '...' : '') : ''}
-                                </p>
+                                ${a.link ? `<a href="${a.link}" target="_blank" class="proj-link" style="align-self: flex-start; margin-top: 15px;" onclick="event.stopPropagation();">Details ↗</a>` : ''}
                             </div>
-                            ${a.link ? `<a href="${a.link}" target="_blank" class="proj-link" style="align-self: flex-start; margin-top: 15px;" onclick="event.stopPropagation();">Details ↗</a>` : ''}
-                        </div>
-                    `;
-                }).join('');
-            }
-        };
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `;
+    };
 
-        renderList(wonList, wonItems, 'No entries in Won / Achieved category.');
-        renderList(appreciationList, appreciationItems, 'No entries in Appreciation Received category.');
-        renderList(participatedList, participatedItems, 'No entries in Participated category.');
+    html += buildCategoryHTML('Won / Achieved', wonItems);
+    html += buildCategoryHTML('Appreciation Received', appreciationItems);
+    html += buildCategoryHTML('Participated', participatedItems);
+
+    if (!html) {
+        container.innerHTML = `<div style="text-align: center; color: var(--text-secondary); padding: 40px 0; width: 100%; font-size: 0.95rem;">No achievements added yet.</div>`;
+    } else {
+        container.innerHTML = html;
     }
 }
 
