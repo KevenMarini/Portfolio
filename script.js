@@ -173,42 +173,28 @@ function renderProjectImagesGrid(imageUrls, projectId, source) {
     if (urls.length === 1) {
         return `
             <div class="project-media-grid single">
-                <img src="${urls[0]}" class="project-grid-img main" onclick="openLightbox(event, ${projectId}, '${source}', 0)">
-            </div>
-        `;
-    }
-
-    if (urls.length === 2) {
-        return `
-            <div class="project-media-grid grid-2">
                 <img src="${urls[0]}" onclick="openLightbox(event, ${projectId}, '${source}', 0)">
-                <img src="${urls[1]}" onclick="openLightbox(event, ${projectId}, '${source}', 1)">
             </div>
         `;
     }
 
-    if (urls.length === 3) {
-        return `
-            <div class="project-media-grid grid-3">
-                <div class="main-cell"><img src="${urls[0]}" onclick="openLightbox(event, ${projectId}, '${source}', 0)"></div>
-                <div class="side-cell"><img src="${urls[1]}" onclick="openLightbox(event, ${projectId}, '${source}', 1)"></div>
-                <div class="side-cell"><img src="${urls[2]}" onclick="openLightbox(event, ${projectId}, '${source}', 2)"></div>
-            </div>
-        `;
-    }
-
-    // 4 or more images: 2x2 grid with +N overlay on 4th cell
-    const extraCount = urls.length - 4;
+    // 2+ images: big main on top + thumbnail strip below
+    const thumbs = urls.slice(1, 4); // up to 3 thumbnails
+    const extraCount = urls.length - 4; // extras beyond 4th image
     return `
-        <div class="project-media-grid grid-4">
-            ${[0,1,2,3].map(i => `
-                <div class="grid-cell">
-                    <img src="${urls[i]}" onclick="openLightbox(event, ${projectId}, '${source}', ${i})">
-                    ${i === 3 && extraCount > 0 ? `
-                        <div onclick="event.stopPropagation(); openProjectDetailsById(${projectId})" style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.1rem;cursor:pointer;">+${extraCount}</div>
-                    ` : ''}
-                </div>
-            `).join('')}
+        <div class="project-media-grid multi">
+            <img class="main-img" src="${urls[0]}" onclick="openLightbox(event, ${projectId}, '${source}', 0)">
+            <div class="thumbs-strip">
+                ${thumbs.map((url, i) => {
+                    const isLast = i === 2 && extraCount > 0;
+                    return `
+                        <div class="thumb-cell">
+                            <img src="${url}" onclick="openLightbox(event, ${projectId}, '${source}', ${i + 1})">
+                            ${isLast ? `<div class="more-overlay" onclick="event.stopPropagation(); openProjectDetailsById(${projectId})">+${extraCount}</div>` : ''}
+                        </div>
+                    `;
+                }).join('')}
+            </div>
         </div>
     `;
 }
@@ -414,94 +400,77 @@ window.openLightbox = function(e, projectId, source, imageIdx) {
     style.textContent = `
         .project-media-grid {
             width: 100%;
-            height: 220px;
-            margin-bottom: 20px;
+            height: 200px;
+            margin-bottom: 16px;
             border-radius: 12px;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(255, 255, 255, 0.02);
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            box-sizing: border-box;
         }
         .project-media-grid img {
             cursor: pointer;
             transition: transform 0.3s ease, filter 0.3s ease;
+            display: block;
         }
         .project-media-grid img:hover {
-            transform: scale(1.02);
+            transform: scale(1.03);
             filter: brightness(1.1);
         }
+        /* Single image – fill full box */
         .project-media-grid.single {
             background: #000;
         }
-        .project-media-grid.single .main {
+        .project-media-grid.single img {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            display: block;
         }
-        .project-media-grid.grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px;
-            height: 100%;
+        /* Multi layout: big top image + thumbnails strip */
+        .project-media-grid.multi {
+            padding: 0;
         }
-        .project-media-grid.grid-2 img {
+        .project-media-grid.multi .main-img {
             width: 100%;
-            height: 100%;
+            height: 148px;
             object-fit: cover;
-            display: block;
-            border-radius: 6px;
+            flex-shrink: 0;
         }
-        .project-media-grid.grid-3 {
-            display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            gap: 6px;
-            height: 100%;
+        .project-media-grid.multi .thumbs-strip {
+            display: flex;
+            flex-direction: row;
+            gap: 5px;
+            height: 47px;
+            padding: 0 5px 5px 5px;
+            box-sizing: border-box;
+            flex-shrink: 0;
         }
-        .project-media-grid.grid-3 .main-cell {
-            grid-row: span 2;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            border-radius: 6px;
-        }
-        .project-media-grid.grid-3 .main-cell img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-        .project-media-grid.grid-3 .side-cell {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            border-radius: 6px;
-        }
-        .project-media-grid.grid-3 .side-cell img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-        .project-media-grid.grid-4 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            gap: 6px;
-            height: 100%;
-        }
-        .project-media-grid.grid-4 .grid-cell {
-            width: 100%;
-            height: 100%;
+        .project-media-grid.multi .thumbs-strip .thumb-cell {
+            flex: 1;
             position: relative;
             overflow: hidden;
             border-radius: 6px;
+            height: 100%;
         }
-        .project-media-grid.grid-4 .grid-cell img {
+        .project-media-grid.multi .thumbs-strip .thumb-cell img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            display: block;
+        }
+        .project-media-grid.multi .thumbs-strip .thumb-cell .more-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.70);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
         }
     `;
     document.head.appendChild(style);
@@ -858,42 +827,28 @@ function renderAchievementImagesGrid(imageUrls, achievementId, source) {
     if (urls.length === 1) {
         return `
             <div class="project-media-grid single">
-                <img src="${urls[0]}" class="project-grid-img main" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', 0)">
-            </div>
-        `;
-    }
-
-    if (urls.length === 2) {
-        return `
-            <div class="project-media-grid grid-2">
                 <img src="${urls[0]}" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', 0)">
-                <img src="${urls[1]}" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', 1)">
             </div>
         `;
     }
 
-    if (urls.length === 3) {
-        return `
-            <div class="project-media-grid grid-3">
-                <div class="main-cell"><img src="${urls[0]}" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', 0)"></div>
-                <div class="side-cell"><img src="${urls[1]}" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', 1)"></div>
-                <div class="side-cell"><img src="${urls[2]}" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', 2)"></div>
-            </div>
-        `;
-    }
-
-    // 4 or more images: 2x2 grid with +N overlay on 4th cell
+    // 2+ images: big main on top + thumbnail strip below
+    const thumbs = urls.slice(1, 4);
     const extraCount = urls.length - 4;
     return `
-        <div class="project-media-grid grid-4">
-            ${[0,1,2,3].map(i => `
-                <div class="grid-cell">
-                    <img src="${urls[i]}" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', ${i})">
-                    ${i === 3 && extraCount > 0 ? `
-                        <div onclick="event.stopPropagation(); openAchievementDetailsById(${achievementId})" style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.1rem;cursor:pointer;">+${extraCount}</div>
-                    ` : ''}
-                </div>
-            `).join('')}
+        <div class="project-media-grid multi">
+            <img class="main-img" src="${urls[0]}" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', 0)">
+            <div class="thumbs-strip">
+                ${thumbs.map((url, i) => {
+                    const isLast = i === 2 && extraCount > 0;
+                    return `
+                        <div class="thumb-cell">
+                            <img src="${url}" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', ${i + 1})">
+                            ${isLast ? `<div class="more-overlay" onclick="event.stopPropagation(); openAchievementDetailsById(${achievementId})">+${extraCount}</div>` : ''}
+                        </div>
+                    `;
+                }).join('')}
+            </div>
         </div>
     `;
 }
