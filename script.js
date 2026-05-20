@@ -357,14 +357,20 @@ window.openLightbox = function(e, projectIdx, source, imageIdx) {
         `;
         
         if (urls.length > 1) {
-            document.getElementById('lightbox-prev').onclick = (evt) => {
-                evt.stopPropagation();
-                navigate(-1);
-            };
-            document.getElementById('lightbox-next').onclick = (evt) => {
-                evt.stopPropagation();
-                navigate(1);
-            };
+            const prevBtn = lb.querySelector('#lightbox-prev');
+            const nextBtn = lb.querySelector('#lightbox-next');
+            if (prevBtn) {
+                prevBtn.onclick = (evt) => {
+                    evt.stopPropagation();
+                    navigate(-1);
+                };
+            }
+            if (nextBtn) {
+                nextBtn.onclick = (evt) => {
+                    evt.stopPropagation();
+                    navigate(1);
+                };
+            }
         }
     };
     
