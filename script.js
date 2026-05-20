@@ -169,10 +169,46 @@ function renderProjectImagesGrid(imageUrls, projectId, source) {
         if (imageUrls) urls = [imageUrls];
     }
     if (urls.length === 0) return '';
-    
+
+    if (urls.length === 1) {
+        return `
+            <div class="project-media-grid single">
+                <img src="${urls[0]}" class="project-grid-img main" onclick="openLightbox(event, ${projectId}, '${source}', 0)">
+            </div>
+        `;
+    }
+
+    if (urls.length === 2) {
+        return `
+            <div class="project-media-grid grid-2">
+                <img src="${urls[0]}" onclick="openLightbox(event, ${projectId}, '${source}', 0)">
+                <img src="${urls[1]}" onclick="openLightbox(event, ${projectId}, '${source}', 1)">
+            </div>
+        `;
+    }
+
+    if (urls.length === 3) {
+        return `
+            <div class="project-media-grid grid-3">
+                <div class="main-cell"><img src="${urls[0]}" onclick="openLightbox(event, ${projectId}, '${source}', 0)"></div>
+                <div class="side-cell"><img src="${urls[1]}" onclick="openLightbox(event, ${projectId}, '${source}', 1)"></div>
+                <div class="side-cell"><img src="${urls[2]}" onclick="openLightbox(event, ${projectId}, '${source}', 2)"></div>
+            </div>
+        `;
+    }
+
+    // 4 or more images: 2x2 grid with +N overlay on 4th cell
+    const extraCount = urls.length - 4;
     return `
-        <div class="project-media-grid single">
-            <img src="${urls[0]}" class="project-grid-img main" onclick="openLightbox(event, ${projectId}, '${source}', 0)">
+        <div class="project-media-grid grid-4">
+            ${[0,1,2,3].map(i => `
+                <div class="grid-cell">
+                    <img src="${urls[i]}" onclick="openLightbox(event, ${projectId}, '${source}', ${i})">
+                    ${i === 3 && extraCount > 0 ? `
+                        <div onclick="event.stopPropagation(); openProjectDetailsById(${projectId})" style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.1rem;cursor:pointer;">+${extraCount}</div>
+                    ` : ''}
+                </div>
+            `).join('')}
         </div>
     `;
 }
@@ -402,38 +438,70 @@ window.openLightbox = function(e, projectId, source, imageIdx) {
             object-fit: contain;
             display: block;
         }
-        .project-media-grid.multi {
-            display: flex;
-            flex-direction: column;
+        .project-media-grid.grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 6px;
             height: 100%;
         }
-        .project-media-grid.multi .main-img-wrapper {
+        .project-media-grid.grid-2 img {
             width: 100%;
-            height: 118px;
-            overflow: hidden;
-            background: #000;
-        }
-        .project-media-grid.multi .main-img-wrapper .main {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-        }
-        .project-media-grid.multi .thumbnails-wrapper {
-            display: flex;
-            gap: 6px;
-            width: 100%;
-            height: 50px;
-            padding: 0 6px 6px 6px;
-            box-sizing: border-box;
-        }
-        .project-media-grid.multi .thumbnails-wrapper .thumb {
-            flex: 1;
             height: 100%;
             object-fit: cover;
+            display: block;
             border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .project-media-grid.grid-3 {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 6px;
+            height: 100%;
+        }
+        .project-media-grid.grid-3 .main-cell {
+            grid-row: span 2;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 6px;
+        }
+        .project-media-grid.grid-3 .main-cell img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .project-media-grid.grid-3 .side-cell {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 6px;
+        }
+        .project-media-grid.grid-3 .side-cell img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .project-media-grid.grid-4 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 6px;
+            height: 100%;
+        }
+        .project-media-grid.grid-4 .grid-cell {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            border-radius: 6px;
+        }
+        .project-media-grid.grid-4 .grid-cell img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
     `;
     document.head.appendChild(style);
@@ -786,10 +854,46 @@ function renderAchievementImagesGrid(imageUrls, achievementId, source) {
         if (imageUrls) urls = [imageUrls];
     }
     if (urls.length === 0) return '';
-    
+
+    if (urls.length === 1) {
+        return `
+            <div class="project-media-grid single">
+                <img src="${urls[0]}" class="project-grid-img main" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', 0)">
+            </div>
+        `;
+    }
+
+    if (urls.length === 2) {
+        return `
+            <div class="project-media-grid grid-2">
+                <img src="${urls[0]}" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', 0)">
+                <img src="${urls[1]}" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', 1)">
+            </div>
+        `;
+    }
+
+    if (urls.length === 3) {
+        return `
+            <div class="project-media-grid grid-3">
+                <div class="main-cell"><img src="${urls[0]}" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', 0)"></div>
+                <div class="side-cell"><img src="${urls[1]}" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', 1)"></div>
+                <div class="side-cell"><img src="${urls[2]}" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', 2)"></div>
+            </div>
+        `;
+    }
+
+    // 4 or more images: 2x2 grid with +N overlay on 4th cell
+    const extraCount = urls.length - 4;
     return `
-        <div class="project-media-grid single">
-            <img src="${urls[0]}" class="project-grid-img main" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', 0)">
+        <div class="project-media-grid grid-4">
+            ${[0,1,2,3].map(i => `
+                <div class="grid-cell">
+                    <img src="${urls[i]}" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', ${i})">
+                    ${i === 3 && extraCount > 0 ? `
+                        <div onclick="event.stopPropagation(); openAchievementDetailsById(${achievementId})" style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.65);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.1rem;cursor:pointer;">+${extraCount}</div>
+                    ` : ''}
+                </div>
+            `).join('')}
         </div>
     `;
 }
