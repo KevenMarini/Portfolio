@@ -794,7 +794,10 @@ section {
 }
 
 .projects-slider-wrapper .proj-card {
-  height: 485px;
+  min-width: 360px;
+  width: 360px;
+  height: 460px;
+  padding: 30px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -803,7 +806,10 @@ section {
 
 @media (max-width: 768px) {
   .projects-slider-wrapper .proj-card {
+    min-width: 85% !important;
+    width: auto !important;
     height: 440px;
+    padding: 30px 20px;
   }
 }
 
