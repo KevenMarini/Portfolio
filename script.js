@@ -169,7 +169,7 @@ function renderProjectImagesGrid(imageUrls, idx, source) {
     if (urls.length === 1) {
         return `
             <div class="project-media-grid single">
-                <img src="${urls[0]}" class="project-grid-img main" onclick="openLightbox(event, '${urls[0]}')">
+                <img src="${urls[0]}" class="project-grid-img main" onclick="openLightbox(event, ${idx}, '${source}', 0)">
             </div>
         `;
     }
@@ -181,14 +181,14 @@ function renderProjectImagesGrid(imageUrls, idx, source) {
     return `
         <div class="project-media-grid multi">
             <div class="main-img-wrapper">
-                <img src="${mainImg}" class="project-grid-img main" onclick="openLightbox(event, '${mainImg}')">
+                <img src="${mainImg}" class="project-grid-img main" onclick="openLightbox(event, ${idx}, '${source}', 0)">
             </div>
             <div class="thumbnails-wrapper">
                 ${thumbnails.map((url, tIdx) => {
                     const isLast = tIdx === 2 && extraCount > 0;
                     return `
                         <div style="flex: 1; position: relative; height: 60px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05);">
-                            <img src="${url}" class="project-grid-img thumb" style="width: 100%; height: 100%; object-fit: cover;" onclick="openLightbox(event, '${url}')">
+                            <img src="${url}" class="project-grid-img thumb" style="width: 100%; height: 100%; object-fit: cover;" onclick="openLightbox(event, ${idx}, '${source}', ${tIdx + 1})">
                             ${isLast ? `
                                 <div onclick="event.stopPropagation(); openProjectDetailsByIndex(${idx}, '${source}')" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.95rem; cursor: pointer; user-select: none;">
                                     +${extraCount + 1}
@@ -239,6 +239,8 @@ window.openProjectDetails = function(project) {
         padding: 20px;
     `;
     
+    const globalProjIdx = window.cachedProjects ? window.cachedProjects.indexOf(project) : -1;
+    
     modal.innerHTML = `
         <div class="project-modal-content" style="
             background: rgba(20, 20, 25, 0.95);
@@ -269,8 +271,8 @@ window.openProjectDetails = function(project) {
             
             ${urls.length > 0 ? `
                 <div class="project-modal-images" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-bottom: 25px;">
-                    ${urls.map(url => `
-                        <img src="${url}" style="width:100%; height:100px; object-fit:cover; border-radius:8px; cursor:pointer; border:1px solid rgba(255,255,255,0.06); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'" onclick="openLightbox(event, '${url}')">
+                    ${urls.map((url, uIdx) => `
+                        <img src="${url}" style="width:100%; height:100px; object-fit:cover; border-radius:8px; cursor:pointer; border:1px solid rgba(255,255,255,0.06); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'" onclick="openLightbox(event, ${globalProjIdx}, 'all', ${uIdx})">
                     `).join('')}
                 </div>
             ` : ''}
@@ -296,8 +298,25 @@ window.closeProjectDetails = function() {
     if (m) m.remove();
 };
 
-window.openLightbox = function(e, url) {
+window.openLightbox = function(e, projectIdx, source, imageIdx) {
     if (e) e.stopPropagation();
+    
+    let projects = window.cachedProjects || [];
+    if (source === 'home') {
+        projects = (window.cachedProjects || []).filter(p => p.show_on_home === true || p.show_on_home === 'true' || p.show_on_home === 1);
+    }
+    const project = projects[projectIdx];
+    if (!project) return;
+    
+    let urls = [];
+    try {
+        urls = JSON.parse(project.image_urls || '[]');
+    } catch(err) {
+        if (project.image_urls) urls = [project.image_urls];
+    }
+    if (urls.length === 0) return;
+    
+    let currentIndex = imageIdx;
     
     const lb = document.createElement('div');
     lb.id = 'image-lightbox';
@@ -312,13 +331,71 @@ window.openLightbox = function(e, url) {
         align-items: center;
         justify-content: center;
         z-index: 11000;
-        cursor: zoom-out;
     `;
-    lb.onclick = () => lb.remove();
-    lb.innerHTML = `
-        <img src="${url}" style="max-width: 90%; max-height: 90%; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 45px rgba(0,0,0,0.85);">
-        <button style="position:absolute; top:20px; right:20px; background:none; border:none; color:white; font-size:35px; cursor:pointer;">&times;</button>
-    `;
+    
+    lb.onclick = (event) => {
+        if (event.target.id === 'image-lightbox' || event.target.classList.contains('lightbox-close')) {
+            cleanup();
+        }
+    };
+    
+    const renderContent = () => {
+        lb.innerHTML = `
+            <button class="lightbox-close" style="position:absolute; top:20px; right:20px; background:none; border:none; color:rgba(255,255,255,0.7); font-size:45px; cursor:pointer; z-index:12000; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.7)'">&times;</button>
+            
+            ${urls.length > 1 ? `
+                <button id="lightbox-prev" style="position: absolute; left: 30px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; width: 50px; height: 50px; color: white; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 12000; font-family: sans-serif;" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">&#10094;</button>
+                <button id="lightbox-next" style="position: absolute; right: 30px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 50%; width: 50px; height: 50px; color: white; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; z-index: 12000; font-family: sans-serif;" onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">&#10095;</button>
+            ` : ''}
+            
+            <div style="max-width: 85%; max-height: 85%; display: flex; flex-direction: column; align-items: center; gap: 15px; position: relative;">
+                <img id="lightbox-img" src="${urls[currentIndex]}" style="max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 45px rgba(0,0,0,0.85); transition: opacity 0.15s ease-in-out;">
+                <div style="color: rgba(255,255,255,0.5); font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; letter-spacing: 1px;">
+                    ${currentIndex + 1} / ${urls.length}
+                </div>
+            </div>
+        `;
+        
+        if (urls.length > 1) {
+            document.getElementById('lightbox-prev').onclick = (evt) => {
+                evt.stopPropagation();
+                navigate(-1);
+            };
+            document.getElementById('lightbox-next').onclick = (evt) => {
+                evt.stopPropagation();
+                navigate(1);
+            };
+        }
+    };
+    
+    const navigate = (direction) => {
+        currentIndex = (currentIndex + direction + urls.length) % urls.length;
+        const img = document.getElementById('lightbox-img');
+        if (img) {
+            img.style.opacity = '0';
+            setTimeout(() => {
+                renderContent();
+            }, 150);
+        }
+    };
+    
+    const handleKeydown = (event) => {
+        if (event.key === 'ArrowLeft') {
+            navigate(-1);
+        } else if (event.key === 'ArrowRight') {
+            navigate(1);
+        } else if (event.key === 'Escape') {
+            cleanup();
+        }
+    };
+    
+    const cleanup = () => {
+        lb.remove();
+        document.removeEventListener('keydown', handleKeydown);
+    };
+    
+    document.addEventListener('keydown', handleKeydown);
+    renderContent();
     document.body.appendChild(lb);
 };
 
