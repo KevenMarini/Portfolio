@@ -109,7 +109,7 @@ function renderProjects(projects) {
             `;
         } else {
             homeGrid.innerHTML = homeProjects.map((p, idx) => {
-                const imagesGrid = renderProjectImagesGrid(p.image_urls);
+                const imagesGrid = renderProjectImagesGrid(p.image_urls, idx, 'home');
                 return `
                     <div class="card proj-card reveal active" onclick="openProjectDetailsByIndex(${idx}, 'home')" style="cursor: pointer; display: flex; flex-direction: column; justify-content: space-between;">
                         <div>
@@ -135,7 +135,7 @@ function renderProjects(projects) {
             listContainer.innerHTML = `<div style="text-align: center; color: var(--text-secondary); padding: 40px 0; width: 100%;">No projects available.</div>`;
         } else {
             listContainer.innerHTML = projects.map((p, idx) => {
-                const imagesGrid = renderProjectImagesGrid(p.image_urls);
+                const imagesGrid = renderProjectImagesGrid(p.image_urls, idx, 'all');
                 return `
                     <div class="card proj-card reveal active" onclick="openProjectDetailsByIndex(${idx}, 'all')" style="cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; max-width: 500px; width: 100%;">
                         <div>
@@ -157,7 +157,7 @@ function renderProjects(projects) {
     }
 }
 
-function renderProjectImagesGrid(imageUrls) {
+function renderProjectImagesGrid(imageUrls, idx, source) {
     let urls = [];
     try {
         urls = JSON.parse(imageUrls || '[]');
@@ -176,6 +176,7 @@ function renderProjectImagesGrid(imageUrls) {
     
     const mainImg = urls[0];
     const thumbnails = urls.slice(1, 4); // Up to 3 thumbnails
+    const extraCount = urls.length - 4;
     
     return `
         <div class="project-media-grid multi">
@@ -183,9 +184,19 @@ function renderProjectImagesGrid(imageUrls) {
                 <img src="${mainImg}" class="project-grid-img main" onclick="openLightbox(event, '${mainImg}')">
             </div>
             <div class="thumbnails-wrapper">
-                ${thumbnails.map(url => `
-                    <img src="${url}" class="project-grid-img thumb" onclick="openLightbox(event, '${url}')">
-                `).join('')}
+                ${thumbnails.map((url, tIdx) => {
+                    const isLast = tIdx === 2 && extraCount > 0;
+                    return `
+                        <div style="flex: 1; position: relative; height: 60px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05);">
+                            <img src="${url}" class="project-grid-img thumb" style="width: 100%; height: 100%; object-fit: cover;" onclick="openLightbox(event, '${url}')">
+                            ${isLast ? `
+                                <div onclick="event.stopPropagation(); openProjectDetailsByIndex(${idx}, '${source}')" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.95rem; cursor: pointer; user-select: none;">
+                                    +${extraCount + 1}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('')}
             </div>
         </div>
     `;

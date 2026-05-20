@@ -777,7 +777,7 @@
                 } else if (f === 'image_urls') {
                     return `
                         <div class="input-group full-width" style="display:flex; flex-direction:column; gap:10px;">
-                            <label>Project Images (Max 4 images recommended for grid)</label>
+                            <label>Project Images (Up to 8 images)</label>
                             <div style="display:flex; gap:10px; align-items:center; width:100%;">
                                 <input type="hidden" id="field-${f}">
                                 <button type="button" class="btn-action btn-edit" style="width:auto; white-space:nowrap; margin-top:0; padding:10px 15px;" onclick="triggerProjectImagesUpload()">Upload Image</button>
@@ -903,6 +903,12 @@
                 try {
                     urls = JSON.parse(field.value || '[]');
                 } catch(err) {}
+                
+                if (urls.length >= 8) {
+                    alert("You can upload a maximum of 8 images per project.");
+                    e.target.value = '';
+                    return;
+                }
                 
                 urls.push(base64Str);
                 field.value = JSON.stringify(urls);
