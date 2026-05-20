@@ -12,8 +12,26 @@
         .page-container {
             min-height: 80vh;
             padding: 0 5%;
-            max-width: 1400px;
+            max-width: 1000px; /* narrowed for better reading layout of vertical projects list */
             margin: 0 auto;
+        }
+        .projects-list-wrapper {
+            width: 100%;
+            margin-top: 40px;
+        }
+        .projects-list {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            padding: 20px 0;
+            width: 100%;
+        }
+        .projects-list .proj-card {
+            width: 100%;
+            min-width: 100%;
+            flex-shrink: 0;
+            scroll-snap-align: none;
+            padding: 40px;
         }
     </style>
 </head>
@@ -47,8 +65,8 @@
                 <span class="section-label">Showcase</span>
                 <h2 class="section-title">Selected <span>Work.</span></h2>
 
-                <div class="projects-slider-wrapper reveal active">
-                    <div class="projects-grid">
+                <div class="projects-list-wrapper reveal active">
+                    <div class="projects-list">
 
                         <div class="card proj-card">
                             <div class="proj-header">
@@ -127,9 +145,22 @@
                             <p>Designed an intelligent system to detect abnormal energy usage patterns, predict overload risks, and automatically reduce load using AI-based anomaly detection and ESP32 hardware.</p>
                         </div>
 
+                        <div class="card proj-card">
+                            <div class="proj-header">
+                                <div class="proj-tags">
+                                    <span class="proj-tag tag-ai">AI / ML</span>
+                                    <span class="proj-tag tag-cv">Vision</span>
+                                </div>
+                                <span class="proj-date">Jan 2026 - Apr 2026</span>
+                            </div>
+                            <h3>AI-Based Sign Language Detection & Communication System</h3>
+                            <p>SignBridge is a comprehensive, full-stack solution designed to facilitate seamless communication between sign language users and non-signers. By leveraging state-of-the-art AI and computer vision, the platform translates hand gestures into text in real-time.</p>
+                            <a href="https://github.com/KevenMarini/SignBridge" target="_blank"
+                                class="proj-link">GitHub</a>
+                        </div>
+
                     </div>
                 </div>
-                <div class="project-dots" id="project-dots"></div>
             </section>
     </main>
 

@@ -761,6 +761,32 @@ section {
   display: none;
 }
 
+.home-projects-grid {
+  scrollbar-width: thin !important;
+  scrollbar-color: var(--accent-cyan) rgba(255, 255, 255, 0.03) !important;
+}
+
+.home-projects-grid::-webkit-scrollbar {
+  display: block !important;
+  height: 8px !important;
+}
+
+.home-projects-grid::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-radius: 10px !important;
+}
+
+.home-projects-grid::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple)) !important;
+  border-radius: 10px !important;
+  cursor: pointer !important;
+}
+
+.home-projects-grid::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-cyan) !important;
+  box-shadow: 0 0 15px var(--accent-cyan) !important;
+}
+
 .proj-card {
   min-width: 450px;
   scroll-snap-align: center;
