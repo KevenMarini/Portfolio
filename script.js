@@ -95,6 +95,7 @@ function renderProfile(p) {
 
 function renderProjects(projects) {
     const grid = document.querySelector('.projects-grid');
+    if (!grid) return;
     grid.innerHTML = projects.map(p => `
         <div class="card proj-card">
             <div class="proj-tags">
@@ -153,6 +154,7 @@ function renderCertifications(certs) {
 
 function renderEducation(edu) {
     const grid = document.querySelector('.edu-grid');
+    if (!grid) return;
     grid.innerHTML = edu.map(e => `
         <div class="card edu-card reveal active">
             <span class="edu-inst">${e.institution}</span>
