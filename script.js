@@ -407,6 +407,7 @@ window.openLightbox = function(e, projectId, source, imageIdx) {
     style.textContent = `
         .project-media-grid {
             width: 100%;
+            height: 220px;
             margin-bottom: 20px;
             border-radius: 12px;
             overflow: hidden;
@@ -423,7 +424,7 @@ window.openLightbox = function(e, projectId, source, imageIdx) {
         }
         .project-media-grid.single .main {
             width: 100%;
-            height: 220px;
+            height: 100%;
             object-fit: cover;
             display: block;
         }
@@ -431,14 +432,16 @@ window.openLightbox = function(e, projectId, source, imageIdx) {
             display: flex;
             flex-direction: column;
             gap: 6px;
+            height: 100%;
         }
         .project-media-grid.multi .main-img-wrapper {
             width: 100%;
+            height: 148px;
             overflow: hidden;
         }
         .project-media-grid.multi .main-img-wrapper .main {
             width: 100%;
-            height: 180px;
+            height: 100%;
             object-fit: cover;
             display: block;
         }
@@ -446,12 +449,13 @@ window.openLightbox = function(e, projectId, source, imageIdx) {
             display: flex;
             gap: 6px;
             width: 100%;
+            height: 60px;
             padding: 0 6px 6px 6px;
             box-sizing: border-box;
         }
         .project-media-grid.multi .thumbnails-wrapper .thumb {
             flex: 1;
-            height: 60px;
+            height: 100%;
             object-fit: cover;
             border-radius: 6px;
             border: 1px solid rgba(255, 255, 255, 0.05);

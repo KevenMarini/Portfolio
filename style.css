@@ -793,6 +793,20 @@ section {
   flex-shrink: 0;
 }
 
+.projects-slider-wrapper .proj-card {
+  height: 485px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .projects-slider-wrapper .proj-card {
+    height: 440px;
+  }
+}
+
 .project-dots {
     display: flex;
     justify-content: center;
