@@ -16,6 +16,8 @@ export default async function handler(request, response) {
     try { await sql`ALTER TABLE profile ADD COLUMN image_url TEXT;`; } catch(e) {}
     try { await sql`ALTER TABLE profile ADD COLUMN cgpa TEXT;`; } catch(e) {}
     await sql`CREATE TABLE IF NOT EXISTS projects (id SERIAL PRIMARY KEY, title TEXT, description TEXT, tags TEXT, link TEXT, date TEXT);`;
+    try { await sql`ALTER TABLE projects ADD COLUMN image_urls TEXT;`; } catch(e) {}
+    try { await sql`ALTER TABLE projects ADD COLUMN show_on_home BOOLEAN DEFAULT FALSE;`; } catch(e) {}
     await sql`CREATE TABLE IF NOT EXISTS experience (id SERIAL PRIMARY KEY, role TEXT, organization TEXT, description TEXT, date TEXT);`;
     await sql`CREATE TABLE IF NOT EXISTS skills (id SERIAL PRIMARY KEY, name TEXT, category TEXT);`;
     await sql`CREATE TABLE IF NOT EXISTS education (id SERIAL PRIMARY KEY, degree TEXT, institution TEXT, year TEXT, score TEXT, score_label TEXT);`;
@@ -36,11 +38,11 @@ export default async function handler(request, response) {
           await sql`INSERT INTO profile (name, subtitle, hero_badge, email, phone, linkedin, github, about_text, location, languages, project_count, club_count, current_year, image_url, cgpa) VALUES (${name}, ${subtitle}, ${hero_badge}, ${email}, ${phone}, ${linkedin}, ${github}, ${about_text}, ${location}, ${languages}, ${project_count}, ${club_count}, ${current_year}, ${image_url}, ${cgpa});`;
         }
       } else if (type === 'project') {
-        const { id, title='', description='', tags='', link='', date='' } = data || {};
+        const { id, title='', description='', tags='', link='', date='', image_urls='', show_on_home=false } = data || {};
         if (id) {
-          await sql`UPDATE projects SET title=${title}, description=${description}, tags=${tags}, link=${link}, date=${date} WHERE id=${id};`;
+          await sql`UPDATE projects SET title=${title}, description=${description}, tags=${tags}, link=${link}, date=${date}, image_urls=${image_urls}, show_on_home=${show_on_home} WHERE id=${id};`;
         } else {
-          await sql`INSERT INTO projects (title, description, tags, link, date) VALUES (${title}, ${description}, ${tags}, ${link}, ${date});`;
+          await sql`INSERT INTO projects (title, description, tags, link, date, image_urls, show_on_home) VALUES (${title}, ${description}, ${tags}, ${link}, ${date}, ${image_urls}, ${show_on_home});`;
         }
       } else if (type === 'experience') {
         const { id, role='', organization='', description='', date='' } = data || {};

@@ -467,7 +467,7 @@
             home: { title: 'Home Page Editor' },
             profile: { title: 'Profile Settings' },
             experience: { title: 'Experience', fields: ['role', 'organization', 'description', 'date'] },
-            project: { title: 'Selected Projects', fields: ['title', 'description', 'tags', 'link', 'date'] },
+            project: { title: 'Selected Projects', fields: ['title', 'description', 'tags', 'link', 'date', 'image_urls', 'show_on_home'] },
             skill: { title: 'Technical Stack', fields: ['name', 'category'] },
             certification: { title: 'Certifications', fields: ['name', 'status', 'link', 'image_url', 'show_on_home'] },
             education: { title: 'Education', fields: ['degree', 'institution', 'year', 'score', 'score_label'] }
@@ -695,8 +695,18 @@
                                     ${item.tags ? `<div style="margin-bottom: 10px;">${item.tags.split(',').map(t => `<span class="tag">${t.trim()}</span>`).join('')}</div>` : ''}
                                     <h4>${item.role || item.title || item.name || item.degree}</h4>
                                     <p>${item.organization || item.institution || item.category || item.status || ''}</p>
+                                    ${item.show_on_home === true || item.show_on_home === 'true' || item.show_on_home === 1 ? `<span class="tag" style="background: rgba(0, 242, 254, 0.1); color: var(--accent-cyan); border-color: rgba(0, 242, 254, 0.2); margin-top: 5px; display: inline-block;">★ Showcased on Home</span>` : ''}
                                     ${item.image_url ? `<img src="${item.image_url}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 6px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.05);">` : ''}
-                                    ${item.description ? `<p style="font-size: 0.85rem; opacity: 0.7;">${item.description.substring(0, 100)}...</p>` : ''}
+                                    ${item.image_urls ? `
+                                        <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-top: 10px;">
+                                            ${(() => {
+                                                let urls = [];
+                                                try { urls = JSON.parse(item.image_urls || '[]'); } catch(e) { if(item.image_urls) urls=[item.image_urls]; }
+                                                return urls.map(url => `<img src="${url}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; border: 1px solid rgba(255,255,255,0.05);">`).join('');
+                                            })()}
+                                        </div>
+                                    ` : ''}
+                                    ${item.description ? `<p style="font-size: 0.85rem; opacity: 0.7; margin-top: 10px;">${item.description.substring(0, 100)}...</p>` : ''}
                                 </div>
                                 <div class="card-actions">
                                     <button class="btn-action btn-edit" onclick="openEntryModal('${currentTab}', ${item.id})">Edit</button>
@@ -764,6 +774,18 @@
                             </div>
                         </div>
                     `;
+                } else if (f === 'image_urls') {
+                    return `
+                        <div class="input-group full-width" style="display:flex; flex-direction:column; gap:10px;">
+                            <label>Project Images (Max 4 images recommended for grid)</label>
+                            <div style="display:flex; gap:10px; align-items:center; width:100%;">
+                                <input type="hidden" id="field-${f}">
+                                <button type="button" class="btn-action btn-edit" style="width:auto; white-space:nowrap; margin-top:0; padding:10px 15px;" onclick="triggerProjectImagesUpload()">Upload Image</button>
+                                <input type="file" id="project-images-file" accept="image/*" style="display:none;" onchange="handleProjectImageUpload(event)">
+                            </div>
+                            <div id="project-images-preview-container" style="display:flex; gap:15px; flex-wrap:wrap; margin-top:10px;"></div>
+                        </div>
+                    `;
                 } else if (f === 'show_on_home') {
                     return `
                         <div class="input-group" style="display:flex; flex-direction:row; align-items:center; gap:10px; margin: 15px 0;">
@@ -805,6 +827,23 @@
                         previewContainer.style.display = 'block';
                     }
                 }
+
+                if (type === 'project') {
+                    const previewContainer = document.getElementById('project-images-preview-container');
+                    if (previewContainer) {
+                        previewContainer.innerHTML = '';
+                        let urls = [];
+                        try {
+                            urls = JSON.parse(item.image_urls || '[]');
+                        } catch(e) {
+                            if (item.image_urls) urls = [item.image_urls];
+                        }
+                        document.getElementById('field-image_urls').value = JSON.stringify(urls);
+                        urls.forEach((url, idx) => {
+                            renderProjectImagePreview(url, idx);
+                        });
+                    }
+                }
             }
             
             document.getElementById('modal-delete-btn').style.display = id ? 'block' : 'none';
@@ -839,6 +878,65 @@
                 }
             };
             reader.readAsDataURL(file);
+        }
+
+        function triggerProjectImagesUpload() {
+            document.getElementById('project-images-file').click();
+        }
+
+        function handleProjectImageUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const maxSize = 2 * 1024 * 1024; // 2MB
+            if (file.size > maxSize) {
+                alert("File size exceeds 2MB limit. Please choose a smaller image.");
+                e.target.value = '';
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const base64Str = event.target.result;
+                const field = document.getElementById('field-image_urls');
+                let urls = [];
+                try {
+                    urls = JSON.parse(field.value || '[]');
+                } catch(err) {}
+                
+                urls.push(base64Str);
+                field.value = JSON.stringify(urls);
+                
+                renderProjectImagePreview(base64Str, urls.length - 1);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderProjectImagePreview(url, idx) {
+            const container = document.getElementById('project-images-preview-container');
+            if (!container) return;
+            
+            const div = document.createElement('div');
+            div.className = 'project-preview-card';
+            div.style = 'position:relative; width:100px; height:100px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); overflow:hidden;';
+            div.innerHTML = `
+                <img src="${url}" style="width:100%; height:100%; object-fit:cover;">
+                <button type="button" onclick="removeProjectImage(${idx})" style="position:absolute; top:2px; right:2px; background:rgba(255,0,0,0.8); border:none; color:white; border-radius:50%; width:20px; height:20px; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center;">&times;</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeProjectImage(idx) {
+            const field = document.getElementById('field-image_urls');
+            let urls = JSON.parse(field.value || '[]');
+            urls.splice(idx, 1);
+            field.value = JSON.stringify(urls);
+            
+            const container = document.getElementById('project-images-preview-container');
+            container.innerHTML = '';
+            urls.forEach((url, i) => {
+                renderProjectImagePreview(url, i);
+            });
         }
 
         function deleteCurrentEntry() {

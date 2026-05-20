@@ -24,7 +24,10 @@ async function fetchData() {
         const data = await res.json();
         
         if (data.profile) renderProfile(data.profile);
-        if (data.projects.length) renderProjects(data.projects);
+        if (data.projects && data.projects.length) {
+            window.cachedProjects = data.projects;
+            renderProjects(data.projects);
+        }
         if (data.experience.length) renderExperience(data.experience);
         if (data.skills.length) {
             skills = data.skills.map(s => s.name);
@@ -94,20 +97,278 @@ function renderProfile(p) {
 }
 
 function renderProjects(projects) {
-    const grid = document.querySelector('.projects-grid');
-    if (!grid) return;
-    grid.innerHTML = projects.map(p => `
-        <div class="card proj-card">
-            <div class="proj-tags">
-                ${(p.tags || '').split(',').map(tag => `<span class="proj-tag">${tag.trim()}</span>`).join('')}
-            </div>
-            <h3>${p.title}</h3>
-            <p>${p.description}</p>
-            ${p.link ? `<a href="${p.link}" target="_blank" class="proj-link">GitHub</a>` : ''}
-        </div>
-    `).join('');
-    initProjectDots();
+    // 1. Render on Home page (showcased projects in .projects-grid)
+    const homeGrid = document.querySelector('.projects-grid');
+    if (homeGrid) {
+        const homeProjects = projects.filter(p => p.show_on_home === true || p.show_on_home === 'true' || p.show_on_home === 1);
+        if (homeProjects.length === 0) {
+            homeGrid.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 40px 0; width: 100%;">
+                    No showcased projects.
+                </div>
+            `;
+        } else {
+            homeGrid.innerHTML = homeProjects.map((p, idx) => {
+                const imagesGrid = renderProjectImagesGrid(p.image_urls);
+                return `
+                    <div class="card proj-card reveal active" onclick="openProjectDetailsByIndex(${idx}, 'home')" style="cursor: pointer; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            ${imagesGrid}
+                            <div class="proj-tags" style="margin-top: 10px;">
+                                ${(p.tags || '').split(',').map(tag => tag.trim() ? `<span class="proj-tag">${tag.trim()}</span>` : '').join('')}
+                            </div>
+                            <h3>${p.title}</h3>
+                            <p>${p.description ? p.description.substring(0, 120) + (p.description.length > 120 ? '...' : '') : ''}</p>
+                        </div>
+                        ${p.link ? `<a href="${p.link}" target="_blank" class="proj-link" style="align-self: flex-start; margin-top: 10px;" onclick="event.stopPropagation();">GitHub ↗</a>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+        initProjectDots();
+    }
+
+    // 2. Render on Projects page (all projects)
+    const listContainer = document.getElementById('dynamic-projects-list');
+    if (listContainer) {
+        if (projects.length === 0) {
+            listContainer.innerHTML = `<div style="text-align: center; color: var(--text-secondary); padding: 40px 0; width: 100%;">No projects available.</div>`;
+        } else {
+            listContainer.innerHTML = projects.map((p, idx) => {
+                const imagesGrid = renderProjectImagesGrid(p.image_urls);
+                return `
+                    <div class="card proj-card reveal active" onclick="openProjectDetailsByIndex(${idx}, 'all')" style="cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; max-width: 500px; width: 100%;">
+                        <div>
+                            ${imagesGrid}
+                            <div class="proj-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                <div class="proj-tags">
+                                    ${(p.tags || '').split(',').map(tag => tag.trim() ? `<span class="proj-tag">${tag.trim()}</span>` : '').join('')}
+                                </div>
+                                <span class="proj-date" style="font-size:0.85rem; color:var(--text-secondary); font-family:'Space Grotesk', sans-serif;">${p.date || ''}</span>
+                            </div>
+                            <h3 style="font-size: 1.4rem; margin-bottom: 12px; color: white;">${p.title}</h3>
+                            <p style="color: rgba(255,255,255,0.7); font-size: 0.95rem; line-height: 1.5; margin-bottom: 15px;">${p.description}</p>
+                        </div>
+                        ${p.link ? `<a href="${p.link}" target="_blank" class="proj-link" style="align-self: flex-start; margin-top: 10px;" onclick="event.stopPropagation();">GitHub ↗</a>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+    }
 }
+
+function renderProjectImagesGrid(imageUrls) {
+    let urls = [];
+    try {
+        urls = JSON.parse(imageUrls || '[]');
+    } catch(e) {
+        if (imageUrls) urls = [imageUrls];
+    }
+    if (urls.length === 0) return '';
+    
+    if (urls.length === 1) {
+        return `
+            <div class="project-media-grid single">
+                <img src="${urls[0]}" class="project-grid-img main" onclick="openLightbox(event, '${urls[0]}')">
+            </div>
+        `;
+    }
+    
+    const mainImg = urls[0];
+    const thumbnails = urls.slice(1, 4); // Up to 3 thumbnails
+    
+    return `
+        <div class="project-media-grid multi">
+            <div class="main-img-wrapper">
+                <img src="${mainImg}" class="project-grid-img main" onclick="openLightbox(event, '${mainImg}')">
+            </div>
+            <div class="thumbnails-wrapper">
+                ${thumbnails.map(url => `
+                    <img src="${url}" class="project-grid-img thumb" onclick="openLightbox(event, '${url}')">
+                `).join('')}
+            </div>
+        </div>
+    `;
+}
+
+window.openProjectDetailsByIndex = function(idx, source) {
+    let projects = window.cachedProjects || [];
+    if (source === 'home') {
+        projects = (window.cachedProjects || []).filter(p => p.show_on_home === true || p.show_on_home === 'true' || p.show_on_home === 1);
+    }
+    const project = projects[idx];
+    if (project) {
+        openProjectDetails(project);
+    }
+};
+
+window.openProjectDetails = function(project) {
+    let urls = [];
+    try {
+        urls = JSON.parse(project.image_urls || '[]');
+    } catch(e) {
+        if (project.image_urls) urls = [project.image_urls];
+    }
+    
+    const modal = document.createElement('div');
+    modal.id = 'project-details-modal';
+    modal.style = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        padding: 20px;
+    `;
+    
+    modal.innerHTML = `
+        <div class="project-modal-content" style="
+            background: rgba(20, 20, 25, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 35px;
+            position: relative;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+        ">
+            <button onclick="closeProjectDetails()" style="
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                background: none;
+                border: none;
+                color: rgba(255,255,255,0.6);
+                font-size: 32px;
+                cursor: pointer;
+                transition: color 0.2s;
+            " onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.6)'">&times;</button>
+            
+            <span style="color: var(--accent-cyan); font-size: 0.8rem; font-family:'Space Grotesk', sans-serif; letter-spacing: 2px; text-transform: uppercase;">${project.date || ''}</span>
+            <h2 style="font-size: 1.8rem; font-weight: 700; color: white; margin: 8px 0 20px 0; line-height: 1.3;">${project.title}</h2>
+            
+            ${urls.length > 0 ? `
+                <div class="project-modal-images" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-bottom: 25px;">
+                    ${urls.map(url => `
+                        <img src="${url}" style="width:100%; height:100px; object-fit:cover; border-radius:8px; cursor:pointer; border:1px solid rgba(255,255,255,0.06); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'" onclick="openLightbox(event, '${url}')">
+                    `).join('')}
+                </div>
+            ` : ''}
+            
+            <div style="font-size: 1.1rem; color: rgba(255,255,255,0.75); line-height: 1.6; margin-bottom: 25px; white-space: pre-wrap;">
+                ${project.description}
+            </div>
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px;">
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    ${(project.tags || '').split(',').map(tag => tag.trim() ? `<span class="tag" style="background:rgba(255,255,255,0.04); color:white; padding:4px 10px; border-radius:30px; font-size:0.8rem; border:1px solid rgba(255,255,255,0.05);">${tag}</span>` : '').join('')}
+                </div>
+                ${project.link ? `<a href="${project.link}" target="_blank" class="btn-primary" style="padding: 10px 20px; font-size:0.9rem; text-decoration:none; display:inline-block; border-radius:8px;">Visit Project ↗</a>` : ''}
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+};
+
+window.closeProjectDetails = function() {
+    const m = document.getElementById('project-details-modal');
+    if (m) m.remove();
+};
+
+window.openLightbox = function(e, url) {
+    if (e) e.stopPropagation();
+    
+    const lb = document.createElement('div');
+    lb.id = 'image-lightbox';
+    lb.style = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 11000;
+        cursor: zoom-out;
+    `;
+    lb.onclick = () => lb.remove();
+    lb.innerHTML = `
+        <img src="${url}" style="max-width: 90%; max-height: 90%; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 45px rgba(0,0,0,0.85);">
+        <button style="position:absolute; top:20px; right:20px; background:none; border:none; color:white; font-size:35px; cursor:pointer;">&times;</button>
+    `;
+    document.body.appendChild(lb);
+};
+
+// Dynamic style injection for layout grids
+(function() {
+    const style = document.createElement('style');
+    style.textContent = `
+        .project-media-grid {
+            width: 100%;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .project-media-grid img {
+            cursor: pointer;
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+        .project-media-grid img:hover {
+            transform: scale(1.02);
+            filter: brightness(1.1);
+        }
+        .project-media-grid.single .main {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            display: block;
+        }
+        .project-media-grid.multi {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .project-media-grid.multi .main-img-wrapper {
+            width: 100%;
+            overflow: hidden;
+        }
+        .project-media-grid.multi .main-img-wrapper .main {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+        }
+        .project-media-grid.multi .thumbnails-wrapper {
+            display: flex;
+            gap: 6px;
+            width: 100%;
+            padding: 0 6px 6px 6px;
+            box-sizing: border-box;
+        }
+        .project-media-grid.multi .thumbnails-wrapper .thumb {
+            flex: 1;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    `;
+    document.head.appendChild(style);
+})();
 
 function renderExperience(exp) {
     const timeline = document.querySelector('.timeline');
