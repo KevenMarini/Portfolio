@@ -422,10 +422,13 @@ window.openLightbox = function(e, projectId, source, imageIdx) {
             transform: scale(1.02);
             filter: brightness(1.1);
         }
+        .project-media-grid.single {
+            background: #000;
+        }
         .project-media-grid.single .main {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             display: block;
         }
         .project-media-grid.multi {
@@ -438,11 +441,12 @@ window.openLightbox = function(e, projectId, source, imageIdx) {
             width: 100%;
             height: 148px;
             overflow: hidden;
+            background: #000;
         }
         .project-media-grid.multi .main-img-wrapper .main {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             display: block;
         }
         .project-media-grid.multi .thumbnails-wrapper {
@@ -508,7 +512,7 @@ function renderCertifications(certs) {
         }
         certContainer.innerHTML = homeCerts.map(c => `
             <div class="card edu-card reveal active" style="display: flex; flex-direction: column; justify-content: space-between;">
-                ${c.image_url ? `<img src="${c.image_url}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255, 255, 255, 0.08);" alt="${c.name}">` : ''}
+                ${c.image_url ? `<img src="${c.image_url}" style="width: 100%; height: 160px; object-fit: contain; background: #000; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255, 255, 255, 0.08);" alt="${c.name}">` : ''}
                 <div style="flex-grow: 1;">
                     <span class="edu-inst">${c.status || 'Verification Available'}</span>
                     <h3 class="edu-degree" style="font-size: 1.2rem; margin: 8px 0;">${c.name}</h3>
