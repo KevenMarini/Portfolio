@@ -140,13 +140,16 @@ function renderSkills(skillsData) {
 }
 
 function renderCertifications(certs) {
-    const certContainer = document.querySelector('#skills .bento-grid .card:nth-child(3)');
+    const certContainer = document.getElementById('home-certs-grid');
     if (certContainer) {
-        certContainer.innerHTML = '<h3>Certifications</h3>' + certs.map(c => `
-            <div class="edu-score-box" style="margin-bottom: 10px;">
-                <span class="edu-score" style="font-size: 1.2rem;">${c.name}</span>
-                <span class="edu-score-label">${c.status}</span>
-                ${c.link ? `<a href="${c.link}" target="_blank" style="color:var(--accent-cyan); font-size: 0.8rem; margin-left: 10px;">Link ↗</a>` : ''}
+        certContainer.innerHTML = certs.map(c => `
+            <div class="card edu-card reveal active" style="display: flex; flex-direction: column; justify-content: space-between;">
+                ${c.image_url ? `<img src="${c.image_url}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255, 255, 255, 0.08);" alt="${c.name}">` : ''}
+                <div style="flex-grow: 1;">
+                    <span class="edu-inst">${c.status || 'Verification Available'}</span>
+                    <h3 class="edu-degree" style="font-size: 1.2rem; margin: 8px 0;">${c.name}</h3>
+                </div>
+                ${c.link ? `<a href="${c.link}" target="_blank" class="proj-link" style="margin-top: 15px; display: inline-block;">Verify Credentials ↗</a>` : ''}
             </div>
         `).join('');
     }
