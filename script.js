@@ -191,7 +191,7 @@ function renderProjectImagesGrid(imageUrls, projectId, source) {
                 ${thumbnails.map((url, tIdx) => {
                     const isLast = tIdx === 2 && extraCount > 0;
                     return `
-                        <div style="flex: 1; position: relative; height: 60px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05);">
+                        <div style="flex: 1; position: relative; height: 50px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05);">
                             <img src="${url}" class="project-grid-img thumb" style="width: 100%; height: 100%; object-fit: cover;" onclick="openLightbox(event, ${projectId}, '${source}', ${tIdx + 1})">
                             ${isLast ? `
                                 <div onclick="event.stopPropagation(); openProjectDetailsById(${projectId})" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.95rem; cursor: pointer; user-select: none;">
@@ -407,7 +407,7 @@ window.openLightbox = function(e, projectId, source, imageIdx) {
     style.textContent = `
         .project-media-grid {
             width: 100%;
-            height: 220px;
+            height: 180px;
             margin-bottom: 20px;
             border-radius: 12px;
             overflow: hidden;
@@ -439,7 +439,7 @@ window.openLightbox = function(e, projectId, source, imageIdx) {
         }
         .project-media-grid.multi .main-img-wrapper {
             width: 100%;
-            height: 148px;
+            height: 118px;
             overflow: hidden;
             background: #000;
         }
@@ -453,7 +453,7 @@ window.openLightbox = function(e, projectId, source, imageIdx) {
             display: flex;
             gap: 6px;
             width: 100%;
-            height: 60px;
+            height: 50px;
             padding: 0 6px 6px 6px;
             box-sizing: border-box;
         }
@@ -837,7 +837,7 @@ function renderAchievementImagesGrid(imageUrls, achievementId, source) {
                 ${thumbnails.map((url, tIdx) => {
                     const isLast = tIdx === 2 && extraCount > 0;
                     return `
-                        <div style="flex: 1; position: relative; height: 60px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05);">
+                        <div style="flex: 1; position: relative; height: 50px; border-radius: 6px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05);">
                             <img src="${url}" class="project-grid-img thumb" style="width: 100%; height: 100%; object-fit: cover;" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', ${tIdx + 1})">
                             ${isLast ? `
                                 <div onclick="event.stopPropagation(); openAchievementDetailsById(${achievementId})" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.95rem; cursor: pointer; user-select: none;">
