@@ -469,7 +469,7 @@
             experience: { title: 'Experience', fields: ['role', 'organization', 'description', 'date'] },
             project: { title: 'Selected Projects', fields: ['title', 'description', 'tags', 'link', 'date'] },
             skill: { title: 'Technical Stack', fields: ['name', 'category'] },
-            certification: { title: 'Certifications', fields: ['name', 'status', 'link'] },
+            certification: { title: 'Certifications', fields: ['name', 'status', 'link', 'image_url'] },
             education: { title: 'Education', fields: ['degree', 'institution', 'year', 'score', 'score_label'] }
         };
 
@@ -695,6 +695,7 @@
                                     ${item.tags ? `<div style="margin-bottom: 10px;">${item.tags.split(',').map(t => `<span class="tag">${t.trim()}</span>`).join('')}</div>` : ''}
                                     <h4>${item.role || item.title || item.name || item.degree}</h4>
                                     <p>${item.organization || item.institution || item.category || item.status || ''}</p>
+                                    ${item.image_url ? `<img src="${item.image_url}" style="width: 100%; height: 100px; object-fit: cover; border-radius: 6px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.05);">` : ''}
                                     ${item.description ? `<p style="font-size: 0.85rem; opacity: 0.7;">${item.description.substring(0, 100)}...</p>` : ''}
                                 </div>
                                 <div class="card-actions">
@@ -741,23 +742,90 @@
             document.getElementById('modal-title').textContent = (id ? 'Modify ' : 'Add New ') + config[type].title;
             
             const container = document.getElementById('modal-fields');
-            container.innerHTML = config[type].fields.map(f => `
-                <div class="input-group ${f === 'description' || f === 'tags' ? 'full-width' : ''}">
-                    <label>${f.charAt(0).toUpperCase() + f.slice(1)}</label>
-                    ${f === 'description' ? `<textarea id="field-${f}" rows="5"></textarea>` : `<input type="text" id="field-${f}">`}
-                </div>
-            `).join('');
+            container.innerHTML = config[type].fields.map(f => {
+                if (f === 'description') {
+                    return `
+                        <div class="input-group full-width">
+                            <label>Description</label>
+                            <textarea id="field-${f}" rows="5"></textarea>
+                        </div>
+                    `;
+                } else if (f === 'image_url') {
+                    return `
+                        <div class="input-group full-width" style="display:flex; flex-direction:column; gap:10px;">
+                            <label>Certificate Image</label>
+                            <div style="display:flex; gap:10px; align-items:center; width:100%;">
+                                <input type="text" id="field-${f}" placeholder="Image URL or Base64 data" style="flex:1;">
+                                <button type="button" class="btn-action btn-edit" style="width:auto; white-space:nowrap; margin-top:0; padding:10px 15px;" onclick="triggerCertImageUpload()">Upload Image</button>
+                                <input type="file" id="cert-image-file" accept="image/*" style="display:none;" onchange="handleCertImageUpload(event)">
+                            </div>
+                            <div id="cert-image-preview-container" style="display:none; margin-top:10px;">
+                                <img id="cert-image-preview" src="" style="max-width:100%; max-height:200px; border-radius:8px; border:1px solid rgba(255,255,255,0.1);">
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="input-group ${f === 'tags' ? 'full-width' : ''}">
+                            <label>${f.charAt(0).toUpperCase() + f.slice(1)}</label>
+                            <input type="text" id="field-${f}">
+                        </div>
+                    `;
+                }
+            }).join('');
 
             if(id) {
                 let key = type + 's';
                 if (type === 'experience' || type === 'education') key = type;
                 
                 const item = allData[key].find(x => x.id === id);
-                config[type].fields.forEach(f => document.getElementById(`field-${f}`).value = item[f] || '');
+                config[type].fields.forEach(f => {
+                    const el = document.getElementById(`field-${f}`);
+                    if (el) el.value = item[f] || '';
+                });
+
+                if (type === 'certification' && item.image_url) {
+                    const previewImg = document.getElementById('cert-image-preview');
+                    const previewContainer = document.getElementById('cert-image-preview-container');
+                    if (previewImg && previewContainer) {
+                        previewImg.src = item.image_url;
+                        previewContainer.style.display = 'block';
+                    }
+                }
             }
             
             document.getElementById('modal-delete-btn').style.display = id ? 'block' : 'none';
             document.getElementById('modal-container').style.display = 'flex';
+        }
+
+        function triggerCertImageUpload() {
+            document.getElementById('cert-image-file').click();
+        }
+
+        function handleCertImageUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const maxSize = 2 * 1024 * 1024; // 2MB
+            if (file.size > maxSize) {
+                alert("File size exceeds 2MB limit. Please choose a smaller image.");
+                e.target.value = '';
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const base64Str = event.target.result;
+                const field = document.getElementById('field-image_url');
+                if (field) field.value = base64Str;
+                const previewImg = document.getElementById('cert-image-preview');
+                const previewContainer = document.getElementById('cert-image-preview-container');
+                if (previewImg && previewContainer) {
+                    previewImg.src = base64Str;
+                    previewContainer.style.display = 'block';
+                }
+            };
+            reader.readAsDataURL(file);
         }
 
         function deleteCurrentEntry() {
@@ -815,6 +883,13 @@
         function handleImageUpload(e) {
             const file = e.target.files[0];
             if(!file) return;
+            
+            const maxSize = 2 * 1024 * 1024; // 2MB
+            if (file.size > maxSize) {
+                alert("File size exceeds 2MB limit. Please choose a smaller image.");
+                e.target.value = '';
+                return;
+            }
             
             // Show loading state on avatar
             const avatarImg = document.querySelector('.avatar-inner img');

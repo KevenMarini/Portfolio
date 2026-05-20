@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certifications | Keven Marini</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 100px;
+        }
+        .page-container {
+            min-height: 80vh;
+            padding: 0 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .certs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            padding: 40px 0;
+            width: 100%;
+        }
+        .cert-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+        .cert-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 242, 254, 0.1);
+        }
+        .cert-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.3s ease;
+        }
+        .cert-card:hover .cert-image {
+            transform: scale(1.02);
+        }
+        .cert-info {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .cert-issuer {
+            font-size: 0.8rem;
+            color: var(--accent-cyan);
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .cert-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #fff;
+            line-height: 1.4;
+        }
+        .cert-link {
+            display: inline-flex;
+            align-items: center;
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 15px;
+            transition: color 0.3s;
+        }
+        .cert-link:hover {
+            color: var(--accent-cyan);
+        }
+        .cert-link i {
+            margin-left: 5px;
+            transition: transform 0.3s;
+        }
+        .cert-link:hover i {
+            transform: translate(3px, -3px);
+        }
+    </style>
+</head>
+<body class="portfolio-mode">
+
+    <!-- NAVIGATION -->
+    <nav>
+        <div class="nav-left">
+            <div class="nav-logo">KM.</div>
+            <div class="menu-toggle" id="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <a href="home.html" class="homepage-link">Homepage</a>
+        </div>
+        <div class="nav-right">
+            <div class="nav-links">
+                <a href="home.html#about">About</a>
+                <a href="projects.html">Projects</a>
+                <a href="certifications.html" class="active">Certifications</a>
+                <a href="home.html#skills">Toolkit</a>
+                <a href="home.html#education">Education</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </div>
+        <div class="scroll-progress" id="scroll-progress"></div>
+    </nav>
+
+    <main class="page-container">
+        <section id="certifications">
+            <span class="section-label">Achievements</span>
+            <h2 class="section-title">Certifications & <span>Credentials.</span></h2>
+
+            <div class="certs-grid" id="certs-container">
+                <!-- Dynamically loaded certs will appear here -->
+                <div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary);">
+                    Loading certifications...
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="nav-logo" style="font-size: 2rem;">KEVEN MARINI.</div>
+        <div class="footer-links">
+            <a href="mailto:kevenmarini07@gmail.com">Email</a>
+            <a href="https://www.linkedin.com/in/kevenmarini/" target="_blank">LinkedIn</a>
+            <a href="https://github.com/KevenMarini" target="_blank">GitHub</a>
+        </div>
+    </footer>
+
+    <!-- PREMIUM SIDEBAR -->
+    <div id="premium-sidebar">
+        <div class="ps-header">
+            <div class="ps-name">KEVEN MARINI</div>
+            <div class="ps-close" id="ps-close-btn">&times;</div>
+        </div>
+        <div class="ps-line"></div>
+        <div class="ps-links">
+            <a href="home.html">Home</a>
+            <a href="about.html">About Me</a>
+            <a href="education.html">Academics</a>
+            <a href="projects.html">Projects</a>
+            <a href="certifications.html" class="active">Certifications</a>
+            <a href="skills.html">Skills</a>
+            <a href="competitions.html">Competitions</a>
+            <a href="contact.html">Contact</a>
+        </div>
+        <div class="ps-scroll-hint">
+            <span>Scroll</span>
+            <i></i>
+        </div>
+    </div>
+
+    <div class="custom-cursor"></div>
+    <div class="cursor-blob"></div>
+
+    <script src="script.js"></script>
+    <script>
+        // Custom dynamic loading for certifications
+        document.addEventListener('DOMContentLoaded', async () => {
+            const certsContainer = document.getElementById('certs-container');
+            
+            try {
+                const res = await fetch('/api/data');
+                const data = await res.json();
+                
+                const certs = data.certifications || [];
+                if (certs.length === 0) {
+                    certsContainer.innerHTML = `
+                        <div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 40px 0;">
+                            No certifications found. Add some in the Admin panel!
+                        </div>
+                    `;
+                    return;
+                }
+                
+                certsContainer.innerHTML = certs.map(c => `
+                    <div class="cert-card reveal active">
+                        ${c.image_url ? `<img src="${c.image_url}" class="cert-image" alt="${c.name}">` : ''}
+                        <div class="cert-info">
+                            <span class="cert-issuer">${c.status || 'Verification Available'}</span>
+                            <h3 class="cert-title">${c.name}</h3>
+                            ${c.link ? `<a href="${c.link}" target="_blank" class="cert-link">Verify Credentials <i>↗</i></a>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+                
+            } catch(e) {
+                console.error(e);
+                certsContainer.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; color: var(--accent-pink); padding: 40px 0;">
+                        Failed to load certifications. Please try again.
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

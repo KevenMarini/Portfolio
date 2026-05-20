@@ -20,10 +20,14 @@ export default async function handler(request, response) {
     await sql`CREATE TABLE IF NOT EXISTS skills (id SERIAL PRIMARY KEY, name TEXT, category TEXT);`;
     await sql`CREATE TABLE IF NOT EXISTS education (id SERIAL PRIMARY KEY, degree TEXT, institution TEXT, year TEXT, score TEXT, score_label TEXT);`;
     await sql`CREATE TABLE IF NOT EXISTS certifications (id SERIAL PRIMARY KEY, name TEXT, status TEXT, link TEXT);`;
+    try { await sql`ALTER TABLE certifications ADD COLUMN image_url TEXT;`; } catch(e) {}
 
     if (method === 'POST') {
       if (type === 'profile') {
         const { name='', subtitle='', hero_badge='', email='', phone='', linkedin='', github='', about_text='', location='', languages='', project_count='', club_count='', current_year='', image_url='', cgpa='' } = data || {};
+        if (image_url && image_url.length > 3000000) {
+          return response.status(400).json({ error: 'Image exceeds 2MB size limit' });
+        }
         const exists = await sql`SELECT * FROM profile LIMIT 1;`;
         if (exists.rows.length > 0) {
           await sql`UPDATE profile SET name=${name}, subtitle=${subtitle}, hero_badge=${hero_badge}, email=${email}, phone=${phone}, linkedin=${linkedin}, github=${github}, about_text=${about_text}, location=${location}, languages=${languages}, project_count=${project_count}, club_count=${club_count}, current_year=${current_year}, image_url=${image_url}, cgpa=${cgpa} WHERE id=${exists.rows[0].id};`;
@@ -55,11 +59,14 @@ export default async function handler(request, response) {
             await sql`INSERT INTO education (degree, institution, year, score, score_label) VALUES (${degree}, ${institution}, ${year}, ${score}, ${score_label});`;
         }
       } else if (type === 'certification') {
-        const { id, name='', status='', link='' } = data || {};
+        const { id, name='', status='', link='', image_url='' } = data || {};
+        if (image_url && image_url.length > 3000000) {
+          return response.status(400).json({ error: 'Image exceeds 2MB size limit' });
+        }
         if (id) {
-          await sql`UPDATE certifications SET name=${name}, status=${status}, link=${link} WHERE id=${id};`;
+          await sql`UPDATE certifications SET name=${name}, status=${status}, link=${link}, image_url=${image_url} WHERE id=${id};`;
         } else {
-          await sql`INSERT INTO certifications (name, status, link) VALUES (${name}, ${status}, ${link});`;
+          await sql`INSERT INTO certifications (name, status, link, image_url) VALUES (${name}, ${status}, ${link}, ${image_url});`;
         }
       }
       return response.status(200).json({ success: true });
