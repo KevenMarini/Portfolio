@@ -469,7 +469,7 @@
             experience: { title: 'Experience', fields: ['role', 'organization', 'description', 'date'] },
             project: { title: 'Selected Projects', fields: ['title', 'description', 'tags', 'link', 'date'] },
             skill: { title: 'Technical Stack', fields: ['name', 'category'] },
-            certification: { title: 'Certifications', fields: ['name', 'status', 'link', 'image_url'] },
+            certification: { title: 'Certifications', fields: ['name', 'status', 'link', 'image_url', 'show_on_home'] },
             education: { title: 'Education', fields: ['degree', 'institution', 'year', 'score', 'score_label'] }
         };
 
@@ -620,7 +620,7 @@
                                         ${(allData.certifications || []).map(c => `
                                             <div class="edu-score-box" style="margin-bottom: 10px; ${editStyle}" ${hoverScript} onclick="openEntryModal('certification', ${c.id})">
                                                 <span class="edu-score" style="font-size: 1.2rem;">${c.name}</span>
-                                                <span class="edu-score-label">${c.status}</span>
+                                                <span class="edu-score-label">${c.status} ${c.show_on_home === true || c.show_on_home === 'true' || c.show_on_home === 1 ? ' | ★ Showcased' : ''}</span>
                                             </div>
                                         `).join('')}
                                     </div>
@@ -764,6 +764,13 @@
                             </div>
                         </div>
                     `;
+                } else if (f === 'show_on_home') {
+                    return `
+                        <div class="input-group" style="display:flex; flex-direction:row; align-items:center; gap:10px; margin: 15px 0;">
+                            <input type="checkbox" id="field-${f}" style="width:20px; height:20px; cursor:pointer;">
+                            <label for="field-${f}" style="cursor:pointer; margin-bottom:0; user-select:none;">Show on Home Page</label>
+                        </div>
+                    `;
                 } else {
                     return `
                         <div class="input-group ${f === 'tags' ? 'full-width' : ''}">
@@ -781,7 +788,13 @@
                 const item = allData[key].find(x => x.id === id);
                 config[type].fields.forEach(f => {
                     const el = document.getElementById(`field-${f}`);
-                    if (el) el.value = item[f] || '';
+                    if (el) {
+                        if (el.type === 'checkbox') {
+                            el.checked = item[f] === true || item[f] === 'true' || item[f] === 1;
+                        } else {
+                            el.value = item[f] || '';
+                        }
+                    }
                 });
 
                 if (type === 'certification' && item.image_url) {
@@ -923,7 +936,12 @@
 
         async function saveEntry() {
             const data = { id: currentId };
-            config[currentType].fields.forEach(f => data[f] = document.getElementById(`field-${f}`).value);
+            config[currentType].fields.forEach(f => {
+                const el = document.getElementById(`field-${f}`);
+                if (el) {
+                    data[f] = el.type === 'checkbox' ? el.checked : el.value;
+                }
+            });
             await apiPost(currentType, data);
         }
 

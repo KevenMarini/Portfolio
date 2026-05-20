@@ -142,7 +142,16 @@ function renderSkills(skillsData) {
 function renderCertifications(certs) {
     const certContainer = document.getElementById('home-certs-grid');
     if (certContainer) {
-        certContainer.innerHTML = certs.map(c => `
+        const homeCerts = certs.filter(c => c.show_on_home === true || c.show_on_home === 'true' || c.show_on_home === 1);
+        if (homeCerts.length === 0) {
+            certContainer.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 40px 0;">
+                    No showcased certifications.
+                </div>
+            `;
+            return;
+        }
+        certContainer.innerHTML = homeCerts.map(c => `
             <div class="card edu-card reveal active" style="display: flex; flex-direction: column; justify-content: space-between;">
                 ${c.image_url ? `<img src="${c.image_url}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(255, 255, 255, 0.08);" alt="${c.name}">` : ''}
                 <div style="flex-grow: 1;">

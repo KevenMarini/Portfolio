@@ -21,6 +21,7 @@ export default async function handler(request, response) {
     await sql`CREATE TABLE IF NOT EXISTS education (id SERIAL PRIMARY KEY, degree TEXT, institution TEXT, year TEXT, score TEXT, score_label TEXT);`;
     await sql`CREATE TABLE IF NOT EXISTS certifications (id SERIAL PRIMARY KEY, name TEXT, status TEXT, link TEXT);`;
     try { await sql`ALTER TABLE certifications ADD COLUMN image_url TEXT;`; } catch(e) {}
+    try { await sql`ALTER TABLE certifications ADD COLUMN show_on_home BOOLEAN DEFAULT FALSE;`; } catch(e) {}
 
     if (method === 'POST') {
       if (type === 'profile') {
@@ -59,14 +60,14 @@ export default async function handler(request, response) {
             await sql`INSERT INTO education (degree, institution, year, score, score_label) VALUES (${degree}, ${institution}, ${year}, ${score}, ${score_label});`;
         }
       } else if (type === 'certification') {
-        const { id, name='', status='', link='', image_url='' } = data || {};
+        const { id, name='', status='', link='', image_url='', show_on_home=false } = data || {};
         if (image_url && image_url.length > 3000000) {
           return response.status(400).json({ error: 'Image exceeds 2MB size limit' });
         }
         if (id) {
-          await sql`UPDATE certifications SET name=${name}, status=${status}, link=${link}, image_url=${image_url} WHERE id=${id};`;
+          await sql`UPDATE certifications SET name=${name}, status=${status}, link=${link}, image_url=${image_url}, show_on_home=${show_on_home} WHERE id=${id};`;
         } else {
-          await sql`INSERT INTO certifications (name, status, link, image_url) VALUES (${name}, ${status}, ${link}, ${image_url});`;
+          await sql`INSERT INTO certifications (name, status, link, image_url, show_on_home) VALUES (${name}, ${status}, ${link}, ${image_url}, ${show_on_home});`;
         }
       }
       return response.status(200).json({ success: true });
