@@ -445,6 +445,22 @@
         </div>
     </div>
 
+    <!-- INLINE EDITOR MODAL -->
+    <div id="modal-inline-editor" class="modal">
+        <div class="modal-inner" style="max-width: 800px;">
+            <h3 id="inline-editor-title">Edit Content</h3>
+            <div class="form-grid">
+                <div class="input-group full-width">
+                    <textarea id="inline-editor-input" rows="15" style="font-family: inherit; font-size: 1rem; padding: 15px; border-radius: 12px; background: rgba(0,0,0,0.2); color: white; border: 1px solid var(--admin-border); width: 100%; box-sizing: border-box; resize: vertical;"></textarea>
+                </div>
+            </div>
+            <div class="card-actions" style="margin-top: 30px;">
+                <button id="inline-editor-save-btn" class="btn-primary" onclick="saveInlineEditor()" style="padding: 14px 40px;">Save Changes</button>
+                <button class="btn-action" onclick="document.getElementById('modal-inline-editor').style.display='none'">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let adminPass = localStorage.getItem('adminPass');
         let currentTab = 'home';
@@ -511,7 +527,7 @@
             } else if (tabId === 'profile') {
                 actionContainer.innerHTML = `<button class="btn-add-global" onclick="openProfileModal()">Update Profile</button>`;
             } else if (tabId === 'about_page') {
-                actionContainer.innerHTML = `<button class="btn-add-global" onclick="openAboutPageModal()">Edit About Page</button>`;
+                actionContainer.innerHTML = ''; // No button needed, inline editing enabled
             } else {
                 actionContainer.innerHTML = `<button class="btn-add-global" onclick="openEntryModal('${tabId}')">+ New Entry</button>`;
             }
@@ -705,26 +721,25 @@
                     const parseText = (text) => (text || '').split('\n\n').map(p => `<p>${p.trim()}</p>`).join('');
                     
                     container.innerHTML = `
-                        <div class="about-flow-container" style="padding: 0; gap: 30px;">
-                            <div class="flow-section" style="cursor: pointer; padding: 20px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px;" onclick="openAboutPageModal()">
+                            <div class="flow-section" style="cursor: pointer; padding: 20px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px; transition: 0.2s;" onmouseover="this.style.boxShadow='0 0 15px var(--accent-cyan)'; this.style.transform='scale(1.02)'" onmouseout="this.style.boxShadow='none'; this.style.transform='scale(1)'" onclick="promptAboutField('journey_vision', 'About Me')">
                                 <h3>About Me</h3>
-                                <div>${parseText(aboutData.journey_vision) || 'Click Edit About Page to add content'}</div>
+                                <div>${parseText(aboutData.journey_vision) || 'Click to add content'}</div>
                             </div>
-                            <div class="flow-section" style="cursor: pointer; padding: 20px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px;" onclick="openAboutPageModal()">
+                            <div class="flow-section" style="cursor: pointer; padding: 20px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px; transition: 0.2s;" onmouseover="this.style.boxShadow='0 0 15px var(--accent-cyan)'; this.style.transform='scale(1.02)'" onmouseout="this.style.boxShadow='none'; this.style.transform='scale(1)'" onclick="promptAboutField('academics_text', 'Education')">
                                 <h3>Education</h3>
-                                <div>${parseText(aboutData.academics_text)}</div>
+                                <div>${parseText(aboutData.academics_text) || 'Click to add content'}</div>
                             </div>
-                            <div class="flow-section" style="cursor: pointer; padding: 20px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px;" onclick="openAboutPageModal()">
+                            <div class="flow-section" style="cursor: pointer; padding: 20px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px; transition: 0.2s;" onmouseover="this.style.boxShadow='0 0 15px var(--accent-cyan)'; this.style.transform='scale(1.02)'" onmouseout="this.style.boxShadow='none'; this.style.transform='scale(1)'" onclick="promptAboutField('current_focus', 'Current Focus')">
                                 <h3>Current Focus</h3>
-                                <div>${parseText(aboutData.current_focus)}</div>
+                                <div>${parseText(aboutData.current_focus) || 'Click to add content'}</div>
                             </div>
-                            <div class="flow-section" style="cursor: pointer; padding: 20px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px;" onclick="openAboutPageModal()">
+                            <div class="flow-section" style="cursor: pointer; padding: 20px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px; transition: 0.2s;" onmouseover="this.style.boxShadow='0 0 15px var(--accent-cyan)'; this.style.transform='scale(1.02)'" onmouseout="this.style.boxShadow='none'; this.style.transform='scale(1)'" onclick="promptAboutField('core_philosophy', 'Core Philosophy')">
                                 <h3>Core Philosophy</h3>
-                                <div>${parseText(aboutData.core_philosophy)}</div>
+                                <div>${parseText(aboutData.core_philosophy) || 'Click to add content'}</div>
                             </div>
-                            <div class="flow-section" style="cursor: pointer; padding: 20px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px;" onclick="openAboutPageModal()">
+                            <div class="flow-section" style="cursor: pointer; padding: 20px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px; transition: 0.2s;" onmouseover="this.style.boxShadow='0 0 15px var(--accent-cyan)'; this.style.transform='scale(1.02)'" onmouseout="this.style.boxShadow='none'; this.style.transform='scale(1)'" onclick="promptAboutField('location_text', 'Location')">
                                 <h3>Location</h3>
-                                <div>${parseText(aboutData.location_text)}</div>
+                                <div>${parseText(aboutData.location_text) || 'Click to add content'}</div>
                             </div>
                         </div>
                     `;
@@ -1141,6 +1156,54 @@
                 } catch(err) {
                     alert('Failed to save changes: ' + err.message);
                 }
+            }
+        }
+
+        let currentAboutField = null;
+
+        function promptAboutField(fieldKey, fieldTitle) {
+            if (!adminPass) return;
+            currentAboutField = fieldKey;
+            const currentVal = allData.about_page ? (allData.about_page[fieldKey] || '') : '';
+            
+            document.getElementById('inline-editor-title').textContent = 'Edit ' + fieldTitle;
+            document.getElementById('inline-editor-input').value = currentVal;
+            document.getElementById('modal-inline-editor').style.display = 'flex';
+        }
+
+        async function saveInlineEditor() {
+            if (!currentAboutField || isSaving) return;
+            isSaving = true;
+
+            const saveBtn = document.getElementById('inline-editor-save-btn');
+            const originalText = saveBtn.textContent;
+            saveBtn.textContent = 'Saving...';
+            saveBtn.disabled = true;
+
+            const newVal = document.getElementById('inline-editor-input').value;
+            
+            if (!allData.about_page) allData.about_page = {};
+            allData.about_page[currentAboutField] = newVal;
+
+            try {
+                const res = await fetch('/api/admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        password: adminPass,
+                        type: 'about_page',
+                        data: allData.about_page
+                    })
+                });
+                if(!res.ok) throw new Error('Failed to save');
+                renderWorkspace();
+                document.getElementById('modal-inline-editor').style.display = 'none';
+            } catch(err) {
+                alert('Failed to save changes: ' + err.message);
+            } finally {
+                isSaving = false;
+                saveBtn.textContent = originalText;
+                saveBtn.disabled = false;
             }
         }
 
