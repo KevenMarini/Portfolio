@@ -103,34 +103,27 @@ function renderProfile(p) {
 }
 
 function renderAboutPage(a, p) {
-    const mainP = document.querySelector('.about-page-grid .card:nth-child(1) p');
-    if (mainP) mainP.textContent = a.journey_vision || "I'm a first-year B.Tech student at Vellore Institute of Technology, focused on bridging the gap between hardware and intelligence. My passion lies in AI, embedded systems, and creating technology that solves real-world problems.";
+    const parseText = (text) => text.split('\n\n').map(p => `<p>${p.trim()}</p>`).join('');
 
-    const stats = document.querySelectorAll('.about-page-grid .stat-num');
-    if (stats.length >= 2) {
-        stats[0].textContent = p.project_count || '8+';
-        stats[1].textContent = p.club_count || '2';
-    }
+    const journeyText = a.journey_vision || `Hi, I’m **Keven Marini**, an Electronics and Communication Engineering student at Vellore Institute of Technology with a strong passion for technology, innovation, and creative problem-solving. I enjoy exploring the intersection of hardware and software while continuously learning new technologies and building practical solutions.\n\nMy interests mainly revolve around Embedded Systems, IoT, VLSI Design, PCB Development, and modern software technologies. I am passionate about creating projects that not only solve real-world problems but also improve my technical understanding and creativity. I enjoy working on ideas that combine engineering concepts with innovation and functionality.\n\nApart from engineering, I also have a deep interest in design, creativity, and digital content creation. I believe that combining technical skills with creativity helps in building better and more user-friendly solutions. I constantly challenge myself to improve my skills, learn emerging technologies, and gain hands-on experience through projects, internships, and continuous learning.\n\nMy goal is to grow as a versatile engineer and creator while contributing to meaningful and impactful technological solutions. I believe in consistency, curiosity, and continuous self-improvement as the foundation for success.\n\nThank you for visiting my portfolio — feel free to explore my projects, skills, and creative work.`;
+    const journeyDiv = document.getElementById('about-journey-content');
+    if (journeyDiv) journeyDiv.innerHTML = parseText(journeyText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'));
 
-    const focusText = document.querySelector('.about-page-grid .card:nth-child(2) p');
-    if (focusText) focusText.innerHTML = a.current_focus || 'Presently, I am diving deep into <strong>Machine Learning</strong> and modern <strong>Web Technologies</strong>. I love turning complex problems into elegant, user-friendly digital experiences while optimizing for performance.';
+    const academicsText = a.academics_text || `**Vellore Institute of Technology**\n**Bachelor of Technology (B.Tech) in Electronics and Communication Engineering**\n\nCurrently pursuing my undergraduate degree with a focus on core electronics, embedded systems, digital design, and emerging technologies.\n\nI am actively improving my technical knowledge through academic learning, self-study, projects, certifications, and practical implementation of engineering concepts.`;
+    const academicsDiv = document.getElementById('about-academics-content');
+    if (academicsDiv) academicsDiv.innerHTML = parseText(academicsText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n(?!\n)/g, '<br>'));
 
-    const philosophyText = document.querySelector('.about-page-grid .card:nth-child(3) p');
-    if (philosophyText) philosophyText.textContent = a.core_philosophy || 'I thrive on continuous learning and collaborative growth. Participating in hackathons and being active in tech communities keeps me motivated to push the boundaries of what I can build next.';
+    const focusText = a.current_focus || `Embedded Systems & IoT\n\nVLSI Design & Verilog HDL\n\nPCB Design and Circuit Development\n\nLearning Modern Software Technologies\n\nBuilding Technical and Creative Projects\n\nImproving Problem-Solving and Development Skills\n\nExploring Innovation in Electronics and Technology`;
+    const focusDiv = document.getElementById('about-focus-content');
+    if (focusDiv) focusDiv.innerHTML = parseText(focusText);
 
-    const locationText = document.querySelector('.about-page-grid .card:nth-child(4) p');
-    if (locationText) locationText.textContent = a.location_text || 'Based in Chennai, Tamil Nadu';
+    const philosophyText = a.core_philosophy || `I believe in continuous learning, practical innovation, and combining creativity with technology to build meaningful solutions.\n\nMy approach focuses on consistency, curiosity, discipline, and hands-on learning. I strongly believe that growth comes from constantly exploring new ideas, challenging limitations, and improving through real-world experience.\n\nI aim to create projects that are not only technically strong but also practical, creative, and impactful.`;
+    const philosophyDiv = document.getElementById('about-philosophy-content');
+    if (philosophyDiv) philosophyDiv.innerHTML = parseText(philosophyText);
 
-    const languagesContainer = document.querySelector('.about-page-grid .lang-pills');
-    if (languagesContainer && a.languages_list) {
-        languagesContainer.innerHTML = a.languages_list.split(',').map(l => `<span class="pill">${l.trim()}</span>`).join('');
-    }
-
-    const academicsStat = document.querySelector('.about-page-grid .card:nth-child(5) .stat-num');
-    if (academicsStat) academicsStat.textContent = p.current_year || '1st Year';
-    
-    const academicsText = document.querySelector('.about-page-grid .card:nth-child(5) p');
-    if (academicsText) academicsText.innerHTML = a.academics_text || 'B.Tech Computer Science<br>Vellore Institute of Technology';
+    const locationText = a.location_text || `Chennai`;
+    const locationDiv = document.getElementById('about-location-content');
+    if (locationDiv) locationDiv.innerHTML = parseText(locationText);
 }
 
 function renderProjects(projects) {

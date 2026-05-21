@@ -1452,3 +1452,33 @@ body.menu-open {
         width: 100% !important;
     }
 }
+
+.about-flow-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.flow-section h3 {
+    font-size: 2rem;
+    color: var(--accent-cyan);
+    margin-bottom: 20px;
+    font-family: 'Space Grotesk', sans-serif;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+}
+
+.flow-section p {
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.flow-section strong {
+    color: #fff;
+    font-weight: 600;
+}
