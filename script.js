@@ -125,7 +125,7 @@ function renderProjects(projects) {
                             <h3>${p.title}</h3>
                             <p>${p.description ? p.description.substring(0, 120) + (p.description.length > 120 ? '...' : '') : ''}</p>
                         </div>
-                        ${p.link ? `<a href="${p.link}" target="_blank" class="proj-link" style="align-self: flex-start; margin-top: 10px;" onclick="event.stopPropagation();">GitHub ↗</a>` : ''}
+                        ${p.link ? `<a href="${p.link}" target="_blank" class="proj-link" style="align-self: flex-start; margin-top: 10px;" onclick="event.stopPropagation();">${p.link_name || 'GitHub'} ↗</a>` : ''}
                     </div>
                 `;
             }).join('');
@@ -154,7 +154,7 @@ function renderProjects(projects) {
                             <h3 style="font-size: 1.4rem; margin-bottom: 12px; color: white;">${p.title}</h3>
                             <p style="color: rgba(255,255,255,0.7); font-size: 0.95rem; line-height: 1.5; margin-bottom: 15px;">${p.description}</p>
                         </div>
-                        ${p.link ? `<a href="${p.link}" target="_blank" class="proj-link" style="align-self: flex-start; margin-top: 10px;" onclick="event.stopPropagation();">GitHub ↗</a>` : ''}
+                        ${p.link ? `<a href="${p.link}" target="_blank" class="proj-link" style="align-self: flex-start; margin-top: 10px;" onclick="event.stopPropagation();">${p.link_name || 'GitHub'} ↗</a>` : ''}
                     </div>
                 `;
             }).join('');
@@ -278,7 +278,7 @@ window.openProjectDetails = function(project) {
                 <div style="display:flex; gap:6px; flex-wrap:wrap;">
                     ${(project.tags || '').split(',').map(tag => tag.trim() ? `<span class="tag" style="background:rgba(255,255,255,0.04); color:white; padding:4px 10px; border-radius:30px; font-size:0.8rem; border:1px solid rgba(255,255,255,0.05);">${tag}</span>` : '').join('')}
                 </div>
-                ${project.link ? `<a href="${project.link}" target="_blank" class="btn-primary" style="padding: 10px 20px; font-size:0.9rem; text-decoration:none; display:inline-block; border-radius:8px;">Visit Project ↗</a>` : ''}
+                ${project.link ? `<a href="${project.link}" target="_blank" class="btn-primary" style="padding: 10px 20px; font-size:0.9rem; text-decoration:none; display:inline-block; border-radius:8px;">${project.link_name || 'Visit Project'} ↗</a>` : ''}
             </div>
         </div>
     `;
@@ -526,7 +526,7 @@ function renderCertifications(certs) {
                     <span class="edu-inst">${c.status || 'Verification Available'}</span>
                     <h3 class="edu-degree" style="font-size: 1.2rem; margin: 8px 0;">${c.name}</h3>
                 </div>
-                ${c.link ? `<a href="${c.link}" target="_blank" class="proj-link" style="margin-top: 15px; display: inline-block;">Verify Credentials ↗</a>` : ''}
+                ${c.link ? `<a href="${c.link}" target="_blank" class="proj-link" style="margin-top: 15px; display: inline-block;">${c.link_name || 'Verify Credentials'} ↗</a>` : ''}
             </div>
         `).join('');
     }
@@ -758,7 +758,7 @@ function renderAchievements(achievements) {
                                             ${a.description ? a.description.substring(0, 120) + (a.description.length > 120 ? '...' : '') : ''}
                                         </p>
                                     </div>
-                                    ${a.link ? `<a href="${a.link}" target="_blank" class="proj-link" style="align-self: flex-start; margin-top: 15px;" onclick="event.stopPropagation();">Details ↗</a>` : ''}
+                                    ${a.link ? `<a href="${a.link}" target="_blank" class="proj-link" style="align-self: flex-start; margin-top: 15px;" onclick="event.stopPropagation();">${a.link_name || 'Details'} ↗</a>` : ''}
                                 </div>
                             `;
                         }).join('')}
@@ -844,7 +844,7 @@ function renderHomeAchievements(achievements) {
                         ${a.description ? a.description.substring(0, 120) + (a.description.length > 120 ? '...' : '') : ''}
                     </p>
                 </div>
-                ${a.link ? `<a href="${a.link}" target="_blank" class="proj-link" style="align-self: flex-start; margin-top: 15px;" onclick="event.stopPropagation();">Details ↗</a>` : ''}
+                ${a.link ? `<a href="${a.link}" target="_blank" class="proj-link" style="align-self: flex-start; margin-top: 15px;" onclick="event.stopPropagation();">${a.link_name || 'Details'} ↗</a>` : ''}
             </div>
         `;
     }).join('');
@@ -966,7 +966,7 @@ window.openAchievementDetails = function(achievement) {
                 <div style="display:flex; gap:6px; flex-wrap:wrap;">
                     <span class="tag" style="background:rgba(0, 242, 254, 0.1); color:var(--accent-cyan); padding:4px 10px; border-radius:30px; font-size:0.8rem; border:1px solid rgba(0, 242, 254, 0.2);">${achievement.category}</span>
                 </div>
-                ${achievement.link ? `<a href="${achievement.link}" target="_blank" class="btn-primary" style="padding: 10px 20px; font-size:0.9rem; text-decoration:none; display:inline-block; border-radius:8px;">Details ↗</a>` : ''}
+                ${achievement.link ? `<a href="${achievement.link}" target="_blank" class="btn-primary" style="padding: 10px 20px; font-size:0.9rem; text-decoration:none; display:inline-block; border-radius:8px;">${achievement.link_name || 'Details'} ↗</a>` : ''}
             </div>
         </div>
     `;

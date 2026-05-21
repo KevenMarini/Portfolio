@@ -40,14 +40,14 @@ export default async function handler(request, response) {
           await sql`INSERT INTO profile (name, subtitle, hero_badge, email, phone, linkedin, github, about_text, location, languages, project_count, club_count, current_year, image_url, cgpa) VALUES (${name}, ${subtitle}, ${hero_badge}, ${email}, ${phone}, ${linkedin}, ${github}, ${about_text}, ${location}, ${languages}, ${project_count}, ${club_count}, ${current_year}, ${image_url}, ${cgpa});`;
         }
       } else if (type === 'project') {
-        const { id, title='', description='', tags='', link='', date='', image_urls='', show_on_home=false } = data || {};
+        const { id, title='', description='', tags='', link='', link_name='', date='', image_urls='', show_on_home=false } = data || {};
         if (id) {
-          await sql`UPDATE projects SET title=${title}, description=${description}, tags=${tags}, link=${link}, date=${date}, image_urls=${image_urls}, show_on_home=${show_on_home} WHERE id=${id};`;
+          await sql`UPDATE projects SET title=${title}, description=${description}, tags=${tags}, link=${link}, link_name=${link_name}, date=${date}, image_urls=${image_urls}, show_on_home=${show_on_home} WHERE id=${id};`;
         } else {
           // Find max sort_order to place new project at the end
           const maxOrderRes = await sql`SELECT MAX(sort_order) as max_order FROM projects;`;
           const nextOrder = (maxOrderRes.rows[0]?.max_order || 0) + 1;
-          await sql`INSERT INTO projects (title, description, tags, link, date, image_urls, show_on_home, sort_order) VALUES (${title}, ${description}, ${tags}, ${link}, ${date}, ${image_urls}, ${show_on_home}, ${nextOrder});`;
+          await sql`INSERT INTO projects (title, description, tags, link, link_name, date, image_urls, show_on_home, sort_order) VALUES (${title}, ${description}, ${tags}, ${link}, ${link_name}, ${date}, ${image_urls}, ${show_on_home}, ${nextOrder});`;
         }
       } else if (type === 'reorder-projects') {
         const { ids } = data || {};
@@ -74,23 +74,23 @@ export default async function handler(request, response) {
             await sql`INSERT INTO education (degree, institution, year, score, score_label) VALUES (${degree}, ${institution}, ${year}, ${score}, ${score_label});`;
         }
       } else if (type === 'certification') {
-        const { id, name='', status='', link='', image_url='', show_on_home=false } = data || {};
+        const { id, name='', status='', link='', link_name='', image_url='', show_on_home=false } = data || {};
         if (image_url && image_url.length > 3000000) {
           return response.status(400).json({ error: 'Image exceeds 2MB size limit' });
         }
         if (id) {
-          await sql`UPDATE certifications SET name=${name}, status=${status}, link=${link}, image_url=${image_url}, show_on_home=${show_on_home} WHERE id=${id};`;
+          await sql`UPDATE certifications SET name=${name}, status=${status}, link=${link}, link_name=${link_name}, image_url=${image_url}, show_on_home=${show_on_home} WHERE id=${id};`;
         } else {
-          await sql`INSERT INTO certifications (name, status, link, image_url, show_on_home) VALUES (${name}, ${status}, ${link}, ${image_url}, ${show_on_home});`;
+          await sql`INSERT INTO certifications (name, status, link, link_name, image_url, show_on_home) VALUES (${name}, ${status}, ${link}, ${link_name}, ${image_url}, ${show_on_home});`;
         }
       } else if (type === 'achievement') {
-        const { id, title='', description='', category='', date='', link='', image_urls='', show_on_home=false } = data || {};
+        const { id, title='', description='', category='', date='', link='', link_name='', image_urls='', show_on_home=false } = data || {};
         if (id) {
-          await sql`UPDATE achievements SET title=${title}, description=${description}, category=${category}, date=${date}, link=${link}, image_urls=${image_urls}, show_on_home=${show_on_home} WHERE id=${id};`;
+          await sql`UPDATE achievements SET title=${title}, description=${description}, category=${category}, date=${date}, link=${link}, link_name=${link_name}, image_urls=${image_urls}, show_on_home=${show_on_home} WHERE id=${id};`;
         } else {
           const maxOrderRes = await sql`SELECT MAX(sort_order) as max_order FROM achievements;`;
           const nextOrder = (maxOrderRes.rows[0]?.max_order || 0) + 1;
-          await sql`INSERT INTO achievements (title, description, category, date, link, image_urls, show_on_home, sort_order) VALUES (${title}, ${description}, ${category}, ${date}, ${link}, ${image_urls}, ${show_on_home}, ${nextOrder});`;
+          await sql`INSERT INTO achievements (title, description, category, date, link, link_name, image_urls, show_on_home, sort_order) VALUES (${title}, ${description}, ${category}, ${date}, ${link}, ${link_name}, ${image_urls}, ${show_on_home}, ${nextOrder});`;
         }
       } else if (type === 'reorder-achievements') {
         const { ids } = data || {};

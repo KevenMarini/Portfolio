@@ -18,6 +18,10 @@ export default async function handler(request, response) {
     try { await sql`ALTER TABLE certifications ADD COLUMN show_on_home BOOLEAN DEFAULT FALSE;`; } catch(e) {}
     await sql`CREATE TABLE IF NOT EXISTS achievements (id SERIAL PRIMARY KEY, title TEXT, description TEXT, category TEXT, date TEXT, link TEXT, image_urls TEXT, show_on_home BOOLEAN DEFAULT FALSE, sort_order INT DEFAULT 0);`;
 
+    try { await sql`ALTER TABLE projects ADD COLUMN link_name TEXT;`; } catch(e) {}
+    try { await sql`ALTER TABLE certifications ADD COLUMN link_name TEXT;`; } catch(e) {}
+    try { await sql`ALTER TABLE achievements ADD COLUMN link_name TEXT;`; } catch(e) {}
+
     const profile = await sql`SELECT * FROM profile LIMIT 1;`;
     const projects = await sql`SELECT * FROM projects ORDER BY sort_order ASC, id DESC;`;
     const experience = await sql`SELECT * FROM experience ORDER BY id DESC;`;

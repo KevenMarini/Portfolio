@@ -113,12 +113,6 @@
         </div>
         <div class="nav-right">
             <div class="nav-links">
-                <a href="home.html#about">About</a>
-                <a href="projects.html">Projects</a>
-                <a href="certifications.html" class="active">Certifications</a>
-                <a href="home.html#skills">Toolkit</a>
-                <a href="home.html#education">Education</a>
-                <a href="contact.html">Contact</a>
             </div>
         </div>
         <div class="scroll-progress" id="scroll-progress"></div>
@@ -199,7 +193,7 @@
                         <div class="cert-info">
                             <span class="cert-issuer">${c.status || 'Verification Available'}</span>
                             <h3 class="cert-title">${c.name}</h3>
-                            ${c.link ? `<a href="${c.link}" target="_blank" class="cert-link">Verify Credentials <i>↗</i></a>` : ''}
+                            ${c.link ? `<a href="${c.link}" target="_blank" class="cert-link">${c.link_name || 'Verify Credentials'} <i>↗</i></a>` : ''}
                         </div>
                     </div>
                 `).join('');
