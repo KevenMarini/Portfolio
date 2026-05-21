@@ -815,6 +815,40 @@ function initAchievementDots(gridId, dotsId) {
         });
     });
 }
+function renderHomeAchievements(achievements) {
+    const grid = document.getElementById('home-achievements-grid');
+    if (!grid) return;
+
+    const homeAchievements = achievements.filter(a => a.show_on_home === true || a.show_on_home === 'true' || a.show_on_home === 1);
+
+    if (homeAchievements.length === 0) {
+        grid.innerHTML = `
+            <div style="grid-column: 1/-1; text-align: center; color: var(--text-secondary); padding: 40px 0; width: 100%;">
+                No showcased achievements.
+            </div>
+        `;
+        return;
+    }
+
+    grid.innerHTML = homeAchievements.map((a) => {
+        const imagesGrid = renderAchievementImagesGrid(a.image_urls, a.id, 'home');
+        return `
+            <div class="card proj-card reveal active" onclick="openAchievementDetailsById(${a.id})" style="cursor: pointer; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    ${imagesGrid}
+                    <div class="proj-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; margin-top: 15px;">
+                        <span style="color: var(--accent-cyan); font-size: 0.75rem; text-transform: uppercase; font-family:'Space Grotesk', sans-serif;">${a.date || ''}</span>
+                    </div>
+                    <h3 style="margin-top: 5px;">${a.title}</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 8px; line-height: 1.5;">
+                        ${a.description ? a.description.substring(0, 120) + (a.description.length > 120 ? '...' : '') : ''}
+                    </p>
+                </div>
+                ${a.link ? `<a href="${a.link}" target="_blank" class="proj-link" style="align-self: flex-start; margin-top: 15px;" onclick="event.stopPropagation();">Details ↗</a>` : ''}
+            </div>
+        `;
+    }).join('');
+}
 
 function renderAchievementImagesGrid(imageUrls, achievementId, source) {
     let urls = [];
