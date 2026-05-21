@@ -177,7 +177,7 @@ function renderProjects(projects) {
                                 <span class="proj-date" style="font-size:0.85rem; color:var(--text-secondary); font-family:'Space Grotesk', sans-serif;">${p.date || ''}</span>
                             </div>
                             <h3 style="font-size: 1.4rem; margin-bottom: 12px; color: white;">${p.title}</h3>
-                            <p style="color: rgba(255,255,255,0.7); font-size: 0.95rem; line-height: 1.5; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${p.description}</p>
+                            <p style="color: rgba(255,255,255,0.7); font-size: 0.95rem; line-height: 1.5; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${p.description ? p.description.substring(0, 160) + (p.description.length > 160 ? '...' : '') : ''}</p>
                         </div>
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
                             <span style="color: var(--accent-cyan); font-size: 0.9rem; text-decoration: none;">Read More &rarr;</span>
