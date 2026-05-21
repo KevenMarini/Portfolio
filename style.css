@@ -796,7 +796,8 @@ section {
 .projects-slider-wrapper .proj-card {
   min-width: 360px;
   width: 360px;
-  height: 460px;
+  min-height: 460px;
+  height: auto;
   padding: 30px;
   display: flex;
   flex-direction: column;
