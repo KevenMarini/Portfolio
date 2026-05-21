@@ -469,6 +469,39 @@
         let allData = {};
         let isSaving = false;
 
+        function compressImage(file, maxWidth, maxHeight, quality) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = event => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > maxWidth) {
+                            height = Math.round(height * maxWidth / width);
+                            width = maxWidth;
+                        }
+                        if (height > maxHeight) {
+                            width = Math.round(width * maxHeight / height);
+                            height = maxHeight;
+                        }
+
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        resolve(canvas.toDataURL('image/jpeg', quality));
+                    };
+                    img.onerror = error => reject(error);
+                };
+                reader.onerror = error => reject(error);
+            });
+        }
+
         if(adminPass) document.getElementById('login-screen').style.display = 'none';
 
         async function login() {
@@ -965,20 +998,19 @@
             document.getElementById('cert-image-file').click();
         }
 
-        function handleCertImageUpload(e) {
+        async function handleCertImageUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
             
-            const maxSize = 2 * 1024 * 1024; // 2MB
+            const maxSize = 5 * 1024 * 1024; // 5MB limit before compression
             if (file.size > maxSize) {
-                alert("File size exceeds 2MB limit. Please choose a smaller image.");
+                alert("File size exceeds 5MB limit. Please choose a smaller image.");
                 e.target.value = '';
                 return;
             }
             
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const base64Str = event.target.result;
+            try {
+                const base64Str = await compressImage(file, 1200, 1200, 0.7);
                 const field = document.getElementById('field-image_url');
                 if (field) field.value = base64Str;
                 const previewImg = document.getElementById('cert-image-preview');
@@ -987,28 +1019,29 @@
                     previewImg.src = base64Str;
                     previewContainer.style.display = 'block';
                 }
-            };
-            reader.readAsDataURL(file);
+            } catch (err) {
+                alert("Error processing image.");
+            }
+            e.target.value = '';
         }
 
         function triggerProjectImagesUpload() {
             document.getElementById('project-images-file').click();
         }
 
-        function handleProjectImageUpload(e) {
+        async function handleProjectImageUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
             
-            const maxSize = 2 * 1024 * 1024; // 2MB
+            const maxSize = 5 * 1024 * 1024; // 5MB limit before compression
             if (file.size > maxSize) {
-                alert("File size exceeds 2MB limit. Please choose a smaller image.");
+                alert("File size exceeds 5MB limit. Please choose a smaller image.");
                 e.target.value = '';
                 return;
             }
             
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const base64Str = event.target.result;
+            try {
+                const base64Str = await compressImage(file, 1200, 1200, 0.7);
                 const field = document.getElementById('field-image_urls');
                 let urls = [];
                 try {
@@ -1025,8 +1058,10 @@
                 field.value = JSON.stringify(urls);
                 
                 renderProjectImagePreview(base64Str, urls.length - 1);
-            };
-            reader.readAsDataURL(file);
+            } catch (err) {
+                alert("Error processing image.");
+            }
+            e.target.value = '';
         }
 
         function renderProjectImagePreview(url, idx) {
@@ -1212,13 +1247,13 @@
             document.getElementById('image-upload').click();
         }
 
-        function handleImageUpload(e) {
+        async function handleImageUpload(e) {
             const file = e.target.files[0];
             if(!file) return;
             
-            const maxSize = 2 * 1024 * 1024; // 2MB
+            const maxSize = 5 * 1024 * 1024; // 5MB limit before compression
             if (file.size > maxSize) {
-                alert("File size exceeds 2MB limit. Please choose a smaller image.");
+                alert("File size exceeds 5MB limit. Please choose a smaller image.");
                 e.target.value = '';
                 return;
             }
@@ -1227,9 +1262,8 @@
             const avatarImg = document.querySelector('.avatar-inner img');
             if(avatarImg) avatarImg.style.opacity = '0.5';
 
-            const reader = new FileReader();
-            reader.onload = async (event) => {
-                const base64Str = event.target.result;
+            try {
+                const base64Str = await compressImage(file, 800, 800, 0.7);
                 
                 if (!allData.profile) allData.profile = {};
                 allData.profile.image_url = base64Str;
@@ -1249,8 +1283,10 @@
                 } catch(err) {
                     alert('Failed to upload image: ' + err.message);
                 }
-            };
-            reader.readAsDataURL(file);
+            } catch (err) {
+                alert("Error processing image.");
+            }
+            e.target.value = '';
         }
 
         async function saveEntry() {
@@ -1289,10 +1325,15 @@
 
         async function apiPost(type, data) {
             try {
+                const payload = JSON.stringify({ password: adminPass, type, data });
+                if (payload.length > 4.2 * 1024 * 1024) {
+                    alert('Error saving changes: Total data size is too large (limit is ~4.5MB). Please use fewer or smaller images.');
+                    return;
+                }
                 const res = await fetch('/api/admin', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password: adminPass, type, data })
+                    body: payload
                 });
                 if(res.ok) {
                     closeModal();
@@ -1399,20 +1440,19 @@
             document.getElementById('achievement-images-file').click();
         }
 
-        function handleAchievementImageUpload(e) {
+        async function handleAchievementImageUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
             
-            const maxSize = 2 * 1024 * 1024; // 2MB
+            const maxSize = 5 * 1024 * 1024; // 5MB limit before compression
             if (file.size > maxSize) {
-                alert("File size exceeds 2MB limit. Please choose a smaller image.");
+                alert("File size exceeds 5MB limit. Please choose a smaller image.");
                 e.target.value = '';
                 return;
             }
             
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const base64Str = event.target.result;
+            try {
+                const base64Str = await compressImage(file, 1200, 1200, 0.7);
                 const field = document.getElementById('field-image_urls');
                 let urls = [];
                 try {
@@ -1429,8 +1469,10 @@
                 field.value = JSON.stringify(urls);
                 
                 renderAchievementImagePreview(base64Str, urls.length - 1);
-            };
-            reader.readAsDataURL(file);
+            } catch (err) {
+                alert("Error processing image.");
+            }
+            e.target.value = '';
         }
 
         function renderAchievementImagePreview(url, idx) {
