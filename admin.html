@@ -700,6 +700,36 @@
                             </div>
                         </div>
                     `;
+                } else if (currentTab === 'about_page') {
+                    const aboutData = allData.about_page || {};
+                    container.innerHTML = `
+                        <div class="items-grid">
+                            <div class="data-card full-width" style="grid-column: 1 / -1;">
+                                <h4>My Journey & Vision</h4>
+                                <p>${aboutData.journey_vision || '-'}</p>
+                            </div>
+                            <div class="data-card">
+                                <h4>Current Focus</h4>
+                                <p>${aboutData.current_focus || '-'}</p>
+                            </div>
+                            <div class="data-card">
+                                <h4>Core Philosophy</h4>
+                                <p>${aboutData.core_philosophy || '-'}</p>
+                            </div>
+                            <div class="data-card">
+                                <h4>Location & Roots Text</h4>
+                                <p>${aboutData.location_text || '-'}</p>
+                            </div>
+                            <div class="data-card">
+                                <h4>Languages (List)</h4>
+                                <p>${aboutData.languages_list || '-'}</p>
+                            </div>
+                            <div class="data-card">
+                                <h4>Academics Text</h4>
+                                <p>${aboutData.academics_text || '-'}</p>
+                            </div>
+                        </div>
+                    `;
                 } else {
                 // Determine JSON array key (handle pluralization)
                 let key = currentTab + 's';
