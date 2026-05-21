@@ -702,29 +702,29 @@
                     `;
                 } else if (currentTab === 'about_page') {
                     const aboutData = allData.about_page || {};
-                    const parseText = (text) => (text || '').split('\\n\\n').map(p => \`<p>\${p.trim()}</p>\`).join('');
+                    const parseText = (text) => (text || '').split('\n\n').map(p => `<p>${p.trim()}</p>`).join('');
                     
                     container.innerHTML = `
                         <div class="about-flow-container" style="padding: 0; gap: 30px;">
                             <div class="flow-section" style="cursor: pointer; padding: 20px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px;" onclick="openAboutPageModal()">
                                 <h3>About Me</h3>
-                                <div>\${parseText(aboutData.journey_vision) || 'Click Edit About Page to add content'}</div>
+                                <div>${parseText(aboutData.journey_vision) || 'Click Edit About Page to add content'}</div>
                             </div>
                             <div class="flow-section" style="cursor: pointer; padding: 20px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px;" onclick="openAboutPageModal()">
                                 <h3>Education</h3>
-                                <div>\${parseText(aboutData.academics_text)}</div>
+                                <div>${parseText(aboutData.academics_text)}</div>
                             </div>
                             <div class="flow-section" style="cursor: pointer; padding: 20px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px;" onclick="openAboutPageModal()">
                                 <h3>Current Focus</h3>
-                                <div>\${parseText(aboutData.current_focus)}</div>
+                                <div>${parseText(aboutData.current_focus)}</div>
                             </div>
                             <div class="flow-section" style="cursor: pointer; padding: 20px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px;" onclick="openAboutPageModal()">
                                 <h3>Core Philosophy</h3>
-                                <div>\${parseText(aboutData.core_philosophy)}</div>
+                                <div>${parseText(aboutData.core_philosophy)}</div>
                             </div>
                             <div class="flow-section" style="cursor: pointer; padding: 20px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px;" onclick="openAboutPageModal()">
                                 <h3>Location</h3>
-                                <div>\${parseText(aboutData.location_text)}</div>
+                                <div>${parseText(aboutData.location_text)}</div>
                             </div>
                         </div>
                     `;
