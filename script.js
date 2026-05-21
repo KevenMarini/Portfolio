@@ -167,7 +167,7 @@ function renderProjects(projects) {
             listContainer.innerHTML = projects.map((p) => {
                 const imagesGrid = renderProjectImagesGrid(p.image_urls, p.id, 'all');
                 return `
-                    <div class="card proj-card reveal active" onclick="openProjectDetailsById(${p.id})" style="cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; max-width: 500px; width: 100%;">
+                    <div class="card proj-card reveal active" onclick="openProjectDetailsById(${p.id})" style="cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; width: 100%;">
                         <div>
                             ${imagesGrid}
                             <div class="proj-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -177,9 +177,12 @@ function renderProjects(projects) {
                                 <span class="proj-date" style="font-size:0.85rem; color:var(--text-secondary); font-family:'Space Grotesk', sans-serif;">${p.date || ''}</span>
                             </div>
                             <h3 style="font-size: 1.4rem; margin-bottom: 12px; color: white;">${p.title}</h3>
-                            <p style="color: rgba(255,255,255,0.7); font-size: 0.95rem; line-height: 1.5; margin-bottom: 15px;">${p.description}</p>
+                            <p style="color: rgba(255,255,255,0.7); font-size: 0.95rem; line-height: 1.5; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${p.description}</p>
                         </div>
-                        ${p.link ? `<a href="${p.link}" target="_blank" class="proj-link" style="align-self: flex-start; margin-top: auto;" onclick="event.stopPropagation();">${p.link_name || 'GitHub'}</a>` : ''}
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
+                            <span style="color: var(--accent-cyan); font-size: 0.9rem; text-decoration: none;">Read More &rarr;</span>
+                            ${p.link ? `<a href="${p.link}" target="_blank" class="proj-link" style="align-self: flex-start; margin-top: 0;" onclick="event.stopPropagation();">${p.link_name || 'GitHub'}</a>` : ''}
+                        </div>
                     </div>
                 `;
             }).join('');

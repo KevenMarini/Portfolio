@@ -33,6 +33,20 @@
             scroll-snap-align: none;
             padding: 40px;
         }
+
+        @media (min-width: 900px) {
+            .page-container {
+                max-width: 1200px;
+            }
+            .projects-list {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 40px;
+            }
+            .projects-list .proj-card {
+                min-width: 0;
+            }
+        }
     </style>
 </head>
 <body class="portfolio-mode">
