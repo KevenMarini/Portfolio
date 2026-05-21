@@ -81,24 +81,30 @@ function renderProfile(p) {
 
     // About Section Stats (Image 1)
     const aboutText = document.querySelector('.about-main p');
-    if (aboutText) aboutText.textContent = p.about_text;
+    if (aboutText) aboutText.textContent = p.about_text || "I'm a first-year B.Tech student at Vellore Institute of Technology, focused on bridging the gap between hardware and intelligence. My passion lies in AI, embedded systems, and creating technology that solves real-world problems.";
 
     const stats = document.querySelectorAll('.stat-num');
     if (stats.length >= 2) {
-        stats[0].textContent = p.project_count;
-        stats[1].textContent = p.club_count;
+        stats[0].textContent = p.project_count || '6+';
+        stats[1].textContent = p.club_count || '3';
+    }
+    if (stats.length >= 3) {
+        stats[2].textContent = p.current_year || '1st Year';
     }
 
-    const locationText = document.querySelector('.about-grid .card:nth-child(2) p');
-    if (locationText) locationText.textContent = p.location;
+    const focusText = document.querySelector('.about-grid .card:nth-child(2) p');
+    if (focusText) focusText.innerHTML = p.current_focus || 'Presently, I am diving deep into <strong>Machine Learning</strong> and modern <strong>Web Technologies</strong>. I love turning complex problems into elegant, user-friendly digital experiences while optimizing for performance.';
+
+    const philosophyText = document.querySelector('.about-grid .card:nth-child(3) p');
+    if (philosophyText) philosophyText.textContent = p.core_philosophy || 'I thrive on continuous learning and collaborative growth. Participating in hackathons and being active in tech communities keeps me motivated to push the boundaries of what I can build next.';
+
+    const locationText = document.querySelector('.about-grid .card:nth-child(4) p');
+    if (locationText) locationText.textContent = p.location || 'Based in Chennai, Tamil Nadu';
 
     const languagesContainer = document.querySelector('.lang-pills');
     if (languagesContainer && p.languages) {
         languagesContainer.innerHTML = p.languages.split(',').map(l => `<span class="pill">${l.trim()}</span>`).join('');
     }
-
-    const yearNum = document.querySelector('.about-grid .card:nth-child(3) .stat-num');
-    if (yearNum) yearNum.textContent = p.current_year;
 }
 
 function renderProjects(projects) {
