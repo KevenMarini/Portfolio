@@ -24,6 +24,7 @@ async function fetchData() {
         const data = await res.json();
         
         if (data.profile) renderProfile(data.profile);
+        if (data.about_page) renderAboutPage(data.about_page, data.profile || {});
         if (data.projects && data.projects.length) {
             window.cachedProjects = data.projects;
             renderProjects(data.projects);
@@ -80,31 +81,56 @@ function renderProfile(p) {
     }
 
     // About Section Stats (Image 1)
-    const aboutText = document.querySelector('.about-main p');
+    const aboutText = document.querySelector('.about-grid .about-main p');
     if (aboutText) aboutText.textContent = p.about_text || "I'm a first-year B.Tech student at Vellore Institute of Technology, focused on bridging the gap between hardware and intelligence. My passion lies in AI, embedded systems, and creating technology that solves real-world problems.";
 
-    const stats = document.querySelectorAll('.stat-num');
+    const stats = document.querySelectorAll('.about-grid .stat-num');
     if (stats.length >= 2) {
-        stats[0].textContent = p.project_count || '6+';
-        stats[1].textContent = p.club_count || '3';
-    }
-    if (stats.length >= 3) {
-        stats[2].textContent = p.current_year || '1st Year';
+        stats[0].textContent = p.project_count || '8+';
+        stats[1].textContent = p.club_count || '2';
     }
 
-    const focusText = document.querySelector('.about-grid .card:nth-child(2) p');
-    if (focusText) focusText.innerHTML = p.current_focus || 'Presently, I am diving deep into <strong>Machine Learning</strong> and modern <strong>Web Technologies</strong>. I love turning complex problems into elegant, user-friendly digital experiences while optimizing for performance.';
+    const locationText = document.querySelector('.about-grid .card:nth-child(2) p');
+    if (locationText) locationText.textContent = p.location || 'Chennai, Tamil Nadu';
 
-    const philosophyText = document.querySelector('.about-grid .card:nth-child(3) p');
-    if (philosophyText) philosophyText.textContent = p.core_philosophy || 'I thrive on continuous learning and collaborative growth. Participating in hackathons and being active in tech communities keeps me motivated to push the boundaries of what I can build next.';
-
-    const locationText = document.querySelector('.about-grid .card:nth-child(4) p');
-    if (locationText) locationText.textContent = p.location || 'Based in Chennai, Tamil Nadu';
-
-    const languagesContainer = document.querySelector('.lang-pills');
+    const languagesContainer = document.querySelector('.about-grid .lang-pills');
     if (languagesContainer && p.languages) {
         languagesContainer.innerHTML = p.languages.split(',').map(l => `<span class="pill">${l.trim()}</span>`).join('');
     }
+
+    const yearNum = document.querySelector('.about-grid .card:nth-child(3) .stat-num');
+    if (yearNum) yearNum.textContent = p.current_year || '1st';
+}
+
+function renderAboutPage(a, p) {
+    const mainP = document.querySelector('.about-page-grid .card:nth-child(1) p');
+    if (mainP) mainP.textContent = a.journey_vision || "I'm a first-year B.Tech student at Vellore Institute of Technology, focused on bridging the gap between hardware and intelligence. My passion lies in AI, embedded systems, and creating technology that solves real-world problems.";
+
+    const stats = document.querySelectorAll('.about-page-grid .stat-num');
+    if (stats.length >= 2) {
+        stats[0].textContent = p.project_count || '8+';
+        stats[1].textContent = p.club_count || '2';
+    }
+
+    const focusText = document.querySelector('.about-page-grid .card:nth-child(2) p');
+    if (focusText) focusText.innerHTML = a.current_focus || 'Presently, I am diving deep into <strong>Machine Learning</strong> and modern <strong>Web Technologies</strong>. I love turning complex problems into elegant, user-friendly digital experiences while optimizing for performance.';
+
+    const philosophyText = document.querySelector('.about-page-grid .card:nth-child(3) p');
+    if (philosophyText) philosophyText.textContent = a.core_philosophy || 'I thrive on continuous learning and collaborative growth. Participating in hackathons and being active in tech communities keeps me motivated to push the boundaries of what I can build next.';
+
+    const locationText = document.querySelector('.about-page-grid .card:nth-child(4) p');
+    if (locationText) locationText.textContent = a.location_text || 'Based in Chennai, Tamil Nadu';
+
+    const languagesContainer = document.querySelector('.about-page-grid .lang-pills');
+    if (languagesContainer && a.languages_list) {
+        languagesContainer.innerHTML = a.languages_list.split(',').map(l => `<span class="pill">${l.trim()}</span>`).join('');
+    }
+
+    const academicsStat = document.querySelector('.about-page-grid .card:nth-child(5) .stat-num');
+    if (academicsStat) academicsStat.textContent = p.current_year || '1st Year';
+    
+    const academicsText = document.querySelector('.about-page-grid .card:nth-child(5) p');
+    if (academicsText) academicsText.innerHTML = a.academics_text || 'B.Tech Computer Science<br>Vellore Institute of Technology';
 }
 
 function renderProjects(projects) {

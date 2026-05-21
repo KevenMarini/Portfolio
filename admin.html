@@ -357,6 +357,7 @@
             </div>
             <ul class="sidebar-nav" id="sidebar-nav">
                 <li class="nav-item active" onclick="switchTab('home', this)">Home Page</li>
+                <li class="nav-item" onclick="switchTab('about_page', this)">About Page</li>
                 <li class="nav-item" onclick="switchTab('profile', this)">Profile Settings</li>
                 <li class="nav-item" onclick="switchTab('experience', this)">Experience</li>
                 <li class="nav-item" onclick="switchTab('project', this)">Projects</li>
@@ -416,13 +417,29 @@
                 <div class="input-group"><label>Current Year</label><input type="text" id="prof-current_year"></div>
                 <div class="input-group"><label>Projects Count</label><input type="text" id="prof-project_count"></div>
                 <div class="input-group"><label>Clubs Count</label><input type="text" id="prof-club_count"></div>
-                <div class="input-group"><label>Languages</label><input type="text" id="prof-languages"></div>
                 <div class="input-group full-width"><label>Career Objective / About Text</label><textarea id="prof-about_text" rows="4"></textarea></div>
-                <div class="input-group full-width"><label>Current Focus</label><textarea id="prof-current_focus" rows="4"></textarea></div>
-                <div class="input-group full-width"><label>Core Philosophy</label><textarea id="prof-core_philosophy" rows="4"></textarea></div>
             </div>
             <div class="card-actions" style="margin-top: 40px;">
                 <button class="btn-primary" onclick="saveProfile()" style="padding: 14px 40px;">Update Identity</button>
+                <button class="btn-action" onclick="closeModal()">Dismiss</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ABOUT PAGE MODAL -->
+    <div id="modal-about-page" class="modal">
+        <div class="modal-inner">
+            <h3>About Page Content</h3>
+            <div class="form-grid">
+                <div class="input-group full-width"><label>My Journey & Vision</label><textarea id="about-journey_vision" rows="4"></textarea></div>
+                <div class="input-group full-width"><label>Current Focus</label><textarea id="about-current_focus" rows="4"></textarea></div>
+                <div class="input-group full-width"><label>Core Philosophy</label><textarea id="about-core_philosophy" rows="4"></textarea></div>
+                <div class="input-group"><label>Location & Roots Text</label><input type="text" id="about-location_text"></div>
+                <div class="input-group"><label>Academics Text</label><textarea id="about-academics_text" rows="2"></textarea></div>
+                <div class="input-group full-width"><label>Languages (comma separated)</label><input type="text" id="about-languages_list"></div>
+            </div>
+            <div class="card-actions" style="margin-top: 40px;">
+                <button class="btn-primary" onclick="saveAboutPage()" style="padding: 14px 40px;">Save Changes</button>
                 <button class="btn-action" onclick="closeModal()">Dismiss</button>
             </div>
         </div>
@@ -469,6 +486,7 @@
 
         const config = {
             home: { title: 'Home Page Editor' },
+            about_page: { title: 'About Page Editor' },
             profile: { title: 'Profile Settings' },
             experience: { title: 'Experience', fields: ['role', 'organization', 'description', 'date'] },
             project: { title: 'Selected Projects', fields: ['title', 'description', 'tags', 'link', 'link_name', 'date', 'image_urls', 'show_on_home'] },
@@ -492,6 +510,8 @@
                 actionContainer.innerHTML = ''; // No button needed, inline editing enabled
             } else if (tabId === 'profile') {
                 actionContainer.innerHTML = `<button class="btn-add-global" onclick="openProfileModal()">Update Profile</button>`;
+            } else if (tabId === 'about_page') {
+                actionContainer.innerHTML = `<button class="btn-add-global" onclick="openAboutPageModal()">Edit About Page</button>`;
             } else {
                 actionContainer.innerHTML = `<button class="btn-add-global" onclick="openEntryModal('${tabId}')">+ New Entry</button>`;
             }
@@ -579,18 +599,8 @@
                                     </div>
 
                                     <div class="card reveal active" style="opacity: 1; transform: none;">
-                                        <h3>Current Focus</h3>
-                                        <p style="${editStyle} padding: 10px; margin-left: -10px;" ${hoverScript} onclick="promptProfileField('current_focus', 'Enter your current focus:')">${profileData.current_focus || 'Presently, I am diving deep into Machine Learning and modern Web Technologies.'}</p>
-                                    </div>
-
-                                    <div class="card reveal active" style="opacity: 1; transform: none;">
-                                        <h3>Core Philosophy</h3>
-                                        <p style="${editStyle} padding: 10px; margin-left: -10px;" ${hoverScript} onclick="promptProfileField('core_philosophy', 'Enter your core philosophy:')">${profileData.core_philosophy || 'I thrive on continuous learning and collaborative growth.'}</p>
-                                    </div>
-
-                                    <div class="card reveal active" style="opacity: 1; transform: none;">
-                                        <h3>Location & Roots</h3>
-                                        <p style="${editStyle} padding: 10px; margin-left: -10px;" ${hoverScript} onclick="promptProfileField('location', 'Enter location:')">${profileData.location || 'Based in Chennai, Tamil Nadu'}</p>
+                                        <h3>Location</h3>
+                                        <p style="${editStyle} padding: 10px; margin-left: -10px;" ${hoverScript} onclick="promptProfileField('location', 'Enter location:')">${profileData.location || 'Chennai, Tamil Nadu'}</p>
                                         <br>
                                         <h3>Languages</h3>
                                         <div class="lang-pills" style="${editStyle} padding: 10px; margin-left: -10px;" ${hoverScript} onclick="promptProfileField('languages', 'Enter languages separated by commas:')">
@@ -599,9 +609,9 @@
                                     </div>
 
                                     <div class="card reveal active" style="opacity: 1; transform: none; ${editStyle}" ${hoverScript} onclick="promptProfileField('current_year', 'Enter current year/position:')">
-                                        <h3>Academics</h3>
-                                        <div class="stat-num">${profileData.current_year || '1st Year'}</div>
-                                        <p>B.Tech Computer Science<br>Vellore Institute of Technology</p>
+                                        <h3>Year</h3>
+                                        <div class="stat-num">${profileData.current_year || '1st'}</div>
+                                        <p>Vellore Institute of Technology</p>
                                     </div>
                                 </div>
                             </section>
@@ -767,6 +777,16 @@
                 });
             }
             document.getElementById('modal-profile').style.display = 'flex';
+        }
+
+        function openAboutPageModal() {
+            if(allData.about_page) {
+                Object.keys(allData.about_page).forEach(k => {
+                    const el = document.getElementById(`about-${k}`);
+                    if(el) el.value = allData.about_page[k];
+                });
+            }
+            document.getElementById('modal-about-page').style.display = 'flex';
         }
 
         function openEntryModal(type, id = null) {
@@ -1020,6 +1040,38 @@
 
             try {
                 await apiPost('profile', data);
+            } finally {
+                isSaving = false;
+                if (saveBtn) {
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = originalText;
+                    saveBtn.style.opacity = '';
+                    saveBtn.style.cursor = '';
+                }
+            }
+        }
+
+        async function saveAboutPage() {
+            if (isSaving) return;
+            isSaving = true;
+
+            const saveBtn = document.querySelector('#modal-about-page .btn-primary');
+            const originalText = saveBtn ? saveBtn.textContent : 'Save Changes';
+            if (saveBtn) {
+                saveBtn.disabled = true;
+                saveBtn.textContent = 'Saving...';
+                saveBtn.style.opacity = '0.7';
+                saveBtn.style.cursor = 'not-allowed';
+            }
+
+            const data = {};
+            ['journey_vision', 'current_focus', 'core_philosophy', 'location_text', 'languages_list', 'academics_text'].forEach(f => {
+                const el = document.getElementById(`about-${f}`);
+                if (el) data[f] = el.value;
+            });
+
+            try {
+                await apiPost('about_page', data);
             } finally {
                 isSaving = false;
                 if (saveBtn) {

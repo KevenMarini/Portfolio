@@ -21,8 +21,10 @@ export default async function handler(request, response) {
     try { await sql`ALTER TABLE projects ADD COLUMN link_name TEXT;`; } catch(e) {}
     try { await sql`ALTER TABLE certifications ADD COLUMN link_name TEXT;`; } catch(e) {}
     try { await sql`ALTER TABLE achievements ADD COLUMN link_name TEXT;`; } catch(e) {}
+    await sql`CREATE TABLE IF NOT EXISTS about_page (id SERIAL PRIMARY KEY, journey_vision TEXT, current_focus TEXT, core_philosophy TEXT, location_text TEXT, languages_list TEXT, academics_text TEXT);`;
 
     const profile = await sql`SELECT * FROM profile LIMIT 1;`;
+    const about_page = await sql`SELECT * FROM about_page LIMIT 1;`;
     const projects = await sql`SELECT * FROM projects ORDER BY sort_order ASC, id DESC;`;
     const experience = await sql`SELECT * FROM experience ORDER BY id DESC;`;
     const skills = await sql`SELECT * FROM skills;`;
@@ -32,6 +34,7 @@ export default async function handler(request, response) {
 
     return response.status(200).json({
       profile: profile.rows[0] || null,
+      about_page: about_page.rows[0] || null,
       projects: projects.rows,
       experience: experience.rows,
       skills: skills.rows,
@@ -44,6 +47,7 @@ export default async function handler(request, response) {
     return response.status(200).json({
       error: error.message,
       profile: null,
+      about_page: null,
       projects: [],
       experience: [],
       skills: [],
