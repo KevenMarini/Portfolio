@@ -38,6 +38,7 @@ async function fetchData() {
         if (data.achievements) {
             window.cachedAchievements = data.achievements;
             renderAchievements(data.achievements);
+            renderHomeAchievements(data.achievements);
         }
     } catch (e) {
         console.log("Using local fallback data");

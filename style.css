@@ -805,11 +805,19 @@ section {
 }
 
 @media (max-width: 768px) {
-  .projects-slider-wrapper .proj-card {
-    min-width: 85% !important;
-    width: auto !important;
-    height: 440px;
-    padding: 30px 20px;
+  .projects-grid,
+  .home-projects-grid {
+    flex-direction: column;
+    overflow: visible;
+    gap: 20px;
+  }
+
+  .proj-card {
+    min-width: 100% !important;
+    width: 100% !important;
+    height: auto;
+    padding: 20px;
+    margin-bottom: 20px;
   }
 }
 
