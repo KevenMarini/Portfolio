@@ -369,8 +369,7 @@
                 <li class="nav-item" onclick="switchTab('education', this)">Education</li>
             </ul>
             <div class="sidebar-footer">
-                <a href="home.html" class="btn-action" style="display: block; text-align: center; margin-bottom: 15px; text-decoration: none;">Live Site ↗</a>
-                <button class="btn-action btn-edit" style="width: 100%; margin-bottom: 15px; background: rgba(0, 242, 254, 0.1); color: var(--accent-cyan); border-color: var(--accent-cyan);" onclick="seedDatabase()">Seed Default Data</button>
+                <button class="btn-action" style="width: 100%; margin-bottom: 15px;" onclick="window.open('index.html', '_blank')">Live Site ↗</button>
                 <button class="btn-action btn-delete" style="width: 100%" onclick="logout()">Terminate Session</button>
             </div>
         </aside>
@@ -1608,58 +1607,6 @@
             }
         }
 
-        async function seedDatabase() {
-            if(!confirm('This will populate the database with default portfolio data. Proceed?')) return;
-            
-            const profile = { name: "KEVEN MARINI", subtitle: "ECE Undergraduate at VIT | Building the future of AI & Embedded Systems.", hero_badge: "Open for Internships 2026", email: "kevenmarini07@gmail.com", phone: "+91 7810016443", linkedin: "https://www.linkedin.com/in/kevenmarini/", github: "https://github.com/KevenMarini", about_text: "I'm a first-year B.Tech student at Vellore Institute of Technology, focused on bridging the gap between hardware and intelligence. My passion lies in AI, embedded systems, and creating technology that solves real-world problems.", location: "Chennai, Tamil Nadu", languages: "English, Hindi, Tamil, Telugu", project_count: "8+", club_count: "2", current_year: "1st", image_url: "image3.png" };
-            
-            const experiences = [
-                { role: "Events & Public Relations", organization: "Mozilla Firefox Club VIT", date: "Feb 2026 – Now", description: "Developing social media strategies for community growth.\nCoordinating large-scale tech events and outreach." },
-                { role: "Core Team Member – PR", organization: "VIT Animation Club", date: "Jan 2026 – Now", description: "Managing digital presence and engagement metrics.\nFostering collaborative relationships within the core team." }
-            ];
-
-            const projects = [
-                { title: "AI-Based Smart Health Analysis System & OCR-Based Medical Report Analyzer", description: "Developed an integrated system combining machine learning and OCR to predict diseases from user symptoms using natural language input and extract structured data from medical reports.", tags: "AI / ML, OCR", link: "https://github.com/KevenMarini/Ai-based-smart-health-app", date: "Mar 2026 - Apr 2026" },
-                { title: "Disaster Triage System", description: "Building a Flask-based backend system to prioritize patients based on severity during emergencies. Work includes patent filing and research paper publication.", tags: "Patent Pending, Flask", link: "https://github.com/VPK570/DisasterTriageNet", date: "Sep 2025 - Present" },
-                { title: "Personal Art Portfolio", description: "A digital showcase of personal artwork, designs, and creative projects, highlighting UI/UX aesthetics and frontend crafting.", tags: "Web / UI", link: "https://itzonlyart.vercel.app/", date: "Personal Project" },
-                { title: "Crypto-Gate", description: "Designing a hardware-based encryption system using Verilog and digital logic concepts, focusing on secure data processing.", tags: "Verilog, Hardware", link: "", date: "Dec 2025 - Apr 2026" },
-                { title: "Airport Management System", description: "Created a Python Tkinter-based application for flight booking, cancellation, and airport service management (Class 12 Computer Science project).", tags: "Python, Tkinter", link: "", date: "Aug 2024 - Feb 2025" },
-                { title: "Smart Grid Protection System", description: "Designed an intelligent system to detect abnormal energy usage patterns, predict overload risks, and automatically reduce load using AI-based anomaly detection and ESP32 hardware.", tags: "AI, ESP32", link: "", date: "Feb 2026" },
-                { title: "AI-Based Sign Language Detection & Communication System", description: "SignBridge is a comprehensive, full-stack solution designed to facilitate seamless communication between sign language users and non-signers. By leveraging state-of-the-art AI and computer vision, the platform translates hand gestures into text in real-time.", tags: "AI / ML, Vision", link: "https://github.com/KevenMarini/SignBridge", date: "Jan 2026 - Apr 2026" }
-            ];
-
-            const skills = [
-                { name: "Python", category: "Core Technologies" }, { name: "Verilog", category: "Core Technologies" }, { name: "Machine Learning", category: "Core Technologies" }, { name: "Computer Vision", category: "Core Technologies" }, { name: "SQL", category: "Core Technologies" }, { name: "Java", category: "Core Technologies" }, { name: "HTML/CSS", category: "Core Technologies" },
-                { name: "Leadership", category: "Soft Skills" }, { name: "Strategic Thinking", category: "Soft Skills" }, { name: "Collaboration", category: "Soft Skills" }, { name: "Public Relations", category: "Soft Skills" }
-            ];
-
-            const education = [
-                { degree: "B.Tech – ECE", institution: "Vellore Institute of Technology", year: "2025 – 2029 (Current)", score: "8.20", score_label: "CGPA" },
-                { degree: "XII – CBSE Science", institution: "SBOA School & Junior College", year: "Completed 2025", score: "80%", score_label: "Percentage" },
-                { degree: "X – CBSE", institution: "SBOA School & Junior College", year: "Completed 2023", score: "88.4%", score_label: "Percentage" }
-            ];
-
-            const certifications = [
-                { name: "Data Science", status: "Pursuing", link: "" }
-            ];
-
-            try {
-                // Post Profile
-                await fetch('/api/admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: adminPass, type: 'profile', data: profile }) });
-                
-                // Post others
-                for (let e of experiences) await fetch('/api/admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: adminPass, type: 'experience', data: e }) });
-                for (let p of projects) await fetch('/api/admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: adminPass, type: 'project', data: p }) });
-                for (let s of skills) await fetch('/api/admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: adminPass, type: 'skill', data: s }) });
-                for (let ed of education) await fetch('/api/admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: adminPass, type: 'education', data: ed }) });
-                for (let c of certifications) await fetch('/api/admin', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: adminPass, type: 'certification', data: c }) });
-                
-                alert('Database seeded successfully!');
-                loadData();
-            } catch(e) {
-                alert('Error seeding database: ' + e.message);
-            }
-        }
 
         if(adminPass) loadData();
     </script>
