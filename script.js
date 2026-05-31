@@ -456,15 +456,11 @@ window.openLightbox = function(e, projectId, source, imageIdx) {
     style.textContent = `
         .project-media-grid {
             width: 100%;
-            height: 200px;
+            height: auto;
             margin-bottom: 16px;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: #000;
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 8px;
             box-sizing: border-box;
         }
         .project-media-grid img {
@@ -473,18 +469,15 @@ window.openLightbox = function(e, projectId, source, imageIdx) {
             display: block;
         }
         .project-media-grid img:hover {
-            transform: scale(1.03);
+            transform: scale(1.02);
             filter: brightness(1.1);
         }
         /* Single image – fill full box */
         .project-media-grid.single {
             background: transparent;
-            height: auto;
-            max-height: 400px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: none;
         }
         .project-media-grid.single img {
             width: auto;
@@ -496,34 +489,35 @@ window.openLightbox = function(e, projectId, source, imageIdx) {
         }
         /* Multi layout: big top image + thumbnails strip */
         .project-media-grid.multi {
-            padding: 0;
+            background: transparent;
         }
         .project-media-grid.multi .main-img {
             width: 100%;
-            height: 148px;
-            object-fit: cover;
-            flex-shrink: 0;
+            height: auto;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 12px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.2);
         }
         .project-media-grid.multi .thumbs-strip {
             display: flex;
             flex-direction: row;
-            gap: 5px;
-            height: 47px;
-            padding: 0 5px 5px 5px;
+            gap: 8px;
+            height: 60px;
             box-sizing: border-box;
-            flex-shrink: 0;
         }
         .project-media-grid.multi .thumbs-strip .thumb-cell {
             flex: 1;
             position: relative;
             overflow: hidden;
-            border-radius: 6px;
-            height: 100%;
+            border-radius: 8px;
         }
         .project-media-grid.multi .thumbs-strip .thumb-cell img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            border-radius: 8px;
         }
         .project-media-grid.multi .thumbs-strip .thumb-cell .more-overlay {
             position: absolute;
@@ -534,8 +528,9 @@ window.openLightbox = function(e, projectId, source, imageIdx) {
             justify-content: center;
             color: #fff;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 1.1rem;
             cursor: pointer;
+            border-radius: 8px;
         }
     `;
     document.head.appendChild(style);
