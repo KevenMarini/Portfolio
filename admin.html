@@ -363,6 +363,7 @@
                 <li class="nav-item" onclick="switchTab('experience', this)">Experience</li>
                 <li class="nav-item" onclick="switchTab('project', this)">Projects</li>
                 <li class="nav-item" onclick="switchTab('achievement', this)">Achievements</li>
+                <li class="nav-item" onclick="switchTab('announcement', this)">Announcements</li>
                 <li class="nav-item" onclick="switchTab('skill', this)">Skills</li>
                 <li class="nav-item" onclick="switchTab('certification', this)">Certifications</li>
                 <li class="nav-item" onclick="switchTab('education', this)">Education</li>
@@ -542,6 +543,7 @@
             experience: { title: 'Experience', fields: ['role', 'organization', 'description', 'date'] },
             project: { title: 'Selected Projects', fields: ['title', 'description', 'tags', 'link', 'link_name', 'date', 'image_urls', 'show_on_home'] },
             achievement: { title: 'Achievements', fields: ['title', 'description', 'category', 'date', 'link', 'link_name', 'image_urls', 'show_on_home'] },
+            announcement: { title: 'Announcements', fields: ['title', 'description', 'date', 'link', 'link_name', 'image_urls', 'show_on_home'] },
             skill: { title: 'Technical Stack', fields: ['name', 'category'] },
             certification: { title: 'Certifications', fields: ['name', 'status', 'link', 'link_name', 'image_url', 'show_on_home'] },
             education: { title: 'Education', fields: ['degree', 'institution', 'year', 'score', 'score_label'] }
@@ -1528,6 +1530,81 @@
                 urls.forEach((url, i) => {
                     renderAchievementImagePreview(url, i);
                 });
+            }
+        }
+
+        function addAnnouncementImage() {
+            const url = prompt("Enter image URL:");
+            if (!url) return;
+            const field = document.getElementById('field-image_urls');
+            let urls = [];
+            try { urls = JSON.parse(field.value || '[]'); } catch(e) {}
+            urls.push(url);
+            field.value = JSON.stringify(urls);
+            
+            const container = document.getElementById('announcement-images-preview-container');
+            if (container) {
+                renderAnnouncementImagePreview(url, urls.length - 1);
+            }
+        }
+
+        function renderAnnouncementImagePreview(url, idx) {
+            const container = document.getElementById('announcement-images-preview-container');
+            if (!container) return;
+            const div = document.createElement('div');
+            div.style.position = 'relative';
+            div.innerHTML = `
+                <img src="${url}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2);">
+                <button type="button" onclick="removeAnnouncementImage(${idx})" style="position:absolute; top:2px; right:2px; background:rgba(255,0,0,0.8); border:none; color:white; border-radius:50%; width:20px; height:20px; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center;">&times;</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function removeAnnouncementImage(idx) {
+            const field = document.getElementById('field-image_urls');
+            let urls = JSON.parse(field.value || '[]');
+            urls.splice(idx, 1);
+            field.value = JSON.stringify(urls);
+            
+            const container = document.getElementById('announcement-images-preview-container');
+            if (container) {
+                container.innerHTML = '';
+                urls.forEach((url, i) => {
+                    renderAnnouncementImagePreview(url, i);
+                });
+            }
+        }
+
+        async function moveAnnouncement(id, direction) {
+            const announcements = allData.announcements || [];
+            const idx = announcements.findIndex(a => a.id === id);
+            if (idx === -1) return;
+            
+            const newIdx = direction === 'up' ? idx - 1 : idx + 1;
+            if (newIdx < 0 || newIdx >= announcements.length) return;
+            
+            const temp = announcements[idx];
+            announcements[idx] = announcements[newIdx];
+            announcements[newIdx] = temp;
+            
+            renderWorkspace();
+            
+            const ids = announcements.map(a => a.id);
+            try {
+                const res = await fetch('/api/admin', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        password: adminPass,
+                        type: 'reorder-announcements',
+                        data: { ids }
+                    })
+                });
+                if (!res.ok) {
+                    loadData();
+                }
+            } catch (err) {
+                loadData();
             }
         }
 

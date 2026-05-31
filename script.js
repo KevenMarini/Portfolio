@@ -41,6 +41,10 @@ async function fetchData() {
             renderAchievements(data.achievements);
             renderHomeAchievements(data.achievements);
         }
+        if (data.announcements) {
+            window.cachedAnnouncements = data.announcements;
+            renderAnnouncements(data.announcements);
+        }
     } catch (e) {
         console.log("Using local fallback data");
     }
@@ -767,6 +771,35 @@ const style = document.createElement('style');
 style.textContent = `#main-content, #skill-display { transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1); }`;
 document.head.appendChild(style);
 
+function renderAnnouncements(announcements) {
+    const container = document.getElementById('dynamic-announcements-container');
+    if (!container) return;
+
+    if (!announcements || announcements.length === 0) {
+        container.innerHTML = `<div class="flow-section reveal active"><div style="text-align: center; color: var(--text-secondary); padding: 40px 0;">No announcements at the moment. Check back later!</div></div>`;
+        return;
+    }
+
+    let html = '';
+    announcements.forEach((a) => {
+        const imagesGrid = renderAchievementImagesGrid(a.image_urls, a.id, 'announcement');
+        html += `
+            <div class="flow-section reveal active" style="margin-bottom: 30px; cursor: default;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:15px; flex-wrap: wrap; gap: 10px;">
+                    <h3 style="margin: 0; color: var(--accent-cyan); font-size: 1.4rem; font-weight: 600;">${a.title}</h3>
+                    <span style="color: var(--text-secondary); font-size: 0.85rem; background: rgba(255,255,255,0.05); padding: 5px 12px; border-radius: 20px;">${a.date || ''}</span>
+                </div>
+                ${imagesGrid}
+                <div style="margin-top: 15px; font-size: 0.95rem; line-height: 1.6; color: rgba(255, 255, 255, 0.85);">
+                    ${(a.description || '').split('\n').map(p => `<p style="margin-bottom: 10px;">${p}</p>`).join('')}
+                </div>
+                ${a.link ? `<a href="${a.link}" target="_blank" style="display: inline-block; margin-top: 15px; color: var(--accent-cyan); font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--accent-cyan); padding-bottom: 2px;">${a.link_name || 'Read More ↗'}</a>` : ''}
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+}
+
 function renderAchievements(achievements) {
     const container = document.getElementById('dynamic-achievements-container');
     if (!container) return;
@@ -941,9 +974,13 @@ function renderAchievementImagesGrid(imageUrls, achievementId, source) {
 
 window.openAchievementDetailsById = function(achievementId) {
     const achievements = window.cachedAchievements || [];
-    const achievement = achievements.find(a => a.id === achievementId);
-    if (achievement) {
-        openAchievementDetails(achievement);
+    let item = achievements.find(a => a.id === achievementId);
+    if (!item) {
+        const announcements = window.cachedAnnouncements || [];
+        item = announcements.find(a => a.id === achievementId);
+    }
+    if (item) {
+        openAchievementDetails(item);
     }
 };
 

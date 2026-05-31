@@ -30,6 +30,7 @@ export default async function handler(request, response) {
     try { await sql`ALTER TABLE certifications ADD COLUMN image_url TEXT;`; } catch(e) {}
     try { await sql`ALTER TABLE certifications ADD COLUMN show_on_home BOOLEAN DEFAULT FALSE;`; } catch(e) {}
     await sql`CREATE TABLE IF NOT EXISTS achievements (id SERIAL PRIMARY KEY, title TEXT, description TEXT, category TEXT, date TEXT, link TEXT, image_urls TEXT, show_on_home BOOLEAN DEFAULT FALSE, sort_order INT DEFAULT 0);`;
+    await sql`CREATE TABLE IF NOT EXISTS announcements (id SERIAL PRIMARY KEY, title TEXT, description TEXT, date TEXT, link TEXT, link_name TEXT, image_urls TEXT, show_on_home BOOLEAN DEFAULT FALSE, sort_order INT DEFAULT 0);`;
 
     if (method === 'POST') {
       if (type === 'profile') {
@@ -111,6 +112,22 @@ export default async function handler(request, response) {
             await sql`UPDATE achievements SET sort_order = ${i} WHERE id = ${ids[i]};`;
           }
         }
+      } else if (type === 'announcement') {
+        const { id, title='', description='', date='', link='', link_name='', image_urls='', show_on_home=false } = data || {};
+        if (id) {
+          await sql`UPDATE announcements SET title=${title}, description=${description}, date=${date}, link=${link}, link_name=${link_name}, image_urls=${image_urls}, show_on_home=${show_on_home} WHERE id=${id};`;
+        } else {
+          const maxOrderRes = await sql`SELECT MAX(sort_order) as max_order FROM announcements;`;
+          const nextOrder = (maxOrderRes.rows[0]?.max_order || 0) + 1;
+          await sql`INSERT INTO announcements (title, description, date, link, link_name, image_urls, show_on_home, sort_order) VALUES (${title}, ${description}, ${date}, ${link}, ${link_name}, ${image_urls}, ${show_on_home}, ${nextOrder});`;
+        }
+      } else if (type === 'reorder-announcements') {
+        const { ids } = data || {};
+        if (Array.isArray(ids)) {
+          for (let i = 0; i < ids.length; i++) {
+            await sql`UPDATE announcements SET sort_order = ${i} WHERE id = ${ids[i]};`;
+          }
+        }
       }
       return response.status(200).json({ success: true });
     }
@@ -123,6 +140,7 @@ export default async function handler(request, response) {
       if (type === 'education') await sql`DELETE FROM education WHERE id = ${id};`;
       if (type === 'certification') await sql`DELETE FROM certifications WHERE id = ${id};`;
       if (type === 'achievement') await sql`DELETE FROM achievements WHERE id = ${id};`;
+      if (type === 'announcement') await sql`DELETE FROM announcements WHERE id = ${id};`;
       return response.status(200).json({ success: true });
     }
 
