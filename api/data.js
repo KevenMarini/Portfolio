@@ -6,6 +6,7 @@ export default async function handler(request, response) {
     await sql`CREATE TABLE IF NOT EXISTS profile (id SERIAL PRIMARY KEY, name TEXT, subtitle TEXT, hero_badge TEXT, email TEXT, phone TEXT, linkedin TEXT, github TEXT, about_text TEXT, location TEXT, languages TEXT, project_count TEXT, club_count TEXT, current_year TEXT);`;
     try { await sql`ALTER TABLE profile ADD COLUMN image_url TEXT;`; } catch(e) {}
     try { await sql`ALTER TABLE profile ADD COLUMN cgpa TEXT;`; } catch(e) {}
+    try { await sql`ALTER TABLE profile ADD COLUMN contact_text TEXT;`; } catch(e) {}
     await sql`CREATE TABLE IF NOT EXISTS projects (id SERIAL PRIMARY KEY, title TEXT, description TEXT, tags TEXT, link TEXT, date TEXT);`;
     try { await sql`ALTER TABLE projects ADD COLUMN image_urls TEXT;`; } catch(e) {}
     try { await sql`ALTER TABLE projects ADD COLUMN show_on_home BOOLEAN DEFAULT FALSE;`; } catch(e) {}

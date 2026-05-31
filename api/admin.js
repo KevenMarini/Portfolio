@@ -17,6 +17,7 @@ export default async function handler(request, response) {
     try { await sql`ALTER TABLE profile ADD COLUMN cgpa TEXT;`; } catch(e) {}
     try { await sql`ALTER TABLE profile ADD COLUMN current_focus TEXT;`; } catch(e) {}
     try { await sql`ALTER TABLE profile ADD COLUMN core_philosophy TEXT;`; } catch(e) {}
+    try { await sql`ALTER TABLE profile ADD COLUMN contact_text TEXT;`; } catch(e) {}
     await sql`CREATE TABLE IF NOT EXISTS about_page (id SERIAL PRIMARY KEY, journey_vision TEXT, current_focus TEXT, core_philosophy TEXT, location_text TEXT, languages_list TEXT, academics_text TEXT);`;
     await sql`CREATE TABLE IF NOT EXISTS projects (id SERIAL PRIMARY KEY, title TEXT, description TEXT, tags TEXT, link TEXT, date TEXT);`;
     try { await sql`ALTER TABLE projects ADD COLUMN image_urls TEXT;`; } catch(e) {}
@@ -32,15 +33,15 @@ export default async function handler(request, response) {
 
     if (method === 'POST') {
       if (type === 'profile') {
-        const { name='', subtitle='', hero_badge='', email='', phone='', linkedin='', github='', about_text='', location='', languages='', project_count='', club_count='', current_year='', image_url='', cgpa='', current_focus='', core_philosophy='' } = data || {};
+        const { name='', subtitle='', hero_badge='', email='', phone='', linkedin='', github='', about_text='', location='', languages='', project_count='', club_count='', current_year='', image_url='', cgpa='', current_focus='', core_philosophy='', contact_text='' } = data || {};
         if (image_url && image_url.length > 3000000) {
           return response.status(400).json({ error: 'Image exceeds 2MB size limit' });
         }
         const exists = await sql`SELECT * FROM profile LIMIT 1;`;
         if (exists.rows.length > 0) {
-          await sql`UPDATE profile SET name=${name}, subtitle=${subtitle}, hero_badge=${hero_badge}, email=${email}, phone=${phone}, linkedin=${linkedin}, github=${github}, about_text=${about_text}, location=${location}, languages=${languages}, project_count=${project_count}, club_count=${club_count}, current_year=${current_year}, image_url=${image_url}, cgpa=${cgpa}, current_focus=${current_focus}, core_philosophy=${core_philosophy} WHERE id=${exists.rows[0].id};`;
+          await sql`UPDATE profile SET name=${name}, subtitle=${subtitle}, hero_badge=${hero_badge}, email=${email}, phone=${phone}, linkedin=${linkedin}, github=${github}, about_text=${about_text}, location=${location}, languages=${languages}, project_count=${project_count}, club_count=${club_count}, current_year=${current_year}, image_url=${image_url}, cgpa=${cgpa}, current_focus=${current_focus}, core_philosophy=${core_philosophy}, contact_text=${contact_text} WHERE id=${exists.rows[0].id};`;
         } else {
-          await sql`INSERT INTO profile (name, subtitle, hero_badge, email, phone, linkedin, github, about_text, location, languages, project_count, club_count, current_year, image_url, cgpa, current_focus, core_philosophy) VALUES (${name}, ${subtitle}, ${hero_badge}, ${email}, ${phone}, ${linkedin}, ${github}, ${about_text}, ${location}, ${languages}, ${project_count}, ${club_count}, ${current_year}, ${image_url}, ${cgpa}, ${current_focus}, ${core_philosophy});`;
+          await sql`INSERT INTO profile (name, subtitle, hero_badge, email, phone, linkedin, github, about_text, location, languages, project_count, club_count, current_year, image_url, cgpa, current_focus, core_philosophy, contact_text) VALUES (${name}, ${subtitle}, ${hero_badge}, ${email}, ${phone}, ${linkedin}, ${github}, ${about_text}, ${location}, ${languages}, ${project_count}, ${club_count}, ${current_year}, ${image_url}, ${cgpa}, ${current_focus}, ${core_philosophy}, ${contact_text});`;
         }
       } else if (type === 'about_page') {
         const { journey_vision='', current_focus='', core_philosophy='', location_text='', languages_list='', academics_text='' } = data || {};

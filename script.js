@@ -100,6 +100,29 @@ function renderProfile(p) {
 
     const yearNum = document.querySelector('.about-grid .card:nth-child(3) .stat-num');
     if (yearNum) yearNum.textContent = p.current_year || '1st';
+
+    // Contact Page population
+    const contactIntro = document.getElementById('contact-intro-text');
+    if (contactIntro && p.contact_text) {
+        contactIntro.innerHTML = p.contact_text.split('\n\n').map(pt => `${pt.trim()}`).join('<br><br>');
+    }
+
+    const contactEmail = document.getElementById('contact-email');
+    if (contactEmail && p.email) {
+        contactEmail.textContent = p.email;
+        contactEmail.href = `mailto:${p.email}`;
+    }
+
+    const contactPhone = document.getElementById('contact-phone');
+    if (contactPhone && p.phone) {
+        contactPhone.textContent = p.phone;
+    }
+
+    const contactLinkedin = document.getElementById('contact-linkedin');
+    if (contactLinkedin && p.linkedin) {
+        contactLinkedin.textContent = p.linkedin.replace(/^https?:\/\/(www\.)?/, '');
+        contactLinkedin.href = p.linkedin;
+    }
 }
 
 function renderAboutPage(a, p) {

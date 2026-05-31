@@ -358,6 +358,7 @@
             <ul class="sidebar-nav" id="sidebar-nav">
                 <li class="nav-item active" onclick="switchTab('home', this)">Home Page</li>
                 <li class="nav-item" onclick="switchTab('about_page', this)">About Page</li>
+                <li class="nav-item" onclick="switchTab('contact_page', this)">Contact Page</li>
                 <li class="nav-item" onclick="switchTab('profile', this)">Profile Settings</li>
                 <li class="nav-item" onclick="switchTab('experience', this)">Experience</li>
                 <li class="nav-item" onclick="switchTab('project', this)">Projects</li>
@@ -536,6 +537,7 @@
         const config = {
             home: { title: 'Home Page Editor' },
             about_page: { title: 'About Page Editor' },
+            contact_page: { title: 'Contact Page Editor' },
             profile: { title: 'Profile Settings' },
             experience: { title: 'Experience', fields: ['role', 'organization', 'description', 'date'] },
             project: { title: 'Selected Projects', fields: ['title', 'description', 'tags', 'link', 'link_name', 'date', 'image_urls', 'show_on_home'] },
@@ -559,7 +561,7 @@
                 actionContainer.innerHTML = ''; // No button needed, inline editing enabled
             } else if (tabId === 'profile') {
                 actionContainer.innerHTML = `<button class="btn-add-global" onclick="openProfileModal()">Update Profile</button>`;
-            } else if (tabId === 'about_page') {
+            } else if (tabId === 'about_page' || tabId === 'contact_page') {
                 actionContainer.innerHTML = ''; // No button needed, inline editing enabled
             } else {
                 actionContainer.innerHTML = `<button class="btn-add-global" onclick="openEntryModal('${tabId}')">+ New Entry</button>`;
@@ -773,6 +775,30 @@
                             <div class="flow-section" style="cursor: pointer; padding: 20px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px; transition: 0.2s;" onmouseover="this.style.boxShadow='0 0 15px var(--accent-cyan)'; this.style.transform='scale(1.02)'" onmouseout="this.style.boxShadow='none'; this.style.transform='scale(1)'" onclick="promptAboutField('location_text', 'Location')">
                                 <h3>Location</h3>
                                 <div>${parseText(aboutData.location_text) || 'Click to add content'}</div>
+                            </div>
+                        </div>
+                    `;
+                } else if (currentTab === 'contact_page') {
+                    const profileData = allData.profile || {};
+                    const parseText = (text) => (text || '').split('\n\n').map(p => `<p>${p.trim()}</p>`).join('');
+                    
+                    container.innerHTML = `
+                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                            <div class="flow-section" style="cursor: pointer; padding: 20px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px; transition: 0.2s;" onmouseover="this.style.boxShadow='0 0 15px var(--accent-cyan)'; this.style.transform='scale(1.02)'" onmouseout="this.style.boxShadow='none'; this.style.transform='scale(1)'" onclick="promptProfileField('contact_text', 'Contact Intro Text')">
+                                <h3>Contact Intro Text</h3>
+                                <div>${parseText(profileData.contact_text) || '<p>I am always open to discussing new projects, creative ideas or opportunities to be part of your visions.</p>'}</div>
+                            </div>
+                            <div class="flow-section" style="cursor: pointer; padding: 20px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px; transition: 0.2s;" onmouseover="this.style.boxShadow='0 0 15px var(--accent-cyan)'; this.style.transform='scale(1.02)'" onmouseout="this.style.boxShadow='none'; this.style.transform='scale(1)'" onclick="promptProfileField('email', 'Email Address')">
+                                <h3>Email Address</h3>
+                                <div><p>${profileData.email || 'Email Address'}</p></div>
+                            </div>
+                            <div class="flow-section" style="cursor: pointer; padding: 20px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px; transition: 0.2s;" onmouseover="this.style.boxShadow='0 0 15px var(--accent-cyan)'; this.style.transform='scale(1.02)'" onmouseout="this.style.boxShadow='none'; this.style.transform='scale(1)'" onclick="promptProfileField('phone', 'Phone Number')">
+                                <h3>Phone Number</h3>
+                                <div><p>${profileData.phone || 'Phone Number'}</p></div>
+                            </div>
+                            <div class="flow-section" style="cursor: pointer; padding: 20px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 10px; transition: 0.2s;" onmouseover="this.style.boxShadow='0 0 15px var(--accent-cyan)'; this.style.transform='scale(1.02)'" onmouseout="this.style.boxShadow='none'; this.style.transform='scale(1)'" onclick="promptProfileField('linkedin', 'LinkedIn URL')">
+                                <h3>LinkedIn URL</h3>
+                                <div><p>${profileData.linkedin || 'LinkedIn URL'}</p></div>
                             </div>
                         </div>
                     `;
@@ -1111,9 +1137,10 @@
             }
 
             const data = {};
-            ['name', 'subtitle', 'hero_badge', 'email', 'phone', 'linkedin', 'github', 'about_text', 'location', 'languages', 'project_count', 'club_count', 'current_year', 'cgpa', 'image_url', 'current_focus', 'core_philosophy'].forEach(f => {
+            ['name', 'subtitle', 'hero_badge', 'email', 'phone', 'linkedin', 'github', 'about_text', 'location', 'languages', 'project_count', 'club_count', 'current_year', 'cgpa', 'image_url', 'current_focus', 'core_philosophy', 'contact_text'].forEach(f => {
                 const el = document.getElementById(`prof-${f}`);
                 if (el) data[f] = el.value;
+                else if (allData.profile && allData.profile[f] !== undefined) data[f] = allData.profile[f];
             });
 
             try {
