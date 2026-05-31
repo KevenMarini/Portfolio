@@ -478,12 +478,13 @@ window.openLightbox = function(e, projectId, source, imageIdx) {
         }
         /* Single image – fill full box */
         .project-media-grid.single {
-            background: #000;
+            background: transparent;
         }
         .project-media-grid.single img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
+            object-position: center;
         }
         /* Multi layout: big top image + thumbnails strip */
         .project-media-grid.multi {
@@ -781,7 +782,9 @@ function renderAnnouncements(announcements) {
     }
 
     let html = '';
-    announcements.forEach((a) => {
+    // Reverse array to display old to new
+    const sortedAnnouncements = [...announcements].reverse();
+    sortedAnnouncements.forEach((a) => {
         const imagesGrid = renderAchievementImagesGrid(a.image_urls, a.id, 'announcement');
         html += `
             <div class="flow-section reveal active" style="margin-bottom: 30px; cursor: default;">
