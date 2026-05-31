@@ -479,12 +479,20 @@ window.openLightbox = function(e, projectId, source, imageIdx) {
         /* Single image – fill full box */
         .project-media-grid.single {
             background: transparent;
+            height: auto;
+            max-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
         }
         .project-media-grid.single img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
+            width: auto;
+            max-width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 12px;
         }
         /* Multi layout: big top image + thumbnails strip */
         .project-media-grid.multi {
@@ -834,7 +842,7 @@ function renderAchievements(achievements) {
                         ${items.map((a) => {
                             const imagesGrid = renderAchievementImagesGrid(a.image_urls, a.id, 'all');
                             return `
-                                <div class="card proj-card reveal active" onclick="openAchievementDetailsById(${a.id})" style="cursor: pointer; display: flex; flex-direction: column; justify-content: space-between;">
+                                <div class="card proj-card reveal active" onclick="openAchievementDetailsById(${a.id}, 'all')" style="cursor: pointer; display: flex; flex-direction: column; justify-content: space-between;">
                                     <div>
                                         ${imagesGrid}
                                         <div class="proj-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; margin-top: 15px;">
@@ -966,7 +974,7 @@ function renderAchievementImagesGrid(imageUrls, achievementId, source) {
                     return `
                         <div class="thumb-cell">
                             <img src="${url}" onclick="openAchievementLightbox(event, ${achievementId}, '${source}', ${i + 1})">
-                            ${isLast ? `<div class="more-overlay" onclick="event.stopPropagation(); openAchievementDetailsById(${achievementId})">+${extraCount}</div>` : ''}
+                            ${isLast ? `<div class="more-overlay" onclick="event.stopPropagation(); openAchievementDetailsById(${achievementId}, '${source}')">+${extraCount}</div>` : ''}
                         </div>
                     `;
                 }).join('')}
@@ -975,12 +983,14 @@ function renderAchievementImagesGrid(imageUrls, achievementId, source) {
     `;
 }
 
-window.openAchievementDetailsById = function(achievementId) {
-    const achievements = window.cachedAchievements || [];
-    let item = achievements.find(a => a.id === achievementId);
-    if (!item) {
+window.openAchievementDetailsById = function(achievementId, source) {
+    let item = null;
+    if (source === 'announcement') {
         const announcements = window.cachedAnnouncements || [];
         item = announcements.find(a => a.id === achievementId);
+    } else {
+        const achievements = window.cachedAchievements || [];
+        item = achievements.find(a => a.id === achievementId);
     }
     if (item) {
         openAchievementDetails(item);
@@ -1073,15 +1083,21 @@ window.closeAchievementDetails = function() {
 window.openAchievementLightbox = function(e, achievementId, source, imageIdx) {
     if (e) e.stopPropagation();
     
-    const achievements = window.cachedAchievements || [];
-    const achievement = achievements.find(a => a.id === achievementId);
-    if (!achievement) return;
+    let item = null;
+    if (source === 'announcement') {
+        const announcements = window.cachedAnnouncements || [];
+        item = announcements.find(a => a.id === achievementId);
+    } else {
+        const achievements = window.cachedAchievements || [];
+        item = achievements.find(a => a.id === achievementId);
+    }
+    if (!item) return;
     
     let urls = [];
     try {
-        urls = JSON.parse(achievement.image_urls || '[]');
+        urls = JSON.parse(item.image_urls || '[]');
     } catch(err) {
-        if (achievement.image_urls) urls = [achievement.image_urls];
+        if (item.image_urls) urls = [item.image_urls];
     }
     if (urls.length === 0) return;
     
