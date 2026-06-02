@@ -77,6 +77,10 @@ function renderProfile(p) {
             img.src = p.image_url;
         }
     });
+    const favicon = document.getElementById('dynamic-favicon');
+    if (favicon && p.image_url) {
+        favicon.href = p.image_url;
+    }
     const cgpaBadge = document.querySelector('.avatar-badge');
     if (cgpaBadge && p.cgpa) {
         cgpaBadge.textContent = `${p.cgpa} CGPA`;
