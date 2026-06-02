@@ -146,14 +146,29 @@ function renderProfile(p) {
                 const btn = document.createElement('a');
                 btn.href = p.resume_url;
                 btn.download = 'Resume';
-                btn.className = 'btn-primary download-resume-btn';
-                btn.style = 'padding: 8px 16px; font-size: 0.9rem; margin-left: 15px; text-decoration: none; border-radius: 8px;';
+                btn.className = 'download-resume-btn';
+                btn.style = 'padding: 8px 18px; font-size: 0.9rem; margin-left: 15px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white; text-decoration: none; transition: all 0.3s ease; background: rgba(255,255,255,0.05); font-weight: 500; display: inline-block;';
                 btn.textContent = 'Download Resume';
+                btn.onmouseover = () => { btn.style.background = 'white'; btn.style.color = 'black'; };
+                btn.onmouseout = () => { btn.style.background = 'rgba(255,255,255,0.05)'; btn.style.color = 'white'; };
                 navRight.appendChild(btn);
             } else {
                 navRight.querySelector('.download-resume-btn').href = p.resume_url;
             }
         });
+
+        // Inject into hero section if present
+        const heroCta = document.querySelector('.hero-cta');
+        if (heroCta && !heroCta.querySelector('.hero-resume-btn')) {
+            const heroBtn = document.createElement('a');
+            heroBtn.href = p.resume_url;
+            heroBtn.download = 'Resume';
+            heroBtn.className = 'btn-ghost hero-resume-btn';
+            heroBtn.textContent = 'Download Resume';
+            heroCta.appendChild(heroBtn);
+        } else if (heroCta && heroCta.querySelector('.hero-resume-btn')) {
+            heroCta.querySelector('.hero-resume-btn').href = p.resume_url;
+        }
 
         // Inject at the bottom of the home page
         const homeMain = document.querySelector('body.portfolio-mode main');
