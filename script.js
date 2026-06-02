@@ -71,6 +71,12 @@ function renderProfile(p) {
     if (heroImg && p.image_url) {
         heroImg.src = p.image_url;
     }
+    const logoImgs = document.querySelectorAll('.nav-logo-img, .footer-logo-img');
+    logoImgs.forEach(img => {
+        if (p.image_url) {
+            img.src = p.image_url;
+        }
+    });
     const cgpaBadge = document.querySelector('.avatar-badge');
     if (cgpaBadge && p.cgpa) {
         cgpaBadge.textContent = `${p.cgpa} CGPA`;
