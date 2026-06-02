@@ -185,8 +185,47 @@ function renderProfile(p) {
         } else if (document.getElementById('home-resume-section')) {
             document.querySelector('#home-resume-section a').href = p.resume_url;
         }
+        
+        // Handle dedicated Resume Page buttons
+        const dedicatedResumeBtn = document.getElementById('resume-download-btn');
+        const resumeUnavailableMsg = document.getElementById('resume-unavailable-msg');
+        if (dedicatedResumeBtn) {
+            dedicatedResumeBtn.href = p.resume_url;
+            dedicatedResumeBtn.style.display = 'inline-block';
+            if (resumeUnavailableMsg) resumeUnavailableMsg.style.display = 'none';
+        }
+    } else {
+        // If no resume is uploaded, handle the dedicated page state
+        const dedicatedResumeBtn = document.getElementById('resume-download-btn');
+        const resumeUnavailableMsg = document.getElementById('resume-unavailable-msg');
+        if (dedicatedResumeBtn) {
+            dedicatedResumeBtn.style.display = 'none';
+            if (resumeUnavailableMsg) resumeUnavailableMsg.style.display = 'block';
+        }
     }
 }
+
+// Add Resume to navigation links dynamically across all pages
+document.addEventListener("DOMContentLoaded", () => {
+    // Top nav links (home page usually)
+    const navLinks = document.querySelector('.nav-links');
+    if (navLinks && !navLinks.querySelector('a[href="resume.html"]')) {
+        const resumeLink = document.createElement('a');
+        resumeLink.href = 'resume.html';
+        resumeLink.textContent = 'Resume';
+        navLinks.appendChild(resumeLink);
+    }
+    
+    // Premium Sidebar links
+    document.querySelectorAll('.ps-links').forEach(psLinks => {
+        if (!psLinks.querySelector('a[href="resume.html"]')) {
+            const resumeSideLink = document.createElement('a');
+            resumeSideLink.href = 'resume.html';
+            resumeSideLink.textContent = 'Resume';
+            psLinks.appendChild(resumeSideLink);
+        }
+    });
+});
 
 function renderAboutPage(a, p) {
     const parseText = (text) => text.split('\n\n').map(p => `<p>${p.trim()}</p>`).join('');

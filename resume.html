@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume | Keven Marini</title>
+  <link rel="stylesheet" href="style.css?v=5.0">
+  <style>
+    body {
+        padding-top: 100px;
+    }
+    .contact-container {
+        min-height: 80vh;
+        padding: 60px 5%;
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .info-icon {
+        width: 80px;
+        height: 80px;
+        background: rgba(0, 242, 254, 0.1);
+        border: 1px solid rgba(0, 242, 254, 0.2);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        color: var(--accent-cyan);
+        margin: 0 auto 30px auto;
+    }
+  </style>
+  <link rel="icon" type="image/png" href="image3.png" id="dynamic-favicon">
+</head>
+<body class="portfolio-mode">
+
+  <div class="prism-bg">
+    <div class="prism-blob blob-1"></div>
+    <div class="prism-blob blob-2"></div>
+    <div class="prism-blob blob-3"></div>
+  </div>
+
+    <nav>
+        <div class="nav-left">
+            <img src="image3.png" alt="Logo" class="nav-logo nav-logo-img">
+            <div class="menu-toggle" id="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <a href="home.html" class="homepage-link">Homepage</a>
+        </div>
+        <div class="nav-right">
+            <div class="nav-links">
+            </div>
+        </div>
+    </nav>
+
+    <main class="contact-container">
+        <span class="section-label" style="text-align: center;">Professional Profile</span>
+        <h2 class="section-title" style="text-align: center;">My <span>Resume.</span></h2>
+
+        <div class="card reveal active" style="text-align: center; max-width: 600px; width: 100%; padding: 60px 40px; margin-top: 40px;">
+            <div class="info-icon">📄</div>
+            <h3 style="margin-bottom: 20px; font-size: 1.8rem;">Curriculum Vitae</h3>
+            <p style="color: var(--text-secondary); margin-bottom: 40px; line-height: 1.8;">Get a detailed overview of my education, technical skills, projects, and professional experience.</p>
+            <a id="resume-download-btn" href="#" download="Resume" class="btn-primary" style="padding: 18px 40px; font-size: 1.1rem; display: inline-block;">Download Resume</a>
+            <p id="resume-unavailable-msg" style="color: var(--accent-pink); margin-top: 25px; display: none; font-weight: 600;">Resume is currently unavailable.</p>
+        </div>
+    </main>
+
+    <footer>
+        <img src="image3.png" alt="Logo" class="nav-logo footer-logo-img">
+        <div class="footer-links">
+            <a href="mailto:kevenmarini07@gmail.com">Email</a>
+            <a href="https://www.linkedin.com/in/kevenmarini/" target="_blank">LinkedIn</a>
+            <a href="https://github.com/KevenMarini" target="_blank">GitHub</a>
+        </div>
+    </footer>
+
+    <!-- PREMIUM SIDEBAR -->
+    <div id="premium-sidebar">
+        <div class="ps-header">
+            <div class="ps-name">KEVEN MARINI</div>
+            <div class="ps-close" id="ps-close-btn">&times;</div>
+        </div>
+        <div class="ps-line"></div>
+        <div class="ps-links">
+            <a href="home.html">Home</a>
+            <a href="about.html">About Me</a>
+            <a href="announcement.html">Announcements</a>
+            <a href="education.html">Academics</a>
+            <a href="projects.html">Projects</a>
+            <a href="certifications.html">Certifications</a>
+            <a href="achievements.html">Achievements</a>
+            <a href="skills.html">Skills</a>
+            <a href="contact.html">Contact</a>
+        </div>
+        <div class="ps-scroll-hint">
+            <span>Scroll</span>
+            <i></i>
+        </div>
+        <div class="ps-line"></div>
+        <div class="ps-footer">
+            <p class="ps-text">Crafting digital experiences<br>with Passion & Innovation.</p>
+        </div>
+    </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
