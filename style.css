@@ -1380,8 +1380,10 @@ body.menu-open {
     margin: 20px 0 !important;
     text-align: center !important;
     overflow-y: auto !important;
-    scrollbar-width: none !important;
-    flex: 1 !important;
+    overflow-x: hidden !important;
+    flex-grow: 1 !important;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
 }
 
 .ps-links::-webkit-scrollbar {

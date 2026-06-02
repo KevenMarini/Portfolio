@@ -207,16 +207,7 @@ function renderProfile(p) {
 
 // Add Resume to navigation links dynamically across all pages
 function injectResumeNavLinks() {
-    // Top nav links (home page usually)
-    const navLinks = document.querySelector('.nav-links');
-    if (navLinks && !navLinks.querySelector('a[href="resume.html"]')) {
-        const resumeLink = document.createElement('a');
-        resumeLink.href = 'resume.html';
-        resumeLink.textContent = 'Resume';
-        navLinks.appendChild(resumeLink);
-    }
-    
-    // Premium Sidebar links
+    // Premium Sidebar links only
     document.querySelectorAll('.ps-links').forEach(psLinks => {
         if (!psLinks.querySelector('a[href="resume.html"]')) {
             const resumeSideLink = document.createElement('a');
