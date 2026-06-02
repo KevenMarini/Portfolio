@@ -7,6 +7,7 @@ export default async function handler(request, response) {
     try { await sql`ALTER TABLE profile ADD COLUMN image_url TEXT;`; } catch(e) {}
     try { await sql`ALTER TABLE profile ADD COLUMN cgpa TEXT;`; } catch(e) {}
     try { await sql`ALTER TABLE profile ADD COLUMN contact_text TEXT;`; } catch(e) {}
+    try { await sql`ALTER TABLE profile ADD COLUMN resume_url TEXT;`; } catch(e) {}
     await sql`CREATE TABLE IF NOT EXISTS projects (id SERIAL PRIMARY KEY, title TEXT, description TEXT, tags TEXT, link TEXT, date TEXT);`;
     try { await sql`ALTER TABLE projects ADD COLUMN image_urls TEXT;`; } catch(e) {}
     try { await sql`ALTER TABLE projects ADD COLUMN show_on_home BOOLEAN DEFAULT FALSE;`; } catch(e) {}

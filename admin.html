@@ -336,6 +336,7 @@
 </head>
 <body class="portfolio-mode">
     <input type="file" id="image-upload" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+    <input type="file" id="resume-upload" style="display:none" onchange="handleResumeUpload(event)">
 
     <!-- LOGIN SCREEN -->
     <div id="login-screen" class="login-wrap">
@@ -420,6 +421,12 @@
                 <div class="input-group"><label>Projects Count</label><input type="text" id="prof-project_count"></div>
                 <div class="input-group"><label>Clubs Count</label><input type="text" id="prof-club_count"></div>
                 <div class="input-group full-width"><label>Career Objective / About Text</label><textarea id="prof-about_text" rows="4"></textarea></div>
+                <div class="input-group full-width">
+                    <label>Resume File (Any type)</label>
+                    <button class="btn-action" onclick="document.getElementById('resume-upload').click()">Upload Resume</button>
+                    <small id="resume-name" style="color:var(--text-secondary);display:block;margin-top:5px;">Currently: None</small>
+                    <input type="hidden" id="prof-resume_url">
+                </div>
             </div>
             <div class="card-actions" style="margin-top: 40px;">
                 <button class="btn-primary" onclick="saveProfile()" style="padding: 14px 40px;">Update Identity</button>
@@ -879,6 +886,10 @@
                     const el = document.getElementById(`prof-${k}`);
                     if(el) el.value = allData.profile[k];
                 });
+                const resumeLabel = document.getElementById('resume-name');
+                if (resumeLabel) {
+                    resumeLabel.textContent = allData.profile.resume_url ? 'Currently: [File Uploaded]' : 'Currently: None';
+                }
             }
             document.getElementById('modal-profile').style.display = 'flex';
         }
@@ -1139,7 +1150,7 @@
             }
 
             const data = {};
-            ['name', 'subtitle', 'hero_badge', 'email', 'phone', 'linkedin', 'github', 'about_text', 'location', 'languages', 'project_count', 'club_count', 'current_year', 'cgpa', 'image_url', 'current_focus', 'core_philosophy', 'contact_text'].forEach(f => {
+            ['name', 'subtitle', 'hero_badge', 'email', 'phone', 'linkedin', 'github', 'about_text', 'location', 'languages', 'project_count', 'club_count', 'current_year', 'cgpa', 'image_url', 'current_focus', 'core_philosophy', 'contact_text', 'resume_url'].forEach(f => {
                 const el = document.getElementById(`prof-${f}`);
                 if (el) data[f] = el.value;
                 else if (allData.profile && allData.profile[f] !== undefined) data[f] = allData.profile[f];
@@ -1315,6 +1326,31 @@
             } catch (err) {
                 alert("Error processing image.");
             }
+            e.target.value = '';
+        }
+        
+        async function handleResumeUpload(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            
+            const maxSize = 10 * 1024 * 1024; // 10MB limit
+            if (file.size > maxSize) {
+                alert("File size exceeds 10MB limit.");
+                e.target.value = '';
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = async event => {
+                const base64Str = event.target.result;
+                document.getElementById('prof-resume_url').value = base64Str;
+                document.getElementById('resume-name').textContent = 'Currently: ' + file.name;
+                
+                if (!allData.profile) allData.profile = {};
+                allData.profile.resume_url = base64Str;
+            };
+            reader.onerror = error => alert("Error reading file.");
             e.target.value = '';
         }
 

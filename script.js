@@ -137,6 +137,40 @@ function renderProfile(p) {
         contactLinkedin.textContent = p.linkedin.replace(/^https?:\/\/(www\.)?/, '');
         contactLinkedin.href = p.linkedin;
     }
+
+    // Resume Link handling
+    if (p.resume_url) {
+        // Inject into navbar
+        document.querySelectorAll('.nav-right').forEach(navRight => {
+            if (!navRight.querySelector('.download-resume-btn')) {
+                const btn = document.createElement('a');
+                btn.href = p.resume_url;
+                btn.download = 'Resume';
+                btn.className = 'btn-primary download-resume-btn';
+                btn.style = 'padding: 8px 16px; font-size: 0.9rem; margin-left: 15px; text-decoration: none; border-radius: 8px;';
+                btn.textContent = 'Download Resume';
+                navRight.appendChild(btn);
+            } else {
+                navRight.querySelector('.download-resume-btn').href = p.resume_url;
+            }
+        });
+
+        // Inject at the bottom of the home page
+        const homeMain = document.querySelector('body.portfolio-mode main');
+        const isHomePage = document.getElementById('home') !== null || window.location.pathname.includes('home.html');
+        if (homeMain && isHomePage && !document.getElementById('home-resume-section')) {
+            const section = document.createElement('section');
+            section.id = 'home-resume-section';
+            section.style = 'text-align: center; padding: 60px 5%; margin-top: 40px;';
+            section.innerHTML = `
+                <h2 class="section-title" style="margin-bottom: 30px;">Looking for <span>more details?</span></h2>
+                <a href="${p.resume_url}" download="Resume" class="btn-primary" style="font-size: 1.1rem; padding: 15px 40px; display: inline-block;">Download Resume</a>
+            `;
+            homeMain.appendChild(section);
+        } else if (document.getElementById('home-resume-section')) {
+            document.querySelector('#home-resume-section a').href = p.resume_url;
+        }
+    }
 }
 
 function renderAboutPage(a, p) {
