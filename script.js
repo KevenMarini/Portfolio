@@ -206,7 +206,7 @@ function renderProfile(p) {
 }
 
 // Add Resume to navigation links dynamically across all pages
-document.addEventListener("DOMContentLoaded", () => {
+function injectResumeNavLinks() {
     // Top nav links (home page usually)
     const navLinks = document.querySelector('.nav-links');
     if (navLinks && !navLinks.querySelector('a[href="resume.html"]')) {
@@ -225,7 +225,13 @@ document.addEventListener("DOMContentLoaded", () => {
             psLinks.appendChild(resumeSideLink);
         }
     });
-});
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener("DOMContentLoaded", injectResumeNavLinks);
+} else {
+    injectResumeNavLinks();
+}
 
 function renderAboutPage(a, p) {
     const parseText = (text) => text.split('\n\n').map(p => `<p>${p.trim()}</p>`).join('');
