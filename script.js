@@ -153,7 +153,7 @@ function renderProfile(p) {
             if (!navRight.querySelector('.download-resume-btn')) {
                 const btn = document.createElement('a');
                 btn.href = p.resume_url;
-                btn.download = 'Resume';
+                btn.download = 'Keven Marini Resume.pdf';
                 btn.className = 'download-resume-btn';
                 btn.style = 'padding: 8px 18px; font-size: 0.9rem; margin-left: 15px; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white; text-decoration: none; transition: all 0.3s ease; background: rgba(255,255,255,0.05); font-weight: 500; display: inline-block;';
                 btn.textContent = 'Download Resume';
@@ -170,7 +170,7 @@ function renderProfile(p) {
         if (heroCta && !heroCta.querySelector('.hero-resume-btn')) {
             const heroBtn = document.createElement('a');
             heroBtn.href = p.resume_url;
-            heroBtn.download = 'Resume';
+            heroBtn.download = 'Keven Marini Resume.pdf';
             heroBtn.className = 'btn-ghost hero-resume-btn';
             heroBtn.textContent = 'Download Resume';
             heroCta.appendChild(heroBtn);
@@ -199,7 +199,7 @@ function renderProfile(p) {
         const resumeContentWrapper = document.getElementById('resume-content-wrapper');
         const resumeUnavailableMsg = document.getElementById('resume-unavailable-msg');
         
-        // Convert base64 Data URI to Blob URL to prevent browser blocking on view
+        // Convert base64 Data URI to File/Blob URL to prevent browser blocking on view and improve title
         let safeResumeUrl = p.resume_url;
         if (p.resume_url && p.resume_url.startsWith('data:')) {
             try {
@@ -211,8 +211,9 @@ function renderProfile(p) {
                 while(n--) {
                     u8arr[n] = bstr.charCodeAt(n);
                 }
-                const blob = new Blob([u8arr], {type: mime});
-                safeResumeUrl = URL.createObjectURL(blob);
+                // Use File instead of Blob to give it a name 'CV Resume.pdf' for the browser viewer
+                const file = new File([u8arr], "CV Resume.pdf", {type: mime});
+                safeResumeUrl = URL.createObjectURL(file);
             } catch (e) {
                 console.error("Failed to parse resume blob", e);
             }
@@ -223,7 +224,7 @@ function renderProfile(p) {
             if (dedicatedResumeBtn) {
                 // Download can still use the original data URI or the blob
                 dedicatedResumeBtn.href = safeResumeUrl;
-                dedicatedResumeBtn.download = 'Resume';
+                dedicatedResumeBtn.download = 'Keven Marini Resume.pdf';
                 dedicatedResumeBtn.style.display = 'inline-block';
             }
             if (viewResumeBtn) {
