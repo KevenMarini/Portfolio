@@ -178,20 +178,18 @@ function renderProfile(p) {
             heroCta.querySelector('.hero-resume-btn').href = p.resume_url;
         }
 
-        // Inject at the bottom of the home page
-        const homeMain = document.querySelector('body.portfolio-mode main');
-        const isHomePage = document.getElementById('home') !== null || window.location.pathname.includes('home.html');
-        if (homeMain && isHomePage && !document.getElementById('home-resume-section')) {
+        // Inject at the bottom of all pages (except the resume page itself)
+        const mainElement = document.querySelector('body.portfolio-mode main');
+        const isResumePage = window.location.pathname.includes('resume.html');
+        if (mainElement && !isResumePage && !document.getElementById('home-resume-section')) {
             const section = document.createElement('section');
             section.id = 'home-resume-section';
             section.style = 'text-align: center; padding: 60px 5%; margin-top: 40px;';
             section.innerHTML = `
                 <h2 class="section-title" style="margin-bottom: 30px;">Looking for <span>more details?</span></h2>
-                <a href="${p.resume_url}" download="Resume" class="btn-primary" style="font-size: 1.1rem; padding: 15px 40px; display: inline-block;">Download Resume</a>
+                <a href="resume.html" class="btn-primary" style="font-size: 1.1rem; padding: 15px 40px; display: inline-block;">View Resume</a>
             `;
-            homeMain.appendChild(section);
-        } else if (document.getElementById('home-resume-section')) {
-            document.querySelector('#home-resume-section a').href = p.resume_url;
+            mainElement.appendChild(section);
         }
         
         // Handle dedicated Resume Page buttons
