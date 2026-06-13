@@ -199,18 +199,40 @@ function renderProfile(p) {
         const resumeContentWrapper = document.getElementById('resume-content-wrapper');
         const resumeUnavailableMsg = document.getElementById('resume-unavailable-msg');
         
+        // Convert base64 Data URI to Blob URL to prevent browser blocking on view
+        let safeResumeUrl = p.resume_url;
+        if (p.resume_url && p.resume_url.startsWith('data:')) {
+            try {
+                const arr = p.resume_url.split(',');
+                const mime = arr[0].match(/:(.*?);/)[1];
+                const bstr = atob(arr[1]);
+                let n = bstr.length;
+                const u8arr = new Uint8Array(n);
+                while(n--) {
+                    u8arr[n] = bstr.charCodeAt(n);
+                }
+                const blob = new Blob([u8arr], {type: mime});
+                safeResumeUrl = URL.createObjectURL(blob);
+            } catch (e) {
+                console.error("Failed to parse resume blob", e);
+            }
+        }
+
         if (resumeContentWrapper) {
             resumeContentWrapper.style.display = 'block';
             if (dedicatedResumeBtn) {
-                dedicatedResumeBtn.href = p.resume_url;
+                // Download can still use the original data URI or the blob
+                dedicatedResumeBtn.href = safeResumeUrl;
+                dedicatedResumeBtn.download = 'Resume';
                 dedicatedResumeBtn.style.display = 'inline-block';
             }
             if (viewResumeBtn) {
-                viewResumeBtn.href = p.resume_url;
+                // View MUST use the blob URL to prevent grey screen
+                viewResumeBtn.href = safeResumeUrl;
                 viewResumeBtn.style.display = 'inline-block';
             }
             if (resumePreview) {
-                resumePreview.src = p.resume_url;
+                resumePreview.src = safeResumeUrl;
                 resumePreview.style.display = 'block';
             }
             if (resumeUnavailableMsg) resumeUnavailableMsg.style.display = 'none';
