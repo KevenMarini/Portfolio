@@ -188,20 +188,33 @@ function renderProfile(p) {
         
         // Handle dedicated Resume Page buttons
         const dedicatedResumeBtn = document.getElementById('resume-download-btn');
+        const viewResumeBtn = document.getElementById('resume-view-btn');
+        const resumePreview = document.getElementById('resume-preview');
+        const resumeContentWrapper = document.getElementById('resume-content-wrapper');
         const resumeUnavailableMsg = document.getElementById('resume-unavailable-msg');
-        if (dedicatedResumeBtn) {
-            dedicatedResumeBtn.href = p.resume_url;
-            dedicatedResumeBtn.style.display = 'inline-block';
+        
+        if (resumeContentWrapper) {
+            resumeContentWrapper.style.display = 'block';
+            if (dedicatedResumeBtn) {
+                dedicatedResumeBtn.href = p.resume_url;
+                dedicatedResumeBtn.style.display = 'inline-block';
+            }
+            if (viewResumeBtn) {
+                viewResumeBtn.href = p.resume_url;
+                viewResumeBtn.style.display = 'inline-block';
+            }
+            if (resumePreview) {
+                resumePreview.src = p.resume_url;
+                resumePreview.style.display = 'block';
+            }
             if (resumeUnavailableMsg) resumeUnavailableMsg.style.display = 'none';
         }
     } else {
         // If no resume is uploaded, handle the dedicated page state
-        const dedicatedResumeBtn = document.getElementById('resume-download-btn');
+        const resumeContentWrapper = document.getElementById('resume-content-wrapper');
         const resumeUnavailableMsg = document.getElementById('resume-unavailable-msg');
-        if (dedicatedResumeBtn) {
-            dedicatedResumeBtn.style.display = 'none';
-            if (resumeUnavailableMsg) resumeUnavailableMsg.style.display = 'block';
-        }
+        if (resumeContentWrapper) resumeContentWrapper.style.display = 'none';
+        if (resumeUnavailableMsg) resumeUnavailableMsg.style.display = 'block';
     }
 }
 
