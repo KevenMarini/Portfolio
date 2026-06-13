@@ -848,28 +848,40 @@ function initScrollProgress() {
     const navLinks = document.querySelectorAll('.nav-links a');
     const blobs = document.querySelectorAll('.prism-blob');
 
+    let ticking = false;
+
     window.addEventListener('scroll', () => {
-        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrolled = (winScroll / height) * 100;
-        
-        if (progressBar) progressBar.style.width = scrolled + "%";
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                
+                if (progressBar) progressBar.style.width = scrolled + "%";
 
-        blobs.forEach((blob, index) => {
-            const speed = (index + 1) * 0.2;
-            blob.style.top = (index * 20) + (winScroll * speed * -1) + "px";
-        });
+                blobs.forEach((blob, index) => {
+                    const speed = (index + 1) * 0.2;
+                    // Use transform instead of top for GPU hardware acceleration to fix sluggish scrolling
+                    blob.style.transform = `translateY(${(index * 20) + (winScroll * speed * -1)}px)`;
+                });
 
-        let current = "";
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            if (pageYOffset >= (sectionTop - 200)) current = section.getAttribute('id');
-        });
+                let current = "";
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= (sectionTop - 200)) current = section.getAttribute('id');
+                });
 
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href').includes(current)) link.classList.add('active');
-        });
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') && link.getAttribute('href').includes(current) && current !== "") {
+                        link.classList.add('active');
+                    }
+                });
+                
+                ticking = false;
+            });
+            ticking = true;
+        }
     });
 }
 
