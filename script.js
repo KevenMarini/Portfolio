@@ -228,12 +228,29 @@ function renderProfile(p) {
                 dedicatedResumeBtn.style.display = 'inline-block';
             }
             if (viewResumeBtn) {
-                // View MUST use the blob URL to prevent grey screen
-                viewResumeBtn.href = safeResumeUrl;
+                // Open in a custom viewer to override the PDF metadata title and hide the toolbar
+                viewResumeBtn.href = "#";
+                viewResumeBtn.onclick = (e) => {
+                    e.preventDefault();
+                    const win = window.open('', '_blank');
+                    win.document.write(`
+                        <!DOCTYPE html>
+                        <html>
+                            <head>
+                                <title>Keven Marini Resume</title>
+                                <style>body { margin: 0; padding: 0; overflow: hidden; background: #323639; }</style>
+                            </head>
+                            <body>
+                                <iframe src="${safeResumeUrl}#toolbar=0&navpanes=0" width="100%" height="100%" frameborder="0"></iframe>
+                            </body>
+                        </html>
+                    `);
+                    win.document.close();
+                };
                 viewResumeBtn.style.display = 'inline-block';
             }
             if (resumePreview) {
-                resumePreview.src = safeResumeUrl;
+                resumePreview.src = safeResumeUrl + "#toolbar=0&navpanes=0";
                 resumePreview.style.display = 'block';
             }
             if (resumeUnavailableMsg) resumeUnavailableMsg.style.display = 'none';
