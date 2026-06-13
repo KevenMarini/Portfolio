@@ -205,14 +205,22 @@ function renderProfile(p) {
             try {
                 const arr = p.resume_url.split(',');
                 const mime = arr[0].match(/:(.*?);/)[1];
-                const bstr = atob(arr[1]);
+                let bstr = atob(arr[1]);
+                
+                // Attempt to hot-patch the embedded PDF title metadata if it matches the known Canva template
+                const oldTitle = "Professional Minimalist CV Resume";
+                const newTitle = "Keven Marini Resume              "; // Padded with spaces to exactly 33 chars to preserve binary offsets
+                if (bstr.includes(oldTitle)) {
+                    bstr = bstr.replace(oldTitle, newTitle);
+                }
+
                 let n = bstr.length;
                 const u8arr = new Uint8Array(n);
                 while(n--) {
                     u8arr[n] = bstr.charCodeAt(n);
                 }
                 // Use File instead of Blob to give it a name 'CV Resume.pdf' for the browser viewer
-                const file = new File([u8arr], "CV Resume.pdf", {type: mime});
+                const file = new File([u8arr], "Keven Marini Resume.pdf", {type: mime});
                 safeResumeUrl = URL.createObjectURL(file);
             } catch (e) {
                 console.error("Failed to parse resume blob", e);
@@ -228,29 +236,13 @@ function renderProfile(p) {
                 dedicatedResumeBtn.style.display = 'inline-block';
             }
             if (viewResumeBtn) {
-                // Open in a custom viewer to override the PDF metadata title and hide the toolbar
-                viewResumeBtn.href = "#";
-                viewResumeBtn.onclick = (e) => {
-                    e.preventDefault();
-                    const win = window.open('', '_blank');
-                    win.document.write(`
-                        <!DOCTYPE html>
-                        <html>
-                            <head>
-                                <title>Keven Marini Resume</title>
-                                <style>body { margin: 0; padding: 0; overflow: hidden; background: #323639; }</style>
-                            </head>
-                            <body>
-                                <iframe src="${safeResumeUrl}#toolbar=0&navpanes=0" width="100%" height="100%" frameborder="0"></iframe>
-                            </body>
-                        </html>
-                    `);
-                    win.document.close();
-                };
+                viewResumeBtn.href = safeResumeUrl;
+                viewResumeBtn.target = "_blank";
+                viewResumeBtn.onclick = null;
                 viewResumeBtn.style.display = 'inline-block';
             }
             if (resumePreview) {
-                resumePreview.src = safeResumeUrl + "#toolbar=0&navpanes=0";
+                resumePreview.src = safeResumeUrl;
                 resumePreview.style.display = 'block';
             }
             if (resumeUnavailableMsg) resumeUnavailableMsg.style.display = 'none';
