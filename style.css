@@ -98,9 +98,37 @@ h1, h2, h3, .nav-logo, .tech-font {
   100% { transform: translate(-50px, 100px) scale(0.8); }
 }
 
-/* =========================================
-   INTRO MODE
-   ========================================= */
+/* ==========================================================================
+   Preloader
+   ========================================================================== */
+#global-preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg-primary);
+    z-index: 99999999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+.preloader-spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid rgba(0, 242, 254, 0.1);
+    border-top-color: var(--accent-cyan);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin { 
+    100% { transform: rotate(360deg); } 
+}
+
+/* ==========================================================================
+   Base Styles
+   ========================================================================== */
 body.intro-mode {
   display: flex;
   justify-content: center;

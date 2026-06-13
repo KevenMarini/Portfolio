@@ -47,6 +47,14 @@ async function fetchData() {
         }
     } catch (e) {
         console.log("Using local fallback data");
+    } finally {
+        // Remove global preloader once data is loaded and DOM is updated
+        const preloader = document.getElementById('global-preloader');
+        if (preloader) {
+            preloader.style.opacity = '0';
+            preloader.style.visibility = 'hidden';
+            setTimeout(() => preloader.remove(), 500);
+        }
     }
 }
 
